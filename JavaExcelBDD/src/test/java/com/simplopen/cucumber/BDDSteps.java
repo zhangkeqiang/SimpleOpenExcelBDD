@@ -31,16 +31,27 @@ public class BDDSteps {
     @When("key and value list:")
     public void key_and_value_list(io.cucumber.datatable.DataTable dataTable) {
         assertEquals("header1", dataTable.cell(0, 0));
-        List<Map<String, String>> list = dataTable.asMaps();
-        for (Map<String, String> map : list) {
+        List<Map<String, String>> mapList = dataTable.asMaps();
+        for (Map<String, String> map : mapList) {
+            System.out.println("===========");
             for (Map.Entry<String, String> mapEntry : map.entrySet()) {
                 System.out.print(mapEntry.getKey());
                 System.out.println(mapEntry.getValue());
             }
-
+            System.out.println("map.keySet()");
             for (String header : map.keySet()) {
                 System.out.print(header);
                 System.out.println(map.get(header));
+            }
+        }
+
+        System.out.println("=======dataTable.asLists()=======");
+        List<List<String>> listList = dataTable.asLists();
+        for (List<String> list : listList) {
+            System.out.println("===========");
+            for (String string : list) {
+                // prints the elements of the List
+                System.out.println(string);
             }
         }
     }
