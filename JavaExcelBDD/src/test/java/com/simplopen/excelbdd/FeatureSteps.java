@@ -40,7 +40,7 @@ public class FeatureSteps {
     }
 
     @Then("Test dataset list which contains {int} sets is got")
-    public void test_dataset_list_which_contains_sets_is_got(Integer int1) {
+    public void test_dataset_list_which_contains_sets_is_got(int int1) {
         assertEquals(int1, list.size());
     }
 
