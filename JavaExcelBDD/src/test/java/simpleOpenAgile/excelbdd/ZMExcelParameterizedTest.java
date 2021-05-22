@@ -1,4 +1,4 @@
-package simpleOpenAgile.BDD;
+package simpleOpenAgile.excelbdd;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import simpleOpenAgile.excelbdd.ZMExcel;
 
 @RunWith(Parameterized.class)
 public class ZMExcelParameterizedTest {
