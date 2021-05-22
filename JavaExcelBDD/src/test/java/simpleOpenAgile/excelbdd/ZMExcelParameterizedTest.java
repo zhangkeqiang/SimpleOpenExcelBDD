@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import simpleOpenAgile.excelbdd.ZMExcel;
+import com.simplopen.excelbdd.ZMExcel;
 
 @RunWith(Parameterized.class)
 public class ZMExcelParameterizedTest {

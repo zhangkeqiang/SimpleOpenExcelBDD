@@ -1,4 +1,4 @@
-package simpleOpenAgile.excelbdd;
+package com.simplopen.excelbdd;
 
 import java.io.File;
 import java.io.FileInputStream;

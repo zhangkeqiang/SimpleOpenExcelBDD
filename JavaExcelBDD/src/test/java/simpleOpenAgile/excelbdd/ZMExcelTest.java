@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import simpleOpenAgile.excelbdd.ZMExcel;
+import com.simplopen.excelbdd.ZMExcel;
 
 import static org.junit.jupiter.api.Assertions.*;
 
