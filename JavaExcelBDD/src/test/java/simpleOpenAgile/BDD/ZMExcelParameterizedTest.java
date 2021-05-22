@@ -15,7 +15,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ZMExcelParameterizedTest {
 	
-	Map mapParams;
+	Map<String, String> mapParams;
 	
 	@Parameters
     public static Collection<Object[]> prepareData()
@@ -24,7 +24,7 @@ public class ZMExcelParameterizedTest {
     	return ZMExcel.getExampleCollection(filepath, "SimpleOpenBDD", 1, 'D');
     }
 	
-	public ZMExcelParameterizedTest(Map map){
+	public ZMExcelParameterizedTest(Map<String, String> map){
 		this.mapParams = map;
 	}
 
