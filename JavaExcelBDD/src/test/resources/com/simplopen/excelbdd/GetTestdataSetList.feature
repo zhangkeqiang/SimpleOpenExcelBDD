@@ -2,7 +2,7 @@ Feature: Get Test data Set List
     test data is put in excel, so they should be get as a List
 
     Scenario Outline: Get list from a simple sheet
-        Given The Excel file is "<ExcelFilePath>"
+        Given The Excel file is "src\\test\\resources\\ExcelBDD.xlsx"
         And The Sheet name is "<SheetName>"
         And Header Row is <HeaderRow>
         And Parameter Column is "<ParameterColumn>"
@@ -12,7 +12,7 @@ Feature: Get Test data Set List
         And The No. 1 element of list Key "Header", Value is "Scenario1"
 
         Examples:
-            | ExcelFilePath                       | SheetName | HeaderRow | ParameterColumn |
-            | src\\test\\resources\\ExcelBDD.xlsx | Sheet1    | 1         | B               |
-            | src\\test\\resources\\ExcelBDD.xlsx | Sheet2    | 1         | C               |
+            | SheetName | HeaderRow | ParameterColumn |
+            | Sheet1    | 1         | B               |
+            | Sheet2    | 1         | C               |
 
