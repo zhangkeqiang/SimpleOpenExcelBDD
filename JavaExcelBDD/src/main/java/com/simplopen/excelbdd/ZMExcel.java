@@ -120,16 +120,12 @@ public class ZMExcel {
 		} finally {
 			try {
 				workbook.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
 				excelFile.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
+		
 		return listTestSet;
 	}
 

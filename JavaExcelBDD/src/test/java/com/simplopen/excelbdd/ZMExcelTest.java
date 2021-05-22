@@ -1,4 +1,4 @@
-package simpleOpenAgile.excelbdd;
+package com.simplopen.excelbdd;
 
 
 
@@ -9,9 +9,6 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import com.simplopen.excelbdd.ZMExcel;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ZMExcelTest {

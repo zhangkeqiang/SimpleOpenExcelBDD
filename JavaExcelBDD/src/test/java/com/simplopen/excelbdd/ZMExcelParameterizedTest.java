@@ -1,4 +1,4 @@
-package simpleOpenAgile.excelbdd;
+package com.simplopen.excelbdd;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,13 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.simplopen.excelbdd.ZMExcel;
+
 
 @RunWith(Parameterized.class)
 public class ZMExcelParameterizedTest {
@@ -29,7 +28,6 @@ public class ZMExcelParameterizedTest {
 	public ZMExcelParameterizedTest(Map<String, String> map){
 		this.mapParams = map;
 	}
-
 
 	@Test
 	public void testZMExcelParameterizedTest() {
