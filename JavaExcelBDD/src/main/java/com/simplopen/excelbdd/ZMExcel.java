@@ -87,12 +87,13 @@ public class ZMExcel {
 				}
 			}
 
-			for (Map.Entry aParameterName : mapParameterName.entrySet()) {
-				int iRow = Integer.parseInt(aParameterName.getKey().toString());
-				String strParameterName = (String) aParameterName.getValue();
+			for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
+				int iRow = aParameterName.getKey();
+				String strParameterName = aParameterName.getValue();
 				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
 				int nPos = 0;
-				for (Integer iCol : mapTestDataHeader.keySet()) {
+				for (Map.Entry<Integer, String> entryHeader : mapTestDataHeader.entrySet()) {
+					int iCol = entryHeader.getKey();
 					Map<String, String> mapTestSet = listTestSet.get(nPos++);
 					XSSFCell cellCurrent = rowCurrent.getCell(iCol);
 					if (cellCurrent.getCellType() == CellType.STRING) {
