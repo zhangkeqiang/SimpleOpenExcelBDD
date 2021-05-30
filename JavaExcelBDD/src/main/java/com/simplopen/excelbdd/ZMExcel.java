@@ -48,33 +48,9 @@ public class ZMExcel {
 
 			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader);
+			
 			// Get ParameterNames HashMap
-			HashMap<Integer, String> mapParameterName = new HashMap();
-			int nContinuousBlankCount = 0;
-			for (int iRow = headerRow; iRow <= sheetTestData.getLastRowNum(); iRow++) {
-				if (nContinuousBlankCount > 3) {
-					break;
-				}
-				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
-				if (rowCurrent == null) {
-					nContinuousBlankCount++;
-					continue;
-				}
-				XSSFCell cellParameterName = rowCurrent.getCell(parameterNameColumnNum);
-				if (cellParameterName == null) {
-					nContinuousBlankCount++;
-					continue;
-				}
-				String strParameterName = cellParameterName.getStringCellValue();
-				if (strParameterName == null || strParameterName.isEmpty()) {
-					nContinuousBlankCount++;
-				} else if (strParameterName != "NA") {
-					mapParameterName.put(iRow, strParameterName);
-					nContinuousBlankCount = 0;
-				} else {
-					nContinuousBlankCount = 0;
-				}
-			}
+			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum, sheetTestData);
 
 			for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
 				int iRow = aParameterName.getKey();
@@ -136,6 +112,42 @@ public class ZMExcel {
 		return mapTestDataHeader;
 	}
 
+		/**
+	 * @param headerRow
+	 * @param parameterNameColumnNum
+	 * @param sheetTestData
+	 * @return
+	 */
+	private static HashMap<Integer, String> getParameterNameMap(int headerRow, int parameterNameColumnNum,
+			XSSFSheet sheetTestData) {
+		HashMap<Integer, String> mapParameterName = new HashMap();
+		int nContinuousBlankCount = 0;
+		for (int iRow = headerRow; iRow <= sheetTestData.getLastRowNum(); iRow++) {
+			if (nContinuousBlankCount > 3) {
+				break;
+			}
+			XSSFRow rowCurrent = sheetTestData.getRow(iRow);
+			if (rowCurrent == null) {
+				nContinuousBlankCount++;
+				continue;
+			}
+			XSSFCell cellParameterName = rowCurrent.getCell(parameterNameColumnNum);
+			if (cellParameterName == null) {
+				nContinuousBlankCount++;
+				continue;
+			}
+			String strParameterName = cellParameterName.getStringCellValue();
+			if (strParameterName == null || strParameterName.isEmpty()) {
+				nContinuousBlankCount++;
+			} else if (strParameterName != "NA") {
+				mapParameterName.put(iRow, strParameterName);
+				nContinuousBlankCount = 0;
+			} else {
+				nContinuousBlankCount = 0;
+			}
+		}
+		return mapParameterName;
+	}
 	@SuppressWarnings("rawtypes")
 	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) {
