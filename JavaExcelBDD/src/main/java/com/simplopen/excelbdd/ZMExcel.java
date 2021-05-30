@@ -46,18 +46,8 @@ public class ZMExcel {
 			XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
 
-			// Get Matched Column HashMap
-			int nMaxColumn = rowHeader.getLastCellNum();
-			HashMap<Integer, String> mapTestDataHeader = new HashMap();
-			for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol++) {
-				XSSFCell cellHeader = rowHeader.getCell(iCol);
-				if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
-					mapTestDataHeader.put(iCol, cellHeader.getStringCellValue());
-					Map<String, String> mapTestSet = new HashMap();
-					mapTestSet.put("Header", cellHeader.getStringCellValue());
-					listTestSet.add(mapTestSet);
-				}
-			}
+			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
+					parameterNameColumnNum, rowHeader);
 			// Get ParameterNames HashMap
 			HashMap<Integer, String> mapParameterName = new HashMap();
 			int nContinuousBlankCount = 0;
@@ -127,6 +117,23 @@ public class ZMExcel {
 		}
 
 		return listTestSet;
+	}
+
+	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList<Map> listTestSet,
+			int parameterNameColumnNum, XSSFRow rowHeader) {
+		// Get Matched Column HashMap
+		int nMaxColumn = rowHeader.getLastCellNum();
+		HashMap<Integer, String> mapTestDataHeader = new HashMap();
+		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol++) {
+			XSSFCell cellHeader = rowHeader.getCell(iCol);
+			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
+				mapTestDataHeader.put(iCol, cellHeader.getStringCellValue());
+				Map<String, String> mapTestSet = new HashMap();
+				mapTestSet.put("Header", cellHeader.getStringCellValue());
+				listTestSet.add(mapTestSet);
+			}
+		}
+		return mapTestDataHeader;
 	}
 
 	@SuppressWarnings("rawtypes")
