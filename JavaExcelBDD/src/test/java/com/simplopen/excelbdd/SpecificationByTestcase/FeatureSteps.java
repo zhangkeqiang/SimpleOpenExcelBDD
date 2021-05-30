@@ -1,6 +1,8 @@
 package com.simplopen.excelbdd.SpecificationByTestcase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 import java.util.Map;
@@ -66,5 +68,16 @@ public class FeatureSteps {
 	@Then("Test Result value of Variable {string} is {string}")
 	public void test_result_value_of_variable_is(String string, String string2) {
 		assertEquals(string2, list.get(0).get(string + "TestResult"));
+	}
+	
+	@When("invoke on a wrong file")
+	public void invoke_on_a_wrong_file() {
+		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, "sheetName", 1, 'B');
+	}
+
+	@Then("get blank list because the file doesn't exist")
+	public void get_blank_list_because_the_file_doesn_t_exist() {
+		assertNotNull(list); 
+		assertEquals(0, list.size());
 	}
 }

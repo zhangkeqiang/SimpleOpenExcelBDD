@@ -171,7 +171,7 @@ public class ZMExcel {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			listTestSet = null;
+			e.printStackTrace();
 		}
 		return listTestSet;
 	}
