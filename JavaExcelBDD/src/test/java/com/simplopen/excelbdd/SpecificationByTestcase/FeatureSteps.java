@@ -43,7 +43,7 @@ public class FeatureSteps {
     }
 
     @Then("a testset list is got, which count is {int}")
-    public void a_testset_list_is_got_which_count_is(Integer int1) {
+    public void a_testset_list_is_got_which_count_is(int int1) {
         assertEquals(int1, list.size());
     }
 }
