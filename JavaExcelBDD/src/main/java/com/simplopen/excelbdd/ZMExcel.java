@@ -61,25 +61,9 @@ public class ZMExcel {
 				for (Map.Entry<Integer, String> entryHeader : mapTestDataHeader.entrySet()) {
 					int iCol = entryHeader.getKey();
 					Map<String, String> mapTestSet = listTestSet.get(nPos++);
-					XSSFCell cellCurrent = rowCurrent.getCell(iCol);
-					if (cellCurrent.getCellType() == CellType.STRING) {
-						mapTestSet.put(strParameterName, cellCurrent.getStringCellValue());
-					} else if (cellCurrent.getCellType() == CellType.NUMERIC) {
-						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getNumericCellValue()));
-					} else if (cellCurrent.getCellType() == CellType._NONE) {
-						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getDateCellValue()));
-					} else if (cellCurrent.getCellType() == CellType.BLANK) {
-						mapTestSet.put(strParameterName, "");
-					} else if (cellCurrent.getCellType() == CellType.BOOLEAN) {
-						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getBooleanCellValue()));
-					} else if (cellCurrent.getCellType() == CellType.FORMULA) {
-						mapTestSet.put(strParameterName, cellCurrent.getRawValue());
-					} else {
-						mapTestSet.put(strParameterName, cellCurrent.getRawValue());
-					}
+					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
 				}
 			}
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -193,22 +177,9 @@ public class ZMExcel {
 				for (Map.Entry<Integer, String> entryHeader : mapTestSetHeader.entrySet()) {
 					int iCol = entryHeader.getKey();
 					Map<String, String> mapTestSet = listTestSet.get(nPos++);
-					XSSFCell cellCurrent = rowCurrent.getCell(iCol);
-					if (cellCurrent.getCellType() == CellType.STRING) {
-						mapTestSet.put(strParameterName, cellCurrent.getStringCellValue());
-					} else if (cellCurrent.getCellType() == CellType.NUMERIC) {
-						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getNumericCellValue()));
-					} else if (cellCurrent.getCellType() == CellType._NONE) {
-						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getDateCellValue()));
-					} else if (cellCurrent.getCellType() == CellType.BLANK) {
-						mapTestSet.put(strParameterName, "");
-					} else if (cellCurrent.getCellType() == CellType.BOOLEAN) {
-						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getBooleanCellValue()));
-					} else if (cellCurrent.getCellType() == CellType.FORMULA) {
-						mapTestSet.put(strParameterName, cellCurrent.getRawValue());
-					} else {
-						mapTestSet.put(strParameterName, cellCurrent.getRawValue());
-					}
+					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
+					putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
+					putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
 				}
 			}
 
@@ -228,6 +199,33 @@ public class ZMExcel {
 		}
 
 		return listTestSet;
+	}
+
+	/**
+	 * @param strParameterName
+	 * @param rowCurrent
+	 * @param mapTestSet
+	 * @param iCol
+	 */
+	private static void putParameter(String strParameterName, XSSFRow rowCurrent, Map<String, String> mapTestSet,
+			int iCol) {
+
+		XSSFCell cellCurrent = rowCurrent.getCell(iCol);
+		if (cellCurrent.getCellType() == CellType.STRING) {
+			mapTestSet.put(strParameterName, cellCurrent.getStringCellValue());
+		} else if (cellCurrent.getCellType() == CellType.NUMERIC) {
+			mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getNumericCellValue()));
+		} else if (cellCurrent.getCellType() == CellType._NONE) {
+			mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getDateCellValue()));
+		} else if (cellCurrent.getCellType() == CellType.BLANK) {
+			mapTestSet.put(strParameterName, "");
+		} else if (cellCurrent.getCellType() == CellType.BOOLEAN) {
+			mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getBooleanCellValue()));
+		} else if (cellCurrent.getCellType() == CellType.FORMULA) {
+			mapTestSet.put(strParameterName, cellCurrent.getRawValue());
+		} else {
+			mapTestSet.put(strParameterName, cellCurrent.getRawValue());
+		}
 	}
 
 }
