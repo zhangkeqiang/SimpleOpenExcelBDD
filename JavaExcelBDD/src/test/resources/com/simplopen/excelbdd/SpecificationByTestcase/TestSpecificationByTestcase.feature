@@ -10,7 +10,9 @@ Feature: Get Test data Set List from Excel Specification by Testcase
         When invoke get test data from excel
         Then a testset list is got, which count is <ListCount>
         And The Header of 1st set is "Scenario1"
-
+        And Input value of Variable "ParamName1" is "V1.1"
+        And Expected value of Variable "ParamName1" is "V1.1"
+        And Test Result value of Variable "ParamName1" is "pass"
         Examples:
             | SheetName | HeaderRow | ParameterColumn | ListCount |
             | SBTSheet1 | 2         | B               | 4         |
