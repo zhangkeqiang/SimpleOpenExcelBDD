@@ -1,14 +1,17 @@
 $StartPath = "$PSScriptRoot\.."
+# JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
 $ExcelBDDFilePath = "$StartPath\..\JavaExcelBDD\src\test\resources\ExcelBDD.xlsx"
 Get-Module MZExcel | Remove-Module
 Import-Module $StartPath\MZExcel.psm1
-# JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
-$BDDTestCaseList = Get-MZExampleList -ExcelPath $ExcelBDDFilePath `
-    -WorksheetName 'SimpleOpenBDD' `
-    -ParameterNameColumn D `
-    -HeaderRow 1
 
-Describe "Get BDD data" {
+
+
+Describe "Get BDD Data" {
+
+    $BDDTestCaseList = Get-MZExampleList -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'SimpleOpenBDD' `
+        -ParameterNameColumn D `
+        -HeaderRow 1
 
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
         Write-Host "Easy Success of Sheet $SheetName Column $Header"
@@ -45,3 +48,4 @@ Describe "Get BDD data" {
         $TestcaseList[3]["ParamName4"] | Should -Be "4.4"
     }
 }
+
