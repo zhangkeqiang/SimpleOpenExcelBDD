@@ -174,7 +174,10 @@ public class ZMExcel {
 			excelFile = new FileInputStream(new File(excelPath));
 			workbook = new XSSFWorkbook(excelFile);
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
-			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
+
+			// poi get row from 0, so 1st headerRow is at 0
+			// because of input/expected/testresult row, the below -2
+			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2); 
 			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader, 3);
 

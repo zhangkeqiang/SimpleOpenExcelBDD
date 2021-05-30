@@ -17,6 +17,7 @@ public class FeatureSteps {
     int headerRow;
     char parameterNameColumn;
     List<Map<String, String>> list;
+
     @Given("The Excel file is {string}")
     public void the_excel_file_is(String string) {
         excelFilePath = string;
@@ -34,7 +35,7 @@ public class FeatureSteps {
 
     @Given("Parameter Column is {string}")
     public void parameter_column_is(String string) {
-        parameterNameColumn = string.charAt(0);;
+        parameterNameColumn = string.charAt(0);
     }
 
     @When("invoke get test data from excel")
@@ -45,5 +46,10 @@ public class FeatureSteps {
     @Then("a testset list is got, which count is {int}")
     public void a_testset_list_is_got_which_count_is(int int1) {
         assertEquals(int1, list.size());
+    }
+
+    @Then("The Header of 1st set is {string}")
+    public void the_header_of_1st_set_is(String string) {
+        assertEquals(string, list.get(0).get("Header"));
     }
 }

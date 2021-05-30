@@ -9,6 +9,7 @@ Feature: Get Test data Set List from Excel Specification by Testcase
 
         When invoke get test data from excel
         Then a testset list is got, which count is <ListCount>
+        And The Header of 1st set is "Scenario1"
 
         Examples:
             | SheetName | HeaderRow | ParameterColumn | ListCount |
