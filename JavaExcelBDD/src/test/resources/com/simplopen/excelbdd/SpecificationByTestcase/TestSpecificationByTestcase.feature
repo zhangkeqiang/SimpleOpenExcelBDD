@@ -7,7 +7,10 @@ Feature: Get Test data Set List from Excel Specification by Testcase
         And Header Row is <HeaderRow>
         And Parameter Column is "<ParameterColumn>"
 
+        When invoke get test data from excel
+        Then a testset list is got, which count is <ListCount>
+
         Examples:
-            | SheetName | HeaderRow | ParameterColumn |
-            | SBTSheet1 | 2         | B               |
+            | SheetName | HeaderRow | ParameterColumn | ListCount |
+            | SBTSheet1 | 2         | B               | 5         |
 
