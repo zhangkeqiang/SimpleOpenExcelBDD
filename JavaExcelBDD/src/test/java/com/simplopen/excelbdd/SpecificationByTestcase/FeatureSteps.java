@@ -15,7 +15,7 @@ public class FeatureSteps {
     String excelFilePath;
     String sheetName;
     int headerRow;
-    String parameterColumn;
+    char parameterNameColumn;
     List<Map<String, String>> list;
     @Given("The Excel file is {string}")
     public void the_excel_file_is(String string) {
@@ -34,12 +34,12 @@ public class FeatureSteps {
 
     @Given("Parameter Column is {string}")
     public void parameter_column_is(String string) {
-        parameterColumn = string;
+        parameterNameColumn = string.charAt(0);;
     }
 
     @When("invoke get test data from excel")
     public void invoke_get_test_data_from_excel() {
-        list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterColumn);
+        list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterNameColumn);
     }
 
     @Then("a testset list is got, which count is {int}")

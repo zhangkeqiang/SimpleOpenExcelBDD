@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -126,7 +125,7 @@ public class ZMExcel {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return listTestSet;
 	}
 
@@ -142,9 +141,37 @@ public class ZMExcel {
 		return collectionTestData;
 	}
 
-    public static List<Map<String, String>> getMZExampleWithTestResultList(String excelFilePath, String sheetName,
-            int headerRow, String parameterColumn) {
-        return null;
-    }
+	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
+			int headerRow, char parameterNameColumn) {
+		ArrayList<Map<String, String>> listTestSet = new ArrayList<Map<String, String>>();
+		FileInputStream excelFile = null;
+		XSSFWorkbook workbook = null;
+		int parameterNameColumnNum = (int) parameterNameColumn - 65;
+
+		try {
+			excelFile = new FileInputStream(new File(excelPath));
+			workbook = new XSSFWorkbook(excelFile);
+			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
+			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
+			
+		} catch (FileNotFoundException e) {
+
+		} catch(IOException e){
+			
+		}
+		finally {
+			try {
+				workbook.close();
+				excelFile.close();
+			}catch(NullPointerException e){
+
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return listTestSet;
+	}
 
 }
