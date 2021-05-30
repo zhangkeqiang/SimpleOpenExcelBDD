@@ -38,8 +38,8 @@ public class ZMExcel {
 		FileInputStream excelFile = null;
 		XSSFWorkbook workbook = null;
 		try {
-			int parameterNameColumnNum = (int) parameterNameColumn - 65; // poi get column from 0, so Column A's Num is
-																			// 0, 65 is A's ASCII code
+			// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
+			int parameterNameColumnNum = (int) parameterNameColumn - 65; 
 
 			excelFile = new FileInputStream(new File(excelPath));
 			workbook = new XSSFWorkbook(excelFile);
@@ -47,10 +47,11 @@ public class ZMExcel {
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
 
 			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
-					parameterNameColumnNum, rowHeader);
-			
+					parameterNameColumnNum, rowHeader, 1);
+
 			// Get ParameterNames HashMap
-			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum, sheetTestData);
+			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
+					sheetTestData);
 
 			for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
 				int iRow = aParameterName.getKey();
@@ -96,11 +97,11 @@ public class ZMExcel {
 	}
 
 	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList listTestSet,
-			int parameterNameColumnNum, XSSFRow rowHeader) {
+			int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, String> mapTestDataHeader = new HashMap<Integer, String>();
-		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol++) {
+		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
 				mapTestDataHeader.put(iCol, cellHeader.getStringCellValue());
@@ -112,7 +113,7 @@ public class ZMExcel {
 		return mapTestDataHeader;
 	}
 
-		/**
+	/**
 	 * @param headerRow
 	 * @param parameterNameColumnNum
 	 * @param sheetTestData
@@ -148,6 +149,7 @@ public class ZMExcel {
 		}
 		return mapParameterName;
 	}
+
 	@SuppressWarnings("rawtypes")
 	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) {
@@ -174,7 +176,12 @@ public class ZMExcel {
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
 			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
-					parameterNameColumnNum, rowHeader);
+					parameterNameColumnNum, rowHeader, 3);
+
+			// Get ParameterNames HashMap
+			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
+					sheetTestData);
+
 		} catch (FileNotFoundException e) {
 
 		} catch (IOException e) {
