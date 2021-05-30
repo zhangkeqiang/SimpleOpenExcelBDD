@@ -39,7 +39,7 @@ public class ZMExcel {
 		XSSFWorkbook workbook = null;
 		try {
 			// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
-			int parameterNameColumnNum = (int) parameterNameColumn - 65; 
+			int parameterNameColumnNum = (int) parameterNameColumn - 65;
 
 			excelFile = new FileInputStream(new File(excelPath));
 			workbook = new XSSFWorkbook(excelFile);
@@ -177,7 +177,7 @@ public class ZMExcel {
 
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
-			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2); 
+			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
 			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader, 3);
 
@@ -185,10 +185,37 @@ public class ZMExcel {
 			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
 					sheetTestData);
 
+			for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
+				int iRow = aParameterName.getKey();
+				String strParameterName = aParameterName.getValue();
+				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
+				int nPos = 0;
+				for (Map.Entry<Integer, String> entryHeader : mapTestSetHeader.entrySet()) {
+					int iCol = entryHeader.getKey();
+					Map<String, String> mapTestSet = listTestSet.get(nPos++);
+					XSSFCell cellCurrent = rowCurrent.getCell(iCol);
+					if (cellCurrent.getCellType() == CellType.STRING) {
+						mapTestSet.put(strParameterName, cellCurrent.getStringCellValue());
+					} else if (cellCurrent.getCellType() == CellType.NUMERIC) {
+						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getNumericCellValue()));
+					} else if (cellCurrent.getCellType() == CellType._NONE) {
+						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getDateCellValue()));
+					} else if (cellCurrent.getCellType() == CellType.BLANK) {
+						mapTestSet.put(strParameterName, "");
+					} else if (cellCurrent.getCellType() == CellType.BOOLEAN) {
+						mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getBooleanCellValue()));
+					} else if (cellCurrent.getCellType() == CellType.FORMULA) {
+						mapTestSet.put(strParameterName, cellCurrent.getRawValue());
+					} else {
+						mapTestSet.put(strParameterName, cellCurrent.getRawValue());
+					}
+				}
+			}
+
 		} catch (FileNotFoundException e) {
-
+			e.printStackTrace();
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		} finally {
 			try {
 				workbook.close();
