@@ -1,6 +1,6 @@
 $StartPath = "$PSScriptRoot\.."
 # JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
-$ExcelBDDFilePath = "$StartPath\..\JavaExcelBDD\src\test\resources\ExcelBDD.xlsx"
+$global:ExcelBDDFilePath = "$StartPath\..\JavaExcelBDD\src\test\resources\ExcelBDD.xlsx"
 Get-Module MZExcel | Remove-Module
 Import-Module $StartPath\MZExcel.psm1
 
