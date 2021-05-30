@@ -69,7 +69,7 @@ public class FeatureSteps {
 	public void test_result_value_of_variable_is(String string, String string2) {
 		assertEquals(string2, list.get(0).get(string + "TestResult"));
 	}
-	
+
 	@When("invoke on a wrong file")
 	public void invoke_on_a_wrong_file() {
 		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, "sheetName", 1, 'B');
@@ -77,7 +77,12 @@ public class FeatureSteps {
 
 	@Then("get blank list because the file doesn't exist")
 	public void get_blank_list_because_the_file_doesn_t_exist() {
-		assertNotNull(list); 
+		assertNotNull(list);
 		assertEquals(0, list.size());
+	}
+
+	@When("invoke on a wrong sheet")
+	public void invoke_on_a_wrong_sheet() {
+		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, 1, 'B');
 	}
 }

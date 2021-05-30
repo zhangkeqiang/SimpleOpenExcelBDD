@@ -18,7 +18,14 @@ Feature: Get Test data Set List from Excel Specification by Testcase
             | SBTSheet1 | 2         | B               | 4         |
 
 
-	Scenario: excel file does not exist
-		Given The Excel file is "src\\test\\resources\\NoExcelBDD.xlsx"
-		When invoke on a wrong file
-		Then get blank list because the file doesn't exist
+    Scenario: excel file does not exist
+        Given The Excel file is "src\\test\\resources\\NoExcelBDD.xlsx"
+        When invoke on a wrong file
+        Then get blank list because the file doesn't exist
+
+
+    Scenario: sheet does not exist
+       Given The Excel file is "src\\test\\resources\\ExcelBDD.xlsx"
+        And The Sheet name is "wrongsheet"
+        When invoke on a wrong sheet
+        Then get blank list because the file doesn't exist

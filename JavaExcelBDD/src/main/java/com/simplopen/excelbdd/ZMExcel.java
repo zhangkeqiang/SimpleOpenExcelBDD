@@ -59,25 +59,23 @@ public class ZMExcel {
 					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
 				}
 			}
-		} catch (FileNotFoundException e) {
+		}catch (IOException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			listTestSet = null;
 		}
 
 		return listTestSet;
 	}
 
-	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList listTestSet,
+	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList<Map<String, String>> listTestSet,
 			int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		int nMaxColumn = rowHeader.getLastCellNum();
-		HashMap<Integer, String> mapTestDataHeader = new HashMap<Integer, String>();
+		HashMap<Integer, String> mapTestDataHeader = new HashMap<>();
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
 				mapTestDataHeader.put(iCol, cellHeader.getStringCellValue());
-				Map<String, String> mapTestSet = new HashMap<String, String>();
+				Map<String, String> mapTestSet = new HashMap<>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
 				listTestSet.add(mapTestSet);
 			}
@@ -144,7 +142,10 @@ public class ZMExcel {
 				XSSFWorkbook workbook = new XSSFWorkbook(excelFile)) {
 
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
-
+			if (sheetTestData == null) {
+				System.out.println(sheetName + " does not exist.");
+				return listTestSet;
+			}
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
@@ -168,11 +169,9 @@ public class ZMExcel {
 					putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
 				}
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 		return listTestSet;
 	}
 
