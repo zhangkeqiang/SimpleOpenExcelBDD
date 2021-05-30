@@ -52,4 +52,22 @@ public class FeatureSteps {
     public void the_header_of_1st_set_is(String string) {
         assertEquals(string, list.get(0).get("Header"));
     }
+    
+    @Then("Input value of Variable {string} is {string}")
+    public void input_value_of_variable_is(String string, String string2) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("Expected value of Variable {string} is {string}")
+    public void expected_value_of_variable_is(String string, String string2) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("Test Result value of Variable {string} is {string}")
+    public void test_result_value_of_variable_is(String string, String string2) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
 }
