@@ -142,4 +142,9 @@ public class ZMExcel {
 		return collectionTestData;
 	}
 
+    public static List<Map<String, String>> getMZExampleWithTestResultList(String excelFilePath, String sheetName,
+            int headerRow, String parameterColumn) {
+        return null;
+    }
+
 }
