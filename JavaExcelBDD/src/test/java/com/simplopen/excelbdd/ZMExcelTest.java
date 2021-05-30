@@ -13,10 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ZMExcelTest {
 
-	@SuppressWarnings("rawtypes")
-	static Stream<Map> provideExampleList() {
+	static Stream<Map<String, String>> provideExampleList() {
 		String filepath = "src/test/resources/ExcelBDD.xlsx";
-		List<Map> list = ZMExcel.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
+		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
 		return list.stream();
 	}
 	
@@ -47,8 +46,7 @@ public class ZMExcelTest {
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
-		@SuppressWarnings("rawtypes")
-		List<Map> list = ZMExcel.getExampleList(filepath, (String) mapParams.get("SheetName"), nHeaderRow,
+		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, (String) mapParams.get("SheetName"), nHeaderRow,
 				charParameterNameColumn, (String) mapParams.get("HeaderMatcher"));
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());

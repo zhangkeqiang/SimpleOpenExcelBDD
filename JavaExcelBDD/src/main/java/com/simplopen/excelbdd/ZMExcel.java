@@ -19,32 +19,27 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ZMExcel {
 
-	@SuppressWarnings("rawtypes")
-	public static List<Map> getExampleList(String excelPath, String worksheetName) {
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) {
 		return getExampleList(excelPath, worksheetName, 1, 'C', "");
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static List<Map> getExampleList(String excelPath, String worksheetName, int headerRow,
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, "");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static List<Map> getExampleList(String excelPath, String worksheetName, int headerRow,
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher) {
 		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
-		ArrayList<Map> listTestSet = new ArrayList<Map>();
-		FileInputStream excelFile = null;
-		XSSFWorkbook workbook = null;
-		try {
-			// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
-			int parameterNameColumnNum = (int) parameterNameColumn - 65;
+		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
+		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
+		int parameterNameColumnNum = (int) parameterNameColumn - 65;
+		try (FileInputStream excelFile = new FileInputStream(new File(excelPath));
+				XSSFWorkbook workbook = new XSSFWorkbook(excelFile);) {
 
-			excelFile = new FileInputStream(new File(excelPath));
-			workbook = new XSSFWorkbook(excelFile);
 			XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
-			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
+			// poi get row from 0, so 1st headerRow is at 0
+			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1);
 
 			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader, 1);
@@ -67,14 +62,7 @@ public class ZMExcel {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				workbook.close();
-				excelFile.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			listTestSet = null;
 		}
 
 		return listTestSet;
@@ -134,12 +122,12 @@ public class ZMExcel {
 		return mapParameterName;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) {
-		Collection<Object[]> collectionTestData = new ArrayList<Object[]>();
-		List<Map> listTestData = getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn);
-		for (Map map : listTestData) {
+		Collection<Object[]> collectionTestData = new ArrayList<>();
+		List<Map<String, String>> listTestData = getExampleList(excelPath, worksheetName, headerRow,
+				parameterNameColumn);
+		for (Map<String, String> map : listTestData) {
 			Object[] arrayObj = { map };
 			collectionTestData.add(arrayObj);
 		}
@@ -149,14 +137,12 @@ public class ZMExcel {
 	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
 			int headerRow, char parameterNameColumn) {
 		String strRealHeaderMatcher = ".*";
-		ArrayList<Map<String, String>> listTestSet = new ArrayList<Map<String, String>>();
-		FileInputStream excelFile = null;
-		XSSFWorkbook workbook = null;
+		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
 		int parameterNameColumnNum = (int) parameterNameColumn - 65;
 
-		try {
-			excelFile = new FileInputStream(new File(excelPath));
-			workbook = new XSSFWorkbook(excelFile);
+		try (FileInputStream excelFile = new FileInputStream(new File(excelPath));
+				XSSFWorkbook workbook = new XSSFWorkbook(excelFile)) {
+
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
 
 			// poi get row from 0, so 1st headerRow is at 0
@@ -182,22 +168,11 @@ public class ZMExcel {
 					putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
 				}
 			}
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				workbook.close();
-				excelFile.close();
-			} catch (NullPointerException e) {
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			listTestSet = null;
 		}
-
 		return listTestSet;
 	}
 

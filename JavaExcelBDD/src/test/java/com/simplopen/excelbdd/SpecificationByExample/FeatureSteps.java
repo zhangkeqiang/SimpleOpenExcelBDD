@@ -13,7 +13,7 @@ public class FeatureSteps {
     String sheetName;
     int headerRow;
     char parameterColumn;
-    List<Map> list;
+    List<Map<String, String>> list;
 
     @Given("The Excel file is {string}")
     public void the_excel_file_is(String excelFile) {
