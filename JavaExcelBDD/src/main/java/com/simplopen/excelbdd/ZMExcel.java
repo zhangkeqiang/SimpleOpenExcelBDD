@@ -119,16 +119,16 @@ public class ZMExcel {
 		return listTestSet;
 	}
 
-	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList<Map> listTestSet,
+	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList listTestSet,
 			int parameterNameColumnNum, XSSFRow rowHeader) {
 		// Get Matched Column HashMap
 		int nMaxColumn = rowHeader.getLastCellNum();
-		HashMap<Integer, String> mapTestDataHeader = new HashMap();
+		HashMap<Integer, String> mapTestDataHeader = new HashMap<Integer, String>();
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol++) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
 				mapTestDataHeader.put(iCol, cellHeader.getStringCellValue());
-				Map<String, String> mapTestSet = new HashMap();
+				Map<String, String> mapTestSet = new HashMap<String, String>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
 				listTestSet.add(mapTestSet);
 			}
@@ -150,6 +150,7 @@ public class ZMExcel {
 
 	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
 			int headerRow, char parameterNameColumn) {
+		String strRealHeaderMatcher = ".*";
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<Map<String, String>>();
 		FileInputStream excelFile = null;
 		XSSFWorkbook workbook = null;
@@ -160,20 +161,19 @@ public class ZMExcel {
 			workbook = new XSSFWorkbook(excelFile);
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1); // poi get row from 0, so 1st headerRow is at 0
-			
+			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
+					parameterNameColumnNum, rowHeader);
 		} catch (FileNotFoundException e) {
 
-		} catch(IOException e){
-			
-		}
-		finally {
+		} catch (IOException e) {
+
+		} finally {
 			try {
 				workbook.close();
 				excelFile.close();
-			}catch(NullPointerException e){
+			} catch (NullPointerException e) {
 
-			} 
-			catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
