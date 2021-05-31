@@ -2,7 +2,6 @@ package com.simplopen.excelbdd.SpecificationByTestcase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class FeatureSteps {
 			} else {
 				assertEquals(map.get("Expected"), list.get(i).get(map.get("ParameterName") + "Expected"));
 			}
-			assertEquals(map.get("TestResult"), "pass");
+			assertEquals("pass", map.get("TestResult"));
 			assertEquals(map.get("TestResult"), list.get(i).get(map.get("ParameterName") + "TestResult"));
 
 		}
