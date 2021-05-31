@@ -2,7 +2,6 @@ package com.simplopen.excelbdd;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +17,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ZMExcel {
+	private ZMExcel() {
+	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) {
 		return getExampleList(excelPath, worksheetName, 1, 'C', "");
@@ -59,15 +60,15 @@ public class ZMExcel {
 					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
 				}
 			}
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		return listTestSet;
 	}
 
-	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher, ArrayList<Map<String, String>> listTestSet,
-			int parameterNameColumnNum, XSSFRow rowHeader, int step) {
+	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher,
+			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, String> mapTestDataHeader = new HashMap<>();
@@ -91,7 +92,7 @@ public class ZMExcel {
 	 */
 	private static HashMap<Integer, String> getParameterNameMap(int headerRow, int parameterNameColumnNum,
 			XSSFSheet sheetTestData) {
-		HashMap<Integer, String> mapParameterName = new HashMap();
+		HashMap<Integer, String> mapParameterName = new HashMap<>();
 		int nContinuousBlankCount = 0;
 		for (int iRow = headerRow; iRow <= sheetTestData.getLastRowNum(); iRow++) {
 			if (nContinuousBlankCount > 3) {
@@ -110,10 +111,10 @@ public class ZMExcel {
 			String strParameterName = cellParameterName.getStringCellValue();
 			if (strParameterName == null || strParameterName.isEmpty()) {
 				nContinuousBlankCount++;
-			} else if (strParameterName != "NA") {
-				mapParameterName.put(iRow, strParameterName);
+			} else if (strParameterName.equals("NA")) {
 				nContinuousBlankCount = 0;
 			} else {
+				mapParameterName.put(iRow, strParameterName);
 				nContinuousBlankCount = 0;
 			}
 		}
@@ -171,7 +172,7 @@ public class ZMExcel {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 		return listTestSet;
 	}
 
