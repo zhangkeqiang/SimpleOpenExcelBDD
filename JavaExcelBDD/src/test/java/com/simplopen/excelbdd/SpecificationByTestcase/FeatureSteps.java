@@ -70,6 +70,34 @@ public class FeatureSteps {
 		assertEquals(string2, list.get(0).get(string + "TestResult"));
 	}
 
+	@Then("The 1st data table is:")
+	public void the_data_table_is(io.cucumber.datatable.DataTable dataTable) {
+		List<Map<String, String>> mapList = dataTable.asMaps();
+		int i = 0;
+		for (Map<String, String> map : mapList) {
+			System.out.println("===========");
+			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
+				System.out.print(mapEntry.getKey() + " --- ");
+				System.out.println(mapEntry.getValue());
+			}
+			if (map.get("Input") == null) {
+				assertEquals("", list.get(i).get(map.get("ParameterName")));
+			} else {
+				assertEquals(map.get("Input"), list.get(i).get(map.get("ParameterName")));
+			}
+
+			if (map.get("Expected") == null) {
+				assertEquals("", list.get(i).get(map.get("ParameterName") + "Expected"));
+			} else {
+				assertEquals(map.get("Expected"), list.get(i).get(map.get("ParameterName") + "Expected"));
+			}
+			assertEquals(map.get("TestResult"), "pass");
+			assertEquals(map.get("TestResult"), list.get(i).get(map.get("ParameterName") + "TestResult"));
+
+		}
+
+	}
+
 	@When("invoke on a wrong file")
 	public void invoke_on_a_wrong_file() {
 		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, "sheetName", 1, 'B');
