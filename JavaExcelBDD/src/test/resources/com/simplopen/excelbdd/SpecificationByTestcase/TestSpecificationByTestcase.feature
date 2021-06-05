@@ -40,3 +40,18 @@ Feature: Get Test data Set List from Excel Specification by Testcase
         And The Sheet name is "wrongsheet"
         When invoke on a wrong sheet
         Then get blank list because the file doesn't exist
+
+
+    Scenario Outline: Get list according to header matching
+        Given The Excel file is "src\\test\\resources\\ExcelBDD.xlsx"
+        And The Sheet name is "<SheetName>"
+        And Header Row is <HeaderRow>
+        And Parameter Column is "<ParameterColumn>"
+        And Matcher is "<Matcher>"
+        When invoke get test data from excel according to Matcher
+        Then a testset list is got, which count is <ListCount>
+        Examples:
+            | SheetName | HeaderRow | ParameterColumn | Matcher    | ListCount |
+            | SBTSheet3 | 2         | D               | Scenario   | 6         |
+            | SBTSheet3 | 2         | D               | Scenario1  | 2         |
+            | SBTSheet3 | 2         | D               | Scenario1b | 1         |
