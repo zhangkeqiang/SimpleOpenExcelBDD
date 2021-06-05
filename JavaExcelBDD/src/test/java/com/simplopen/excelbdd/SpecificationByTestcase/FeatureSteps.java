@@ -30,8 +30,8 @@ public class FeatureSteps {
 	}
 
 	@Given("Header Row is {int}")
-	public void header_row_is(Integer int1) {
-		headerRow = (int) int1;
+	public void header_row_is(int int1) {
+		headerRow = int1;
 	}
 
 	@Given("Parameter Column is {string}")
@@ -42,6 +42,13 @@ public class FeatureSteps {
 	@When("invoke get test data from excel")
 	public void invoke_get_test_data_from_excel() {
 		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterNameColumn);
+		for (Map<String,String> map : list) {
+			System.out.println(map.get("Header")+ " ========== ");
+			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
+				System.out.print(mapEntry.getKey() + " --- ");
+				System.out.println(mapEntry.getValue());
+			}
+		}
 	}
 
 	@Then("a testset list is got, which count is {int}")
@@ -49,24 +56,24 @@ public class FeatureSteps {
 		assertEquals(int1, list.size());
 	}
 
-	@Then("The Header of 1st set is {string}")
-	public void the_header_of_1st_set_is(String string) {
-		assertEquals(string, list.get(0).get("Header"));
+	@Then("The Header of No. {int} set is {string}")
+	public void the_header_of_1st_set_is(int int1, String string) {
+		assertEquals(string, list.get(int1 - 1).get("Header"));
 	}
 
-	@Then("Input value of Variable {string} is {string}")
-	public void input_value_of_variable_is(String string, String string2) {
-		assertEquals(string2, list.get(0).get(string));
+	@Then("Input value of Variable {string} of No. {int} set is {string}")
+	public void input_value_of_variable_is(String string, int int1, String string2) {
+		assertEquals(string2, list.get(int1 - 1).get(string));
 	}
 
-	@Then("Expected value of Variable {string} is {string}")
-	public void expected_value_of_variable_is(String string, String string2) {
-		assertEquals(string2, list.get(0).get(string + "Expected"));
+	@Then("Expected value of Variable {string} of No. {int} set is {string}")
+	public void expected_value_of_variable_is(String string, int int1, String string2) {
+		assertEquals(string2, list.get(int1 - 1).get(string + "Expected"));
 	}
 
-	@Then("Test Result value of Variable {string} is {string}")
-	public void test_result_value_of_variable_is(String string, String string2) {
-		assertEquals(string2, list.get(0).get(string + "TestResult"));
+	@Then("Test Result value of Variable {string} of No. {int} set is {string}")
+	public void test_result_value_of_variable_is(String string, int int1, String string2) {
+		assertEquals(string2, list.get(int1 - 1).get(string + "TestResult"));
 	}
 
 	@Then("The 1st data table is:")

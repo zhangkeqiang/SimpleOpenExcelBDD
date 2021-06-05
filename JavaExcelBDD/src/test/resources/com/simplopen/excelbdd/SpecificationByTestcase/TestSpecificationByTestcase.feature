@@ -9,10 +9,13 @@ Feature: Get Test data Set List from Excel Specification by Testcase
 
         When invoke get test data from excel
         Then a testset list is got, which count is <ListCount>
-        And The Header of 1st set is "Scenario1"
-        And Input value of Variable "ParamName1" is "V1.1"
-        And Expected value of Variable "ParamName1" is "V1.1"
-        And Test Result value of Variable "ParamName1" is "pass"
+        And The Header of No. 1 set is "Scenario1"
+        And Input value of Variable "ParamName1" of No. 1 set is "V1.1"
+        And Expected value of Variable "ParamName1" of No. 1 set is "V1.1"
+        And Expected value of Variable "ParamName1" of No. 2 set is "V1.2"
+        And Expected value of Variable "ParamName1" of No. 3 set is "V1.3"
+        And Expected value of Variable "ParamName1" of No. 4 set is "V1.4"
+        And Test Result value of Variable "ParamName1" of No. 1 set is "pass"
         And The 1st data table is:
             | ParameterName | Input     | Expected  | TestResult |
             | ParamName1    | V1.1      | V1.1      | pass       |
@@ -22,8 +25,9 @@ Feature: Get Test data Set List from Excel Specification by Testcase
 
         Examples:
             | SheetName | HeaderRow | ParameterColumn | ListCount |
-            | SBTSheet1 | 2         | B               | 4         |
+            | SBTSheet1 | 2         | B               | 5         |
             | SBTSheet2 | 2         | B               | 4         |
+            | SBTSheet3 | 2         | D               | 6         |
 
     Scenario: excel file does not exist
         Given The Excel file is "src\\test\\resources\\NoExcelBDD.xlsx"

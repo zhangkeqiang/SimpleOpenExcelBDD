@@ -161,10 +161,11 @@ public class ZMExcel {
 				int iRow = aParameterName.getKey();
 				String strParameterName = aParameterName.getValue();
 				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
-				int nPos = 0;
+
 				for (Map.Entry<Integer, String> entryHeader : mapTestSetHeader.entrySet()) {
 					int iCol = entryHeader.getKey();
-					Map<String, String> mapTestSet = listTestSet.get(nPos++);
+					int nPos = (iCol - parameterNameColumnNum) / 3;
+					Map<String, String> mapTestSet = listTestSet.get(nPos);
 					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
 					putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
 					putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
