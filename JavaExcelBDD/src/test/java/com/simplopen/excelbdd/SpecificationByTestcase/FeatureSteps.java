@@ -17,7 +17,7 @@ public class FeatureSteps {
 	String sheetName;
 	int headerRow;
 	char parameterNameColumn;
-	String matcher;
+	String headerMatcher;
 	List<Map<String, String>> list;
 
 	@Given("The Excel file is {string}")
@@ -42,7 +42,7 @@ public class FeatureSteps {
 
 	@Given("Matcher is {string}")
 	public void matcher_is(String string) {
-		matcher = string;
+		headerMatcher = string;
 	}
 
 	@When("invoke get test data from excel")
@@ -59,7 +59,7 @@ public class FeatureSteps {
 
 	@When("invoke get test data from excel according to Matcher")
 	public void invoke_get_test_data_from_excel_according_to_matcher() {
-		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, matcher,
+		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, headerMatcher,
 				parameterNameColumn);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");

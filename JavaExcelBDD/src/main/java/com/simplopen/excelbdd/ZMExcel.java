@@ -31,7 +31,7 @@ public class ZMExcel {
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher) {
-		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
+
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
 		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
 		int parameterNameColumnNum = (int) parameterNameColumn - 65;
@@ -42,7 +42,7 @@ public class ZMExcel {
 			// poi get row from 0, so 1st headerRow is at 0
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1);
 
-			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
+			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(headerMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader, 1);
 
 			// Get ParameterNames HashMap
@@ -67,9 +67,10 @@ public class ZMExcel {
 		return listTestSet;
 	}
 
-	private static HashMap<Integer, String> getHeaderMap(String strRealHeaderMatcher,
+	private static HashMap<Integer, String> getHeaderMap(String headerMatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
+		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, String> mapTestDataHeader = new HashMap<>();
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
@@ -135,7 +136,13 @@ public class ZMExcel {
 
 	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
 			int headerRow, char parameterNameColumn) {
-		String strRealHeaderMatcher = ".*";
+		String headerMatcher = ".*";
+		return getMZExampleWithTestResultList(excelPath, sheetName, headerRow, headerMatcher, parameterNameColumn);
+
+	}
+
+	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
+			int headerRow, String headerMatcher, char parameterNameColumn) {
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
 		int parameterNameColumnNum = (int) parameterNameColumn - 65;
 
@@ -150,8 +157,8 @@ public class ZMExcel {
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
-			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(strRealHeaderMatcher, listTestSet,
-					parameterNameColumnNum, rowHeader, 3);
+			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet, parameterNameColumnNum,
+					rowHeader, 3);
 
 			// Get ParameterNames HashMap
 			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
@@ -203,10 +210,4 @@ public class ZMExcel {
 			mapTestSet.put(strParameterName, cellCurrent.getRawValue());
 		}
 	}
-
-    public static List<Map<String, String>> getMZExampleWithTestResultList(String excelFilePath, String sheetName,
-            int headerRow, String matcher, char parameterNameColumn) {
-        return null;
-    }
-
 }
