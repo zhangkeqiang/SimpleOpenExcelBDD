@@ -23,7 +23,7 @@ Feature: Get Test data Set List from Excel Specification by Testcase
         Examples:
             | SheetName | HeaderRow | ParameterColumn | ListCount |
             | SBTSheet1 | 2         | B               | 4         |
-
+            | SBTSheet2 | 2         | B               | 4         |
 
     Scenario: excel file does not exist
         Given The Excel file is "src\\test\\resources\\NoExcelBDD.xlsx"
