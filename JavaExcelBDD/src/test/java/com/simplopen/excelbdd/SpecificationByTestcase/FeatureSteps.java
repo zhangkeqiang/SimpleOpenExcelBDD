@@ -17,6 +17,7 @@ public class FeatureSteps {
 	String sheetName;
 	int headerRow;
 	char parameterNameColumn;
+	String matcher;
 	List<Map<String, String>> list;
 
 	@Given("The Excel file is {string}")
@@ -39,11 +40,29 @@ public class FeatureSteps {
 		parameterNameColumn = string.charAt(0);
 	}
 
+	@Given("Matcher is {string}")
+	public void matcher_is(String string) {
+		matcher = string;
+	}
+
 	@When("invoke get test data from excel")
 	public void invoke_get_test_data_from_excel() {
 		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterNameColumn);
-		for (Map<String,String> map : list) {
-			System.out.println(map.get("Header")+ " ========== ");
+		for (Map<String, String> map : list) {
+			System.out.println(map.get("Header") + " ========== ");
+			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
+				System.out.print(mapEntry.getKey() + " --- ");
+				System.out.println(mapEntry.getValue());
+			}
+		}
+	}
+
+	@When("invoke get test data from excel according to Matcher")
+	public void invoke_get_test_data_from_excel_according_to_matcher() {
+		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, matcher,
+				parameterNameColumn);
+		for (Map<String, String> map : list) {
+			System.out.println(map.get("Header") + " ========== ");
 			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
 				System.out.print(mapEntry.getKey() + " --- ");
 				System.out.println(mapEntry.getValue());
