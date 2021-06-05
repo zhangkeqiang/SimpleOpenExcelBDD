@@ -35,7 +35,7 @@ Describe "Get BDD Data" {
         $TestcaseList[0]["ParamName3"] | Should -Be $ParamName3Value
         $TestcaseList[0].Count | Should -Be $ParameterCount
         $MaxBlankThreshold | Should -Be 3
-        $TestcaseList.Count | Should -Be 4
+        $TestcaseList.Count | Should -Be $TestDataSetCount
 
         $TestcaseList[0]["ParamName3"] | Should -Be ""
         $TestcaseList[1]["ParamName3"] | Should -Be ""

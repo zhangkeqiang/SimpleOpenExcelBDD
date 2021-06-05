@@ -52,7 +52,9 @@ public class ZMExcelTest {
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
 		System.out.println(list.get(3).toString());
-		assertEquals(4, list.size());
+
+		int testDataSetCount = Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
+		assertEquals(testDataSetCount, list.size());
 		
 		assertEquals("V1.1", list.get(0).get("ParamName1"));
 		assertEquals("V1.2", list.get(1).get("ParamName1"));
