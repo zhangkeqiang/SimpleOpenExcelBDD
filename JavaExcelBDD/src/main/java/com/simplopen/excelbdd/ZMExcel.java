@@ -204,4 +204,9 @@ public class ZMExcel {
 		}
 	}
 
+    public static List<Map<String, String>> getMZExampleWithTestResultList(String excelFilePath, String sheetName,
+            int headerRow, String matcher, char parameterNameColumn) {
+        return null;
+    }
+
 }
