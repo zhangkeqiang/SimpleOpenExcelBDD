@@ -42,7 +42,7 @@ public class ZMExcel {
 			// poi get row from 0, so 1st headerRow is at 0
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1);
 
-			HashMap<Integer, String> mapTestDataHeader = getHeaderMap(headerMatcher, listTestSet,
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader, 1);
 
 			// Get ParameterNames HashMap
@@ -53,10 +53,9 @@ public class ZMExcel {
 				int iRow = aParameterName.getKey();
 				String strParameterName = aParameterName.getValue();
 				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
-				int nPos = 0;
-				for (Map.Entry<Integer, String> entryHeader : mapTestDataHeader.entrySet()) {
+				for (Map.Entry<Integer, Integer> entryHeader : mapTestSetHeader.entrySet()) {
 					int iCol = entryHeader.getKey();
-					Map<String, String> mapTestSet = listTestSet.get(nPos++);
+					Map<String, String> mapTestSet = listTestSet.get(entryHeader.getValue());
 					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
 				}
 			}
@@ -67,22 +66,24 @@ public class ZMExcel {
 		return listTestSet;
 	}
 
-	private static HashMap<Integer, String> getHeaderMap(String headerMatcher,
+	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
 		int nMaxColumn = rowHeader.getLastCellNum();
-		HashMap<Integer, String> mapTestDataHeader = new HashMap<>();
+		HashMap<Integer, Integer> mapTestSetHeader = new HashMap<>();
+		int nTestSet = 0;
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
-				mapTestDataHeader.put(iCol, cellHeader.getStringCellValue());
+				mapTestSetHeader.put(iCol, nTestSet);
 				Map<String, String> mapTestSet = new HashMap<>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
 				listTestSet.add(mapTestSet);
+				nTestSet++;
 			}
 		}
-		return mapTestDataHeader;
+		return mapTestSetHeader;
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class ZMExcel {
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
-			HashMap<Integer, String> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet, parameterNameColumnNum,
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet, parameterNameColumnNum,
 					rowHeader, 3);
 
 			// Get ParameterNames HashMap
@@ -169,10 +170,9 @@ public class ZMExcel {
 				String strParameterName = aParameterName.getValue();
 				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
 
-				for (Map.Entry<Integer, String> entryHeader : mapTestSetHeader.entrySet()) {
+				for (Map.Entry<Integer, Integer> entryHeader : mapTestSetHeader.entrySet()) {
 					int iCol = entryHeader.getKey();
-					int nPos = (iCol - parameterNameColumnNum) / 3;
-					Map<String, String> mapTestSet = listTestSet.get(nPos);
+					Map<String, String> mapTestSet = listTestSet.get(entryHeader.getValue());
 					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
 					putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
 					putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
