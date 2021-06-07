@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +53,8 @@ public class ZMExcelTest {
 		System.out.println(list.get(2).toString());
 		System.out.println(list.get(3).toString());
 
-		int testDataSetCount = Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
+		// int testDataSetCount = Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
+		int testDataSetCount = ZMExcel.getInt(mapParams.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
 		
 		assertEquals("V1.1", list.get(0).get("ParamName1"));
@@ -73,5 +74,12 @@ public class ZMExcelTest {
 		assertEquals("false", list.get(1).get("ParamName4"));
 		assertEquals("true", list.get(2).get("ParamName4"));
 		assertEquals("4.4", list.get(3).get("ParamName4"));
+	}
+
+	@Test
+	void testgetInt(){
+		assertEquals(5,ZMExcel.getInt("5.5666"));
+		assertEquals(5,ZMExcel.getInt("5"));
+		assertEquals(5,ZMExcel.getInt("5.99999"));
 	}
 }
