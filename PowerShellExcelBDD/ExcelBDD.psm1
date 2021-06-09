@@ -178,7 +178,7 @@ function Get-MZExampleList2 {
 .Description
 Get BDD/Specification By Example Data from Excel ,input, output and test result are separated in 3 columns
 #>
-function Get-MZExampleWithTestResultList {
+function Get-ExampleAndTestResultList {
     param (
         [String]$ExcelPath,
         [String]$WorksheetName,
@@ -226,13 +226,13 @@ function Get-MZExampleWithTestResultList {
 Get hashtable list of Example data, one Hashtable from one column in excel sheet
 
 .Example
-    $ExampleList = Get-MZExampleList -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
+    $ExampleList = Get-ExampleList -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
     It "Easy Success of SBE" -TestCases $ExampleList {
         [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
         [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
     }
 #>
-function Get-MZExampleList {
+function Get-ExampleList {
     param (
         [String]$ExcelPath,
         [String]$WorksheetName,

@@ -1,11 +1,10 @@
-$global:StartPath = "$PSScriptRoot\.."
+& $PSScriptRoot/InitializeTest.ps1
 # JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
-$global:ExcelBDDFilePath = "$StartPath\..\JavaExcelBDD\src\test\resources\ExcelBDD.xlsx"
-Get-Module MZExcel | Remove-Module
-Import-Module $StartPath\MZExcel.psm1
+$global:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelBDD.xlsx"
+
 Describe "Get Speicification by Example & Testcase" {
     
-    $SpecificationByTestcaseList = Get-MZExampleWithTestResultList -ExcelPath $ExcelBDDFilePath `
+    $SpecificationByTestcaseList = Get-ExampleAndTestResultList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByTestcase' `
         -ParameterNameColumn E `
         -HeaderRow 4
@@ -17,7 +16,7 @@ Describe "Get Speicification by Example & Testcase" {
         ($HeaderRowTestResult -eq 'pass') | Should -Be $true
 
         $TestExcelPath = "$StartPath\..\JavaExcelBDD\src\test\resources\$ExcelFileName"
-        $TestcaseList = Get-MZExampleWithTestResultList -ExcelPath $TestExcelPath `
+        $TestcaseList = Get-ExampleAndTestResultList -ExcelPath $TestExcelPath `
             -WorksheetName  $SheetName `
             -ParameterNameColumn $ParameterNameColumn `
             -HeaderRow $HeaderRow
