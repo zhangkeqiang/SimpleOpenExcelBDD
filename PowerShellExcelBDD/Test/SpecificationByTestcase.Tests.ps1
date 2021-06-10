@@ -4,7 +4,7 @@ $global:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelB
 
 Describe "Get Speicification by Example & Testcase" {
     
-    $SpecificationByTestcaseList = Get-ExampleAndTestResultList -ExcelPath $ExcelBDDFilePath `
+    $SpecificationByTestcaseList = Get-TestcaseList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByTestcase' `
         -ParameterNameColumn E `
         -HeaderRow 4
@@ -16,7 +16,7 @@ Describe "Get Speicification by Example & Testcase" {
         ($HeaderRowTestResult -eq 'pass') | Should -Be $true
 
         $TestExcelPath = "$StartPath\..\JavaExcelBDD\src\test\resources\$ExcelFileName"
-        $TestcaseList = Get-ExampleAndTestResultList -ExcelPath $TestExcelPath `
+        $TestcaseList = Get-TestcaseList -ExcelPath $TestExcelPath `
             -WorksheetName  $SheetName `
             -ParameterNameColumn $ParameterNameColumn `
             -HeaderRow $HeaderRow

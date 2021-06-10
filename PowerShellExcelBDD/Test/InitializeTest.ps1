@@ -1,3 +1,4 @@
 $global:StartPath = (Resolve-Path "$PSScriptRoot/..").Path
 Get-Module ExcelBDD | Remove-Module
-Import-Module $StartPath/ExcelBDD.psm1
+$modulePath = Join-Path $StartPath "ExcelBDD.psd1"
+Import-Module $modulePath

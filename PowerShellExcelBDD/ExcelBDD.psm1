@@ -46,37 +46,37 @@ function Close-MZExcelWorksheet {
         }
     }
     catch {
-        Write-MZDebug "Excel is closed."
+        Write-Debug "Excel is closed."
     }
 }
 <#
 .Description 
 Get worksheet information as a hashtable list according to Header Mapping
 #>
-function Get-MZHashTableListFromWorksheet {
-    param (
-        $Worksheet,
-        $HeaderMapping,
-        $MandatoryColumnNum = 1,
-        $StartRow = 3,
-        $MaxRow = 100
-    )
-    $List = [System.Collections.ArrayList]::new()
-    for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-        if (Test-MZHasValue $Worksheet.Cells.Item($iRow, $MandatoryColumnNum).Text) {
-            #This Row has values
-            $RowSet = @{}
-            for ($iCol = 1; $iCol -lt $HeaderMapping.count; $iCol++) {
-                if (Test-MZHasValue $HeaderMapping[$iCol][1]) {
-                    $RowSet[$HeaderMapping[$iCol][1]] = $Worksheet.Cells.Item($iRow, $iCol).Text
-                }
-            }
-            [void]$List.Add($RowSet)
-        }
-    }
-    Close-MZExcelWorksheet | Out-Null
-    return $List
-}
+# function Get-MZHashTableListFromWorksheet {
+#     param (
+#         $Worksheet,
+#         $HeaderMapping,
+#         $MandatoryColumnNum = 1,
+#         $StartRow = 3,
+#         $MaxRow = 100
+#     )
+#     $List = [System.Collections.ArrayList]::new()
+#     for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
+#         if (Test-MZHasValue $Worksheet.Cells.Item($iRow, $MandatoryColumnNum).Text) {
+#             #This Row has values
+#             $RowSet = @{}
+#             for ($iCol = 1; $iCol -lt $HeaderMapping.count; $iCol++) {
+#                 if (Test-MZHasValue $HeaderMapping[$iCol][1]) {
+#                     $RowSet[$HeaderMapping[$iCol][1]] = $Worksheet.Cells.Item($iRow, $iCol).Text
+#                 }
+#             }
+#             [void]$List.Add($RowSet)
+#         }
+#     }
+#     Close-MZExcelWorksheet | Out-Null
+#     return $List
+# }
 
 
 
@@ -92,93 +92,93 @@ Get a Hashtable list from excel sheet, one row for one hashtable
         Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
     }
 #>
-function Get-MZHashTableListFromExcel {
-    param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
-        $MandatoryColumnNum = 1,
-        $HeaderRow = 1
-    )
-    $MaxRow = 1000
-    $MaxCol = 100
-    $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-    if ($null -eq $Worksheet ) {
-        Write-MZDebug "'$WorksheetName' sheet doesn't exist in $ExcelPath."
-        return $null
-    }
-    Write-MZDebug "'$WorksheetName' sheet exists in $ExcelPath."
-    $List = [System.Collections.ArrayList]::new()
-    $StartRow = $HeaderRow + 1
-    for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-        if (Test-MZHasValue $Worksheet.Cells.Item($iRow, $MandatoryColumnNum).Text) {
-            #This Row has values
-            $RowSet = @{}
-            for ($iCol = 1; $iCol -lt $MaxCol; $iCol++) {
-                if (Test-MZHasValue $Worksheet.Cells.Item($HeaderRow, $iCol).Text) {
-                    $RowSet[$Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
-                }
-                else {
-                    break
-                }
-            }
-            [void]$List.Add($RowSet)
-        }
-        else {
-            break
-        }
-    }
-    Close-MZExcelWorksheet | Out-Null
-    return $List
-}
+# function Get-MZHashTableListFromExcel {
+#     param (
+#         [String]$ExcelPath,
+#         [String]$WorksheetName,
+#         $MandatoryColumnNum = 1,
+#         $HeaderRow = 1
+#     )
+#     $MaxRow = 1000
+#     $MaxCol = 100
+#     $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
+#     if ($null -eq $Worksheet ) {
+#         Write-MZDebug "'$WorksheetName' sheet doesn't exist in $ExcelPath."
+#         return $null
+#     }
+#     Write-MZDebug "'$WorksheetName' sheet exists in $ExcelPath."
+#     $List = [System.Collections.ArrayList]::new()
+#     $StartRow = $HeaderRow + 1
+#     for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
+#         if (Test-MZHasValue $Worksheet.Cells.Item($iRow, $MandatoryColumnNum).Text) {
+#             #This Row has values
+#             $RowSet = @{}
+#             for ($iCol = 1; $iCol -lt $MaxCol; $iCol++) {
+#                 if (Test-MZHasValue $Worksheet.Cells.Item($HeaderRow, $iCol).Text) {
+#                     $RowSet[$Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
+#                 }
+#                 else {
+#                     break
+#                 }
+#             }
+#             [void]$List.Add($RowSet)
+#         }
+#         else {
+#             break
+#         }
+#     }
+#     Close-MZExcelWorksheet | Out-Null
+#     return $List
+# }
 
 <#
 .Description
 Get Specification By Example Data from Excel ,input and output are separated in columns
 #>
-function Get-MZExampleList2 {
-    param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
-        $MandatoryRowNum = 1,
-        $ParamNameCol = 3,
-        $StartRow = 2,
-        $MaxRow = 1000,
-        $MaxCol = 100
-    )
-    $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-    if ($null -eq $Worksheet ) {
-        return $null
-    }
-    $StartCol = $ParamNameCol + 1
-    $List = [System.Collections.ArrayList]::new()
-    for ($iCol = $StartCol; $iCol -lt $MaxCol; $iCol += 2) {
-        if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($MandatoryRowNum, $iCol).Text)) {
-            #This Row has no value
-            break
-        }
-        else {
-            $DataSet = [ordered]@{}
-            for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-                if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $ParamNameCol).Text)) {
-                    break
-                }
-                else {
-                    $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
-                    $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "Expected"] = $Worksheet.Cells.Item($iRow, $iCol + 1).Text
-                }
-            }
-            [void]$List.Add($DataSet)
-        }
-    }
-    Close-MZExcelWorksheet | Out-Null
-    return $List
-}
+# function Get-MZExampleList2 {
+#     param (
+#         [String]$ExcelPath,
+#         [String]$WorksheetName,
+#         $MandatoryRowNum = 1,
+#         $ParamNameCol = 3,
+#         $StartRow = 2,
+#         $MaxRow = 1000,
+#         $MaxCol = 100
+#     )
+#     $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
+#     if ($null -eq $Worksheet ) {
+#         return $null
+#     }
+#     $StartCol = $ParamNameCol + 1
+#     $List = [System.Collections.ArrayList]::new()
+#     for ($iCol = $StartCol; $iCol -lt $MaxCol; $iCol += 2) {
+#         if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($MandatoryRowNum, $iCol).Text)) {
+#             #This Row has no value
+#             break
+#         }
+#         else {
+#             $DataSet = [ordered]@{}
+#             for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
+#                 if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $ParamNameCol).Text)) {
+#                     break
+#                 }
+#                 else {
+#                     $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
+#                     $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "Expected"] = $Worksheet.Cells.Item($iRow, $iCol + 1).Text
+#                 }
+#             }
+#             [void]$List.Add($DataSet)
+#         }
+#     }
+#     Close-MZExcelWorksheet | Out-Null
+#     return $List
+# }
 
 <#
 .Description
 Get BDD/Specification By Example Data from Excel ,input, output and test result are separated in 3 columns
 #>
-function Get-ExampleAndTestResultList {
+function Get-TestcaseList {
     param (
         [String]$ExcelPath,
         [String]$WorksheetName,
