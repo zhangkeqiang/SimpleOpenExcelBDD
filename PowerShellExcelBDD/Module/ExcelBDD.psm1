@@ -27,10 +27,10 @@ function Get-MZExcelWorksheet {
     catch {
         $script:appExcel = New-Object -ComObject Excel.Application
         # Let Excel run in the backend, comment out below line, if debug, remove below #
-        # $script:appExcel.Visible = $true 
+        # $script:appExcel.Visible = $true
         $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
         $Worksheet = $WorkBook.Sheets[$WorksheetName]
-    } 
+    }
     return $Worksheet
 }
 
@@ -50,7 +50,7 @@ function Close-MZExcelWorksheet {
     }
 }
 <#
-.Description 
+.Description
 Get worksheet information as a hashtable list according to Header Mapping
 #>
 # function Get-MZHashTableListFromWorksheet {
@@ -81,7 +81,7 @@ Get worksheet information as a hashtable list according to Header Mapping
 
 
 <#
-.Description 
+.Description
 Get a Hashtable list from excel sheet, one row for one hashtable
 .Example
     #Get TestcaseDataList for Pester Testcase
@@ -222,7 +222,7 @@ function Get-TestcaseList {
 }
 
 <#
-.Description 
+.Description
 Get hashtable list of Example data, one Hashtable from one column in excel sheet
 
 .Example
@@ -277,7 +277,6 @@ function Get-ExampleList {
         }
         $CurrentRow++
     }while ($ContinuousBlankCount -le $MaxBlankThreshold)
-        
 
     $List = [System.Collections.ArrayList]::new()
     foreach ($iCol in $ColumnNumArray) {
