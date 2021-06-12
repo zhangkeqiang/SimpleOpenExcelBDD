@@ -2,7 +2,7 @@ Feature: Get Test data Set List
     test data is put in excel, so they should be get as a List
 
     Scenario Outline: Get Testcase list from a simple sheet
-        Given The Excel file is "BDDExcel\\ExcelBDD.xlsx"
+        Given The Excel file is "BDDExcel/ExcelBDD.xlsx"
         And The Sheet name is "<SheetName>"
         And Header Row is <HeaderRow>
         And Parameter Column is "<ParameterColumn>"

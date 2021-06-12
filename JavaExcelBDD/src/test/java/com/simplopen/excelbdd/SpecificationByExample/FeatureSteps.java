@@ -1,5 +1,6 @@
 package com.simplopen.excelbdd.SpecificationByExample;
 
+import com.simplopen.excelbdd.TestWizard;
 import com.simplopen.excelbdd.ZMExcel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +18,7 @@ public class FeatureSteps {
 
     @Given("The Excel file is {string}")
     public void the_excel_file_is(String excelFile) {
-        excelFilePath = excelFile;
+        excelFilePath = TestWizard.getExcelBDDStartPath() + excelFile;
     }
 
     @Given("The Sheet name is {string}")

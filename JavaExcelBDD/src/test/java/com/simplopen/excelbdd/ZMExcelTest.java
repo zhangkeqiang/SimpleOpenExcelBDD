@@ -1,7 +1,8 @@
 package com.simplopen.excelbdd;
 
-
-
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -14,11 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ZMExcelTest {
 
 	static Stream<Map<String, String>> provideExampleList() {
-		String filepath = "src/test/resources/ExcelBDD.xlsx";
+		String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
 		return list.stream();
 	}
-	
 
 	@ParameterizedTest(name = "#{index} - Test with Map : {0}")
 	@MethodSource("provideExampleList")
@@ -41,22 +41,23 @@ public class ZMExcelTest {
 		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
 		assertEquals("5.0", mapParams.get("ParameterCount"));
 
-		String filepath = "src/test/resources/ExcelBDD.xlsx";
+		String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
 		int nHeaderRow = Double.valueOf(mapParams.get("HeaderRow")).intValue();
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
-		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, (String) mapParams.get("SheetName"), nHeaderRow,
-				charParameterNameColumn, (String) mapParams.get("HeaderMatcher"));
+		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, (String) mapParams.get("SheetName"),
+				nHeaderRow, charParameterNameColumn, (String) mapParams.get("HeaderMatcher"));
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
 		System.out.println(list.get(3).toString());
 
-		// int testDataSetCount = Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
+		// int testDataSetCount =
+		// Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
 		int testDataSetCount = ZMExcel.getInt(mapParams.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
-		
+
 		assertEquals("V1.1", list.get(0).get("ParamName1"));
 		assertEquals("V1.2", list.get(1).get("ParamName1"));
 		assertEquals("V1.3", list.get(2).get("ParamName1"));
@@ -77,9 +78,27 @@ public class ZMExcelTest {
 	}
 
 	@Test
-	void testgetInt(){
-		assertEquals(5,ZMExcel.getInt("5.5666"));
-		assertEquals(5,ZMExcel.getInt("5"));
-		assertEquals(5,ZMExcel.getInt("5.99999"));
+	void testgetInt() {
+		assertEquals(5, ZMExcel.getInt("5.5666"));
+		assertEquals(5, ZMExcel.getInt("5"));
+		assertEquals(5, ZMExcel.getInt("5.99999"));
+	}
+
+	@Test
+	void testBDDExcelPath() {
+		Path resourceDirectory = Paths.get("src", "test", "resources");
+		String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+
+		System.out.println(absolutePath);
+		assertTrue(absolutePath.endsWith("src\\test\\resources"));
+		String startPath = absolutePath.substring(0, absolutePath.lastIndexOf("JavaExcelBDD"));
+		System.out.println(startPath);
+	}
+
+	@Test
+	void testBDDExcelPath2() {
+		String ExcelFilePath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
+		File f = new File(ExcelFilePath);
+		assertTrue(f.exists());
 	}
 }

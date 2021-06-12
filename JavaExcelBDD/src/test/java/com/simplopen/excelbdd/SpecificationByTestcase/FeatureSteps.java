@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 import java.util.Map;
 
+import com.simplopen.excelbdd.TestWizard;
 import com.simplopen.excelbdd.ZMExcel;
 
 import io.cucumber.java.en.Given;
@@ -22,7 +23,7 @@ public class FeatureSteps {
 
 	@Given("The Excel file is {string}")
 	public void the_excel_file_is(String string) {
-		excelFilePath = string;
+		excelFilePath = TestWizard.getExcelBDDStartPath() + string;
 	}
 
 	@Given("The Sheet name is {string}")
