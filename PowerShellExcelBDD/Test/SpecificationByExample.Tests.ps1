@@ -1,14 +1,10 @@
-$StartPath = "$PSScriptRoot\.."
+& $PSScriptRoot/InitializeTest.ps1
 # JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
-$global:ExcelBDDFilePath = "$StartPath\..\JavaExcelBDD\src\test\resources\ExcelBDD.xlsx"
-Get-Module MZExcel | Remove-Module
-Import-Module $StartPath\MZExcel.psm1
-
-
+$global:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelBDD.xlsx"
 
 Describe "Get BDD Data" {
 
-    $BDDTestCaseList = Get-MZExampleList -ExcelPath $ExcelBDDFilePath `
+    $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SimpleOpenBDD' `
         -ParameterNameColumn D `
         -HeaderRow 1
@@ -19,7 +15,7 @@ Describe "Get BDD Data" {
         Write-Host "ParameterColumn $ParameterNameColumn"
         Write-Host "SheetName $SheetName"
         $IntHeaderRow = [int]$HeaderRow
-        $TestcaseList = Get-MZExampleList -ExcelPath $ExcelBDDFilePath `
+        $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
             -ParameterNameColumn $ParameterNameColumn `
             -HeaderRow $IntHeaderRow `
