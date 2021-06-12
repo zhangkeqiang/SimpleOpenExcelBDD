@@ -14,18 +14,32 @@ steps:
   displayName: 'ExcelBDD CI'
 - task: Pester@10
   inputs:
-    scriptFolder: '$(System.DefaultWorkingDirectory)\PowerShellExcelBDD\*'
-    resultsFile: '$(System.DefaultWorkingDirectory)\PowerShellExcelBDD\Test-Pester.xml'
+    scriptFolder: '$(System.DefaultWorkingDirectory)/PowerShellExcelBDD/Test/*'
+    resultsFile: '$(System.DefaultWorkingDirectory)/PowerShellExcelBDD/Test-Pester.xml'
     CodeCoverageOutputFile: 'coverage.xml'
     usePSCore: False
-    CodeCoverageFolder: '$(System.DefaultWorkingDirectory)\PowerShellExcelBDD'
+    CodeCoverageFolder: '$(System.DefaultWorkingDirectory)/PowerShellExcelBDD'
 # - task: PowerShell@2
 #   inputs:
 #     filePath: 'PowerShellExcelBDD/CI/CI_L1.ps1'
-#     errorActionPreference: 'silentlyContinue'
+#     errorActionPreference: 'silentlyContinue'    
 
 - task: PublishTestResults@2
   inputs:
-    testResultsFormat: 'NUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-    testResultsFiles: '**Test-Pester.xml'
+    # Make sure to use the 'NUnit' test runner
+    testRunner: "NUnit" # !!! # Options: JUnit, NUnit, VSTest, xUnit, cTest
+    # Make sure the file name matches the file name you specified.
+    # A possibility is to add this as a parameter to the script
+    testResultsFiles: "**/TestResults.Pester.xml"
+    # testResultsFiles: '**/Test-Pester.xml'
+    testRunTitle: "PS_Win2016_Unit"
     searchFolder: 'PowerShellExcelBDD'
+    # Make the whole pipeline fail if a test is failed
+    failTaskOnFailedTests: true
+  displayName: "Publish Test Results"
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    summaryFileLocation: "**/coverage.xml"
+    # failIfCoverageEmpty: false
+  displayName: "Publish Test Code Coverage"
