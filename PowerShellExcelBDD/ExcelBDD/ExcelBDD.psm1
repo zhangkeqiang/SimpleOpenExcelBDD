@@ -206,7 +206,7 @@ function Get-TestcaseList {
         }
         else {
             $DataSet = [ordered]@{}
-            $DataSet["Header"] = $Worksheet.Cells.Item($HeaderRow-1, $iCol).Text
+            $DataSet["Header"] = $Worksheet.Cells.Item($HeaderRow - 1, $iCol).Text
             for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
                 if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $ParamNameCol).Text)) {
                     break
@@ -229,11 +229,16 @@ function Get-TestcaseList {
 Get hashtable list of Example data, one Hashtable from one column in excel sheet
 
 .Example
+    use default HeaderRow which is 1, and default ParameterNameColumn which is C
     $ExampleList = Get-ExampleList -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
     It "Easy Success of SBE" -TestCases $ExampleList {
         [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
         [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
     }
+
+    
+
+
 #>
 function Get-ExampleList {
     param (
