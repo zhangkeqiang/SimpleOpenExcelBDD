@@ -17,7 +17,7 @@ Describe "Get Speicification by Example & Testcase" {
         Write-Host "ParameterNameColumn:"$ParameterNameColumn
         Write-Host "HeaderRow:"$HeaderRow
 
-        $TestExcelPath = "$StartPath\..\JavaExcelBDD\src\test\resources\$ExcelFileName"
+        $TestExcelPath = "$StartPath/../BDDExcel/$ExcelFileName"
         $TestcaseList = Get-TestcaseList -ExcelPath $TestExcelPath `
             -WorksheetName  $SheetName `
             -ParameterNameColumn $ParameterNameColumn `

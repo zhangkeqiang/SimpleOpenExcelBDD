@@ -85,17 +85,6 @@ public class ZMExcelTest {
 	}
 
 	@Test
-	void testBDDExcelPath() {
-		Path resourceDirectory = Paths.get("src", "test", "resources");
-		String absolutePath = resourceDirectory.toFile().getAbsolutePath();
-
-		System.out.println(absolutePath);
-		assertTrue(absolutePath.endsWith("src\\test\\resources"));
-		String startPath = absolutePath.substring(0, absolutePath.lastIndexOf("JavaExcelBDD"));
-		System.out.println(startPath);
-	}
-
-	@Test
 	void testBDDExcelPath2() {
 		String ExcelFilePath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
 		File f = new File(ExcelFilePath);
