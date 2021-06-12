@@ -191,6 +191,9 @@ function Get-TestcaseList {
     if ($null -eq $Worksheet ) {
         return $null
     }
+    if ($HeaderRow.GetType().Name -eq 'String') {
+        $HeaderRow = [int]$HeaderRow
+    }
     $StartRow = $HeaderRow + 1
     $ParamNameCol = [int][char]($ParameterNameColumn.ToUpper()) - 64
     $StartCol = $ParamNameCol + 1

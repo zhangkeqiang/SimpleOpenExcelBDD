@@ -7,3 +7,5 @@
 ~$*.xlt
 ~$*.xltm
 ~$*.xltx
+*testResults.xml
+*coverage.xml

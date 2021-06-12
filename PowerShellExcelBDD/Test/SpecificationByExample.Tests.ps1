@@ -1,4 +1,3 @@
-& $PSScriptRoot/InitializeTest.ps1
 # JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
 $global:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelBDD.xlsx"
 
