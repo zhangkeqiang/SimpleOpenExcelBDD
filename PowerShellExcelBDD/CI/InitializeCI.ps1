@@ -4,5 +4,5 @@ Get-Module ExcelBDD | Remove-Module
 $modulePath = Join-Path $StartPath "ExcelBDD/ExcelBDD.psd1"
 Import-Module $modulePath
 if (-Not (Get-InstalledModule -Name ImportExcel)) {
-    Install-Module -Name ImportExcel -Scope CurrentUser
+    Install-Module -Name ImportExcel -Scope CurrentUser -Force
 }
