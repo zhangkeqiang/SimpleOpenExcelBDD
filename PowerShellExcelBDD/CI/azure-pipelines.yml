@@ -16,7 +16,9 @@ steps:
   inputs:
     filePath: 'PowerShellExcelBDD/CI/CI_L1.ps1'
     errorActionPreference: 'silentlyContinue'
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'NUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+    testResultsFiles: '**/testResults.xml'
+    searchFolder: 'PowerShellExcelBDD'
