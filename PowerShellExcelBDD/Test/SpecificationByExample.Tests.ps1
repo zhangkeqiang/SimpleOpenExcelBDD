@@ -44,3 +44,20 @@ Describe "Get BDD Data" {
     }
 }
 
+Describe "Test filter the dashboard by department" {
+    $ExampleList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'StoryExample1' `
+        -ParameterNameColumn E `
+        -HeaderRow 3
+    It "Run Example one by one" -TestCases $ExampleList {
+        #The below variables are generated automatically from Excel
+        Write-Host "===$Header==="
+        Write-Host $SelectedView
+        Write-Host $DepartmentCount
+        Write-Host $SelectedDepartment
+        Write-Host $FullDepartmentName
+        Write-Host $DepartmentLocation
+        Write-Host $DepartmentCurrentMonthKPI1
+        Write-Host $DepartmentCurrentMonthKPI2
+    }
+}

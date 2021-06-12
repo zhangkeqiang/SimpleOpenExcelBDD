@@ -234,6 +234,24 @@ Get hashtable list of Example data, one Hashtable from one column in excel sheet
         [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
         [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
     }
+
+    Describe "Test filter the dashboard by department" {
+    $ExampleList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'StoryExample1' `
+        -ParameterNameColumn E `
+        -HeaderRow 3
+    It "Run Example one by one" -TestCases $ExampleList {
+        #The below variables are generated automatically from Excel
+        Write-Host "===$Header==="
+        Write-Host $SelectedView
+        Write-Host $DepartmentCount
+        Write-Host $SelectedDepartment
+        Write-Host $FullDepartmentName
+        Write-Host $DepartmentLocation
+        Write-Host $DepartmentCurrentMonthKPI1
+        Write-Host $DepartmentCurrentMonthKPI2
+    }
+}
 #>
 function Get-ExampleList {
     param (
