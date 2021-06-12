@@ -1,5 +1,5 @@
 # JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
-$global:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelBDD.xlsx"
+$script:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelBDD.xlsx"
 
 Describe "Get BDD Data" {
 
