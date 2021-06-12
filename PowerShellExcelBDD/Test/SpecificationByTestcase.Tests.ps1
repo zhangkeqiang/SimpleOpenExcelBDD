@@ -1,5 +1,4 @@
-# JavaExcelBDD\src\test\resources\ExcelBDD.xlsx
-$script:ExcelBDDFilePath = "$StartPath/../JavaExcelBDD/src/test/resources/ExcelBDD.xlsx"
+$script:ExcelBDDFilePath = "$StartPath/../BDDExcel/ExcelBDD.xlsx"
 
 Describe "Get Speicification by Example & Testcase" {
     
