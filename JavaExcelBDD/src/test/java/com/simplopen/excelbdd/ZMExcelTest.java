@@ -46,8 +46,8 @@ public class ZMExcelTest {
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
-		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, (String) mapParams.get("SheetName"), nHeaderRow,
-				charParameterNameColumn, (String) mapParams.get("HeaderMatcher"));
+		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
+				charParameterNameColumn, mapParams.get("HeaderMatcher"));
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
