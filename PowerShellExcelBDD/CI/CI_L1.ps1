@@ -17,8 +17,8 @@ $configuration = [PesterConfiguration]@{
     CodeCoverage = @{
         Enabled = $true
         Path    = $CoverageFile
-        OutputFileFormat = 'CoverageGutters'
-        # OutputFileFormat = 'JaCoCo'
+        # OutputFileFormat = 'CoverageGutters'
+        OutputFileFormat = 'JaCoCo'
     }
     TestResult   = @{
         Enabled      = $true
