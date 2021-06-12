@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- master
+- '*'
 
 pool:
   vmImage: ubuntu-latest
@@ -33,3 +33,11 @@ steps:
     #buildPlatform: # Optional
     #buildConfiguration: # Optional
     #publishRunAttachments: true # Optional
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    summaryFileLocation: "**/jacoco.xml"
+    # reportDirectory: 'PowerShellExcelBDD'
+    pathToSources: 'JavaExcelBDD/src'
+    failIfCoverageEmpty: true
+  displayName: "Publish Test Code Coverage"
