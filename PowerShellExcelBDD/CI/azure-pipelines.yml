@@ -20,5 +20,5 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
-    testResultsFiles: '**/testResults.xml'
+    testResultsFiles: '**testResults.xml'
     searchFolder: 'PowerShellExcelBDD'
