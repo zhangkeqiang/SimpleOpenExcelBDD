@@ -23,7 +23,7 @@ public class FeatureSteps {
 
 	@Given("The Excel file is {string}")
 	public void the_excel_file_is(String string) {
-		excelFilePath = TestWizard.getExcelBDDStartPath() + string;
+		excelFilePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + string;
 	}
 
 	@Given("The Sheet name is {string}")

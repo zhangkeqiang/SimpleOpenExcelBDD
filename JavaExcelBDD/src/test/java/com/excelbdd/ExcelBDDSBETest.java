@@ -11,10 +11,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ZMExcelTest {
+public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() {
-		String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
+		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
 		return list.stream();
 	}
@@ -40,7 +40,7 @@ public class ZMExcelTest {
 		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
 		assertEquals("5.0", mapParams.get("ParameterCount"));
 
-		String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
+		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		int nHeaderRow = Double.valueOf(mapParams.get("HeaderRow")).intValue();
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
@@ -85,7 +85,7 @@ public class ZMExcelTest {
 
 	@Test
 	void testBDDExcelPath2() {
-		String ExcelFilePath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
+		String ExcelFilePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		File f = new File(ExcelFilePath);
 		assertTrue(f.exists());
 	}

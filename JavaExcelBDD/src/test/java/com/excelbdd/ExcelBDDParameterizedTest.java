@@ -12,18 +12,18 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class ZMExcelParameterizedTest {
+public class ExcelBDDParameterizedTest {
 	
 	Map<String, String> mapParams;
 	
 	@Parameters
     public static Collection<Object[]> prepareData()
     {
-    	String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
+    	String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
     	return Behavior.getExampleCollection(filepath, "SimpleOpenBDD", 1, 'D');
     }
 	
-	public ZMExcelParameterizedTest(Map<String, String> map){
+	public ExcelBDDParameterizedTest(Map<String, String> map){
 		this.mapParams = map;
 	}
 
