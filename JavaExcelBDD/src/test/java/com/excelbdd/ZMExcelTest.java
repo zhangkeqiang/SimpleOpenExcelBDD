@@ -9,14 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ZMExcelTest {
 
 	static Stream<Map<String, String>> provideExampleList() {
 		String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
+		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
 		return list.stream();
 	}
 
@@ -46,7 +45,7 @@ public class ZMExcelTest {
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
-		List<Map<String, String>> list = ZMExcel.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
+		List<Map<String, String>> list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
 				charParameterNameColumn, mapParams.get("HeaderMatcher"));
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
@@ -55,7 +54,7 @@ public class ZMExcelTest {
 
 		// int testDataSetCount =
 		// Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
-		int testDataSetCount = ZMExcel.getInt(mapParams.get("TestDataSetCount"));
+		int testDataSetCount = Behavior.getInt(mapParams.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
 
 		assertEquals("V1.1", list.get(0).get("ParamName1"));
@@ -79,9 +78,9 @@ public class ZMExcelTest {
 
 	@Test
 	void testgetInt() {
-		assertEquals(5, ZMExcel.getInt("5.5666"));
-		assertEquals(5, ZMExcel.getInt("5"));
-		assertEquals(5, ZMExcel.getInt("5.99999"));
+		assertEquals(5, Behavior.getInt("5.5666"));
+		assertEquals(5, Behavior.getInt("5"));
+		assertEquals(5, Behavior.getInt("5.99999"));
 	}
 
 	@Test

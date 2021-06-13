@@ -16,8 +16,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ZMExcel {
-	private ZMExcel() {
+public class Behavior {
+	private Behavior() {
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) {
