@@ -1,4 +1,4 @@
-package com.simplopen.excelbdd.SpecificationByTestcase;
+package com.excelbdd.SpecificationByTestcase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 import java.util.Map;
 
-import com.simplopen.excelbdd.TestWizard;
-import com.simplopen.excelbdd.ZMExcel;
+import com.excelbdd.TestWizard;
+import com.excelbdd.ZMExcel;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

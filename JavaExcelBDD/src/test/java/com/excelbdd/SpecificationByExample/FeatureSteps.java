@@ -1,7 +1,8 @@
-package com.simplopen.excelbdd.SpecificationByExample;
+package com.excelbdd.SpecificationByExample;
 
-import com.simplopen.excelbdd.TestWizard;
-import com.simplopen.excelbdd.ZMExcel;
+import com.excelbdd.TestWizard;
+import com.excelbdd.ZMExcel;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;

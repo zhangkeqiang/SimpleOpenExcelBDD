@@ -1,4 +1,4 @@
-package com.simplopen.excelbdd;
+package com.excelbdd;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.excelbdd.ZMExcel;
+
 
 
 @RunWith(Parameterized.class)
@@ -21,7 +23,7 @@ public class ZMExcelParameterizedTest {
 	@Parameters
     public static Collection<Object[]> prepareData()
     {
-    	String filepath = "src/test/resources/ExcelBDD.xlsx";
+    	String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
     	return ZMExcel.getExampleCollection(filepath, "SimpleOpenBDD", 1, 'D');
     }
 	

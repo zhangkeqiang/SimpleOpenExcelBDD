@@ -1,4 +1,4 @@
-package com.simplopen.excelbdd.SpecificationByExample;
+package com.excelbdd.SpecificationByExample;
 
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.junit.Cucumber;

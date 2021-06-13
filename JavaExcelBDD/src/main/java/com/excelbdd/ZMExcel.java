@@ -1,4 +1,4 @@
-package com.simplopen.excelbdd;
+package com.excelbdd;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-package com.simplopen.cucumber;
+package com.excelbdd.cucumber;
 
 import io.cucumber.junit.CucumberOptions;
 

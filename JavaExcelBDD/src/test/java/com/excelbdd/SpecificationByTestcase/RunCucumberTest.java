@@ -1,4 +1,4 @@
-package com.simplopen.excelbdd.SpecificationByTestcase;
+package com.excelbdd.SpecificationByTestcase;
 
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.junit.Cucumber;
