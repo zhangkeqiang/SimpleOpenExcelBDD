@@ -1,7 +1,7 @@
 package com.excelbdd.SpecificationByExample;
 
 import com.excelbdd.TestWizard;
-import com.excelbdd.ZMExcel;
+import com.excelbdd.Behavior;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,7 +39,7 @@ public class FeatureSteps {
 
     @When("Get the test dataset list")
     public void get_the_test_dataset_list() {
-        list = ZMExcel.getExampleList(excelFilePath, sheetName, headerRow, parameterColumn);
+        list = Behavior.getExampleList(excelFilePath, sheetName, headerRow, parameterColumn);
     }
 
     @Then("Test dataset list which contains {int} sets is got")

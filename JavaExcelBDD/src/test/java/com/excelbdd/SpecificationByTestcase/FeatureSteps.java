@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.excelbdd.TestWizard;
-import com.excelbdd.ZMExcel;
+import com.excelbdd.Behavior;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -48,7 +48,7 @@ public class FeatureSteps {
 
 	@When("invoke get test data from excel")
 	public void invoke_get_test_data_from_excel() {
-		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterNameColumn);
+		list = Behavior.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterNameColumn);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");
 			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
@@ -60,7 +60,7 @@ public class FeatureSteps {
 
 	@When("invoke get test data from excel according to Matcher")
 	public void invoke_get_test_data_from_excel_according_to_matcher() {
-		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, headerMatcher,
+		list = Behavior.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, headerMatcher,
 				parameterNameColumn);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");
@@ -126,7 +126,7 @@ public class FeatureSteps {
 
 	@When("invoke on a wrong file")
 	public void invoke_on_a_wrong_file() {
-		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, "sheetName", 1, 'B');
+		list = Behavior.getMZExampleWithTestResultList(excelFilePath, "sheetName", 1, 'B');
 	}
 
 	@Then("get blank list because the file doesn't exist")
@@ -137,6 +137,6 @@ public class FeatureSteps {
 
 	@When("invoke on a wrong sheet")
 	public void invoke_on_a_wrong_sheet() {
-		list = ZMExcel.getMZExampleWithTestResultList(excelFilePath, sheetName, 1, 'B');
+		list = Behavior.getMZExampleWithTestResultList(excelFilePath, sheetName, 1, 'B');
 	}
 }

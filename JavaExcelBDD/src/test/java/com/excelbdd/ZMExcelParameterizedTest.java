@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.excelbdd.ZMExcel;
+import com.excelbdd.Behavior;
 
 
 
@@ -24,7 +24,7 @@ public class ZMExcelParameterizedTest {
     public static Collection<Object[]> prepareData()
     {
     	String filepath = TestWizard.getExcelBDDStartPath() + "BDDExcel/ExcelBDD.xlsx";
-    	return ZMExcel.getExampleCollection(filepath, "SimpleOpenBDD", 1, 'D');
+    	return Behavior.getExampleCollection(filepath, "SimpleOpenBDD", 1, 'D');
     }
 	
 	public ZMExcelParameterizedTest(Map<String, String> map){
