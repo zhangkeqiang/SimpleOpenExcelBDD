@@ -1,12 +1,3 @@
-~$*.xla
-~$*.xlam
-~$*.xls
-~$*.xlsb
-~$*.xlsm
-~$*.xlsx
-~$*.xlt
-~$*.xltm
-~$*.xltx
 *testResults.xml
 *coverage.xml
 JavaExcelBDD/.factorypath
