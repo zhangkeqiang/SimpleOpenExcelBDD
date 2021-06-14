@@ -15,7 +15,7 @@ public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SimpleOpenBDD", 1, 'D');
+		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SpecificationByExample", 1, 'E');
 		return list.stream();
 	}
 

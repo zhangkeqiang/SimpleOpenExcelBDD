@@ -20,7 +20,7 @@ public class ExcelBDDParameterizedTest {
     public static Collection<Object[]> prepareData()
     {
     	String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-    	return Behavior.getExampleCollection(filepath, "SimpleOpenBDD", 1, 'D');
+    	return Behavior.getExampleCollection(filepath, "SpecificationByExample", 1, 'E');
     }
 	
 	public ExcelBDDParameterizedTest(Map<String, String> map){

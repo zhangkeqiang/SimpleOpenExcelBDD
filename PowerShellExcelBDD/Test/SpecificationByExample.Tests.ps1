@@ -3,8 +3,8 @@ $script:ExcelBDDFilePath = "$StartPath/../BDDExcel/ExcelBDD.xlsx"
 Describe "Get BDD Data" {
 
     $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'SimpleOpenBDD' `
-        -ParameterNameColumn D `
+        -WorksheetName 'SpecificationByExample' `
+        -ParameterNameColumn E `
         -HeaderRow 1
 
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
