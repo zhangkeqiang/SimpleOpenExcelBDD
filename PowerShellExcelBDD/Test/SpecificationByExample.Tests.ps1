@@ -5,19 +5,22 @@ Describe "Get BDD Data" {
     $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByExample' `
         -ParameterNameColumn E `
-        -HeaderRow 1
+        -HeaderRow 1 `
+        -HeaderMatcher Scenario
 
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
         Write-Host "Easy Success of Sheet $SheetName Column $Header"
         Write-Host "Header Row $HeaderRow"
         Write-Host "ParameterColumn $ParameterNameColumn"
         Write-Host "SheetName $SheetName"
-        $IntHeaderRow = [int]$HeaderRow
+
         $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
             -ParameterNameColumn $ParameterNameColumn `
-            -HeaderRow $IntHeaderRow `
-            -HeaderMatcher $HeaderMatcher
+            -HeaderRow $HeaderRow `
+            -HeaderMatcher $HeaderMatcher `
+            -Expected:($ExpectedSwitch -eq 'On') `
+            -TestResult:($TestResultSwitch -eq 'On')
 
         Write-Host ($TestcaseList | ConvertTo-Json )
         
