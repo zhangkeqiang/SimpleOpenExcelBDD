@@ -4,7 +4,7 @@ Describe "Get Speicification by Example & Testcase" {
     
     $SpecificationByTestcaseList = Get-TestcaseList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByTestcase' `
-        -ParameterNameColumn E `
+        -ParameterNameColumn F `
         -HeaderRow 4
 
     It "SpecificationByTestcase" -Testcases $SpecificationByTestcaseList {
