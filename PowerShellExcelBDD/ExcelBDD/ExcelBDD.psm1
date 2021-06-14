@@ -176,58 +176,8 @@ Get Specification By Example Data from Excel ,input and output are separated in 
 
 <#
 .Description
-Get BDD/Specification By Example Data from Excel ,input, output and test result are separated in 3 columns
-#>
-function Get-TestcaseList {
-    param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
-        $HeaderRow = 1,
-        $ParameterNameColumn = 'C'
-    )
-    $MaxRow = 1000
-    $MaxCol = 100
-    $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-    if ($null -eq $Worksheet ) {
-        return $null
-    }
-    if ($HeaderRow.GetType().Name -eq 'String') {
-        $HeaderRow = [int]$HeaderRow
-    }
-    $StartRow = $HeaderRow + 1
-    $ParamNameCol = [int][char]($ParameterNameColumn.ToUpper()) - 64
-    $StartCol = $ParamNameCol + 1
-
-    $List = [System.Collections.ArrayList]::new()
-    for ($iCol = $StartCol; $iCol -lt $MaxCol; $iCol += 3) {
-        if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderRow, $iCol).Text)) {
-            #This Row has no value
-            break
-        }
-        else {
-            $DataSet = [ordered]@{}
-            $DataSet["Header"] = $Worksheet.Cells.Item($HeaderRow - 1, $iCol).Text
-            for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-                if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $ParamNameCol).Text)) {
-                    break
-                }
-                else {
-                    $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
-                    $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "Expected"] = $Worksheet.Cells.Item($iRow, $iCol + 1).Text
-                    $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "TestResult"] = $Worksheet.Cells.Item($iRow, $iCol + 2).Text
-                }
-            }
-            [void]$List.Add($DataSet)
-        }
-    }
-    Close-MZExcelWorksheet | Out-Null
-    return $List
-}
-
-<#
-.Description
-Get hashtable list of Example data, one Hashtable from one column in excel sheet
-
+Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
+alias is Get-TestcaseList
 .Example
     use default HeaderRow which is 1, and default ParameterNameColumn which is C
     $ExampleList = Get-ExampleList -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
@@ -263,13 +213,30 @@ function Get-ExampleList {
         [String]$WorksheetName,
         $HeaderRow = 1,
         $ParameterNameColumn = 'C',
-        $HeaderMatcher
+        $HeaderMatcher,
+        [switch]$Expected,
+        [switch]$TestResult
     )
     $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
     if ($null -eq $Worksheet ) {
         return $null
     }
+    if ($HeaderRow.GetType().Name -eq 'String') {
+        $HeaderRow = [int]$HeaderRow
+    }
 
+    if ($TestResult) {
+        $ColumnStep = 3
+        $HeaderNameRow = $HeaderRow - 1
+    }
+    elseif ($Expected) {
+        $ColumnStep = 2
+        $HeaderNameRow = $HeaderRow - 1
+    }
+    else {
+        $ColumnStep = 1
+        $HeaderNameRow = $HeaderRow
+    }
     $ParamNameCol = [int][char]($ParameterNameColumn.ToUpper()) - 64
     #Get Test data set Column Array
     $CurrentCol = $ParamNameCol + 1
@@ -283,7 +250,7 @@ function Get-ExampleList {
         else {
             $ColumnNumArray += $CurrentCol
         }
-        $CurrentCol++
+        $CurrentCol += $ColumnStep
     }
 
     #Get Parameter Row Array
@@ -307,9 +274,15 @@ function Get-ExampleList {
     foreach ($iCol in $ColumnNumArray) {
         $DataSet = [ordered]@{}
         #Put Header
-        $DataSet["Header"] = $Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()
+        $DataSet["Header"] = $Worksheet.Cells.Item($HeaderNameRow, $iCol).Text.Trim()
         foreach ($iRow in $RowNumArray) {
             $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
+            if ($TestResult -or $Expected) {
+                $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "Expected"] = $Worksheet.Cells.Item($iRow, $iCol + 1).Text
+                if ($TestResult) {
+                    $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "TestResult"] = $Worksheet.Cells.Item($iRow, $iCol + 2).Text
+                }
+            }    
         }
         [void]$List.Add($DataSet)
     }

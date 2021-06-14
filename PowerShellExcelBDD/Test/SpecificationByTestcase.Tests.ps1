@@ -2,10 +2,11 @@ $script:ExcelBDDFilePath = "$StartPath/../BDDExcel/ExcelBDD.xlsx"
 
 Describe "Get Speicification by Example & Testcase" {
     
-    $SpecificationByTestcaseList = Get-TestcaseList -ExcelPath $ExcelBDDFilePath `
+    $SpecificationByTestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByTestcase' `
         -ParameterNameColumn F `
-        -HeaderRow 4
+        -HeaderRow 4 `
+        -TestResult
 
     It "SpecificationByTestcase" -Testcases $SpecificationByTestcaseList {
         $Error.Clear()
@@ -18,10 +19,11 @@ Describe "Get Speicification by Example & Testcase" {
         Write-Host "HeaderRow:"$HeaderRow
 
         $TestExcelPath = "$StartPath/../BDDExcel/$ExcelFileName"
-        $TestcaseList = Get-TestcaseList -ExcelPath $TestExcelPath `
+        $TestcaseList = Get-ExampleList -ExcelPath $TestExcelPath `
             -WorksheetName  $SheetName `
             -ParameterNameColumn $ParameterNameColumn `
-            -HeaderRow $HeaderRow
+            -HeaderRow $HeaderRow `
+            -TestResult
         
         $Error.Count | Should -Be 0
 

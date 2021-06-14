@@ -35,7 +35,7 @@
     TypesToProcess    = @()
 
     # Functions to export from this module
-    FunctionsToExport = "Get-ExampleList", "Get-TestcaseList"
+    FunctionsToExport = "Get-ExampleList"
 
     # # Cmdlets to export from this module
     CmdletsToExport   = @()
