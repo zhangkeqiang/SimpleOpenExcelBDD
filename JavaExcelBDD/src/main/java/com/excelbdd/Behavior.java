@@ -16,7 +16,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Behavior {
+	protected static Logger log = LogManager.getLogger();
 	private Behavior() {
 	}
 
@@ -60,7 +64,7 @@ public class Behavior {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getStackTrace());
 		}
 
 		return listTestSet;
@@ -152,7 +156,7 @@ public class Behavior {
 
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
 			if (sheetTestData == null) {
-				System.out.println(sheetName + " does not exist.");
+				log.error(sheetName + " does not exist.");
 				return listTestSet;
 			}
 			// poi get row from 0, so 1st headerRow is at 0
@@ -179,7 +183,8 @@ public class Behavior {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(excelPath + "does not exist.");
+			log.error(e.getStackTrace());
 		}
 		return listTestSet;
 	}
