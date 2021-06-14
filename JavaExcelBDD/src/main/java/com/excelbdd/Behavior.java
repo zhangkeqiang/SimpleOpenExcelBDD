@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Behavior {
 	protected static Logger log = LogManager.getLogger();
+
 	private Behavior() {
 	}
 
@@ -156,14 +157,14 @@ public class Behavior {
 
 			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
 			if (sheetTestData == null) {
-				log.error(sheetName + " does not exist.");
+				log.error("%s does not exist.", sheetName);
 				return listTestSet;
 			}
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet, parameterNameColumnNum,
-					rowHeader, 3);
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet,
+					parameterNameColumnNum, rowHeader, 3);
 
 			// Get ParameterNames HashMap
 			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
