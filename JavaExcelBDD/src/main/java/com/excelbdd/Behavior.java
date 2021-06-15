@@ -36,6 +36,12 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher) {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
+				"i_m_p_o_s_i_b_l_e");
+	}
+
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
+			char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
 
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
 		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
@@ -47,7 +53,7 @@ public class Behavior {
 			// poi get row from 0, so 1st headerRow is at 0
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1);
 
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet,
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnMatcher, listTestSet,
 					parameterNameColumnNum, rowHeader, 1);
 
 			// Get ParameterNames HashMap
@@ -71,21 +77,24 @@ public class Behavior {
 		return listTestSet;
 	}
 
-	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher,
+	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnMatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
+		String strRealHeaderUnMatcher = ".*" + headerUnMatcher + ".*";
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, Integer> mapTestSetHeader = new HashMap<>();
 		int nTestSet = 0;
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
-				mapTestSetHeader.put(iCol, nTestSet);
-				Map<String, String> mapTestSet = new HashMap<>();
-				mapTestSet.put("Header", cellHeader.getStringCellValue());
-				listTestSet.add(mapTestSet);
-				nTestSet++;
+				if (!cellHeader.getStringCellValue().matches(strRealHeaderUnMatcher)) {
+					mapTestSetHeader.put(iCol, nTestSet);
+					Map<String, String> mapTestSet = new HashMap<>();
+					mapTestSet.put("Header", cellHeader.getStringCellValue());
+					listTestSet.add(mapTestSet);
+					nTestSet++;
+				}
 			}
 		}
 		return mapTestSetHeader;
@@ -163,7 +172,7 @@ public class Behavior {
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet,
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, "never_matched",listTestSet,
 					parameterNameColumnNum, rowHeader, 3);
 
 			// Get ParameterNames HashMap
