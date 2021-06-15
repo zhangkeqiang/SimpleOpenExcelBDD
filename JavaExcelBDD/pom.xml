@@ -3,6 +3,29 @@
 	<groupId>com.excelbdd</groupId>
 	<artifactId>excelbdd-java</artifactId>
 	<version>0.3.0</version>
+	<packaging>jar</packaging>
+	<name>ExcelBDD</name>
+	<description>Use Excel file as BDD feature file, get example list and testcase list from excel file</description>
+	<url>https://dev.azure.com/simplopen/ExcelBDD</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Mike Zhang</name>
+			<email>zhangkq2000@hotmail.com</email>
+			<organization>ExcelBDD</organization>
+			<organizationUrl>http://www.excelbdd.com</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git://simplopen@dev.azure.com/simplopen/ExcelBDD/_git/ExcelBDD</connection>
+		<developerConnection>scm:git:ssh://git@ssh.dev.azure.com:v3/simplopen/ExcelBDD/ExcelBDD</developerConnection>
+		<url>https://dev.azure.com/simplopen/_git/ExcelBDD</url>
+	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -53,7 +76,7 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>2.14.1</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
