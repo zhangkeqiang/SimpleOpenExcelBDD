@@ -87,14 +87,13 @@ public class Behavior {
 		int nTestSet = 0;
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
-			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
-				if (!cellHeader.getStringCellValue().matches(strRealHeaderUnMatcher)) {
-					mapTestSetHeader.put(iCol, nTestSet);
-					Map<String, String> mapTestSet = new HashMap<>();
-					mapTestSet.put("Header", cellHeader.getStringCellValue());
-					listTestSet.add(mapTestSet);
-					nTestSet++;
-				}
+			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)
+					&& (!cellHeader.getStringCellValue().matches(strRealHeaderUnMatcher))) {
+				mapTestSetHeader.put(iCol, nTestSet);
+				Map<String, String> mapTestSet = new HashMap<>();
+				mapTestSet.put("Header", cellHeader.getStringCellValue());
+				listTestSet.add(mapTestSet);
+				nTestSet++;
 			}
 		}
 		return mapTestSetHeader;
@@ -172,7 +171,7 @@ public class Behavior {
 			// poi get row from 0, so 1st headerRow is at 0
 			// because of input/expected/testresult row, the below -2
 			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, "never_matched",listTestSet,
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, "never_matched", listTestSet,
 					parameterNameColumnNum, rowHeader, 3);
 
 			// Get ParameterNames HashMap
@@ -193,7 +192,7 @@ public class Behavior {
 				}
 			}
 		} catch (IOException e) {
-			log.error(excelPath + "does not exist.");
+			log.error("%s does not exist.", excelPath);
 			log.error(e.getStackTrace());
 		}
 		return listTestSet;
