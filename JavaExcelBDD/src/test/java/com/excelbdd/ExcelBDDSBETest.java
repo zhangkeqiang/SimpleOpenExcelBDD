@@ -15,7 +15,7 @@ public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SpecificationByExample", 1, 'E');
+		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SpecificationByExample", 1, 'E',"","V0.2");
 		return list.stream();
 	}
 
@@ -48,7 +48,7 @@ public class ExcelBDDSBETest {
 				charParameterNameColumn, mapParams.get("HeaderMatcher"));
 
 		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
-		assertEquals(mapParams.get("ParameterCount"),list.get(0).size());
+		assertEquals(Behavior.getInt(mapParams.get("ParameterCount")),list.get(0).size());
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
