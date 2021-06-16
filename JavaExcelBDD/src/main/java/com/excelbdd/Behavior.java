@@ -118,11 +118,17 @@ public class Behavior {
 		return collectionTestData;
 	}
 
-	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String worksheetName,
+	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn) {
 		String headerMatcher = ".*";
 		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher);
+	}
 
+	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
+			int headerRow, char parameterNameColumn) {
+		String headerMatcher = ".*";
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
+				NEVER_MATCHED_STRING, "EXPECTED");
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
