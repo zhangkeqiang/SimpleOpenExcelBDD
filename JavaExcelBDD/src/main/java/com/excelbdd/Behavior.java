@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Behavior {
+	public static final String NEVER_MATCHED_STRING = "i_m_p_o_s_i_b_l_e";
 	protected static Logger log = LogManager.getLogger();
 
 	private Behavior() {
@@ -36,51 +37,28 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher) {
-
-		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
-		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
-		int parameterNameColumnNum = (int) parameterNameColumn - 65;
-		try (FileInputStream excelFile = new FileInputStream(new File(excelPath));
-				XSSFWorkbook workbook = new XSSFWorkbook(excelFile);) {
-
-			XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
-			// poi get row from 0, so 1st headerRow is at 0
-			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 1);
-
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet,
-					parameterNameColumnNum, rowHeader, 1);
-
-			// Get ParameterNames HashMap
-			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
-					sheetTestData);
-
-			for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
-				int iRow = aParameterName.getKey();
-				String strParameterName = aParameterName.getValue();
-				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
-				for (Map.Entry<Integer, Integer> entryHeader : mapTestSetHeader.entrySet()) {
-					int iCol = entryHeader.getKey();
-					Map<String, String> mapTestSet = listTestSet.get(entryHeader.getValue());
-					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
-				}
-			}
-		} catch (IOException e) {
-			log.error(e.getStackTrace());
-		}
-
-		return listTestSet;
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
+				NEVER_MATCHED_STRING);
 	}
 
-	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher,
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
+			char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
+				"SIMPLE");
+	}
+
+	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnMatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
+		String strRealHeaderUnMatcher = ".*" + headerUnMatcher + ".*";
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, Integer> mapTestSetHeader = new HashMap<>();
 		int nTestSet = 0;
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
-			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)) {
+			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)
+					&& (!cellHeader.getStringCellValue().matches(strRealHeaderUnMatcher))) {
 				mapTestSetHeader.put(iCol, nTestSet);
 				Map<String, String> mapTestSet = new HashMap<>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
@@ -140,31 +118,55 @@ public class Behavior {
 		return collectionTestData;
 	}
 
-	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
+	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn) {
 		String headerMatcher = ".*";
-		return getMZExampleWithTestResultList(excelPath, sheetName, headerRow, headerMatcher, parameterNameColumn);
-
+		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher);
 	}
 
-	public static List<Map<String, String>> getMZExampleWithTestResultList(String excelPath, String sheetName,
-			int headerRow, String headerMatcher, char parameterNameColumn) {
+	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
+			int headerRow, char parameterNameColumn) {
+		String headerMatcher = ".*";
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
+				NEVER_MATCHED_STRING, "EXPECTED");
+	}
+
+	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
+			int headerRow, char parameterNameColumn, String headerMatcher) {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
+				NEVER_MATCHED_STRING, "TESTRESULT");
+	}
+
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
+			char parameterNameColumn, String headerMatcher, String headerUnMatcher, String type) {
+		// poi get row from 0, so 1st headerRow is at 0
+		// by default, actualHeaderRow is below
+		int actualHeaderRow = headerRow - 1;
+		int columnStep = 1;
+		if ("TESTRESULT".equals(type)) {
+			// because of input/expected/testresult row, the below -2
+			actualHeaderRow = headerRow - 2;
+			columnStep = 3;
+		} else if ("EXPECTED".equals(type)) {
+			actualHeaderRow = headerRow - 2;
+			columnStep = 2;
+		}
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
+		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
 		int parameterNameColumnNum = (int) parameterNameColumn - 65;
 
 		try (FileInputStream excelFile = new FileInputStream(new File(excelPath));
 				XSSFWorkbook workbook = new XSSFWorkbook(excelFile)) {
 
-			XSSFSheet sheetTestData = workbook.getSheet(sheetName);
+			XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
 			if (sheetTestData == null) {
-				log.error("%s does not exist.", sheetName);
+				log.error("%s does not exist.", worksheetName);
 				return listTestSet;
 			}
-			// poi get row from 0, so 1st headerRow is at 0
-			// because of input/expected/testresult row, the below -2
-			XSSFRow rowHeader = sheetTestData.getRow(headerRow - 2);
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, listTestSet,
-					parameterNameColumnNum, rowHeader, 3);
+
+			XSSFRow rowHeader = sheetTestData.getRow(actualHeaderRow);
+			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnMatcher, listTestSet,
+					parameterNameColumnNum, rowHeader, columnStep);
 
 			// Get ParameterNames HashMap
 			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
@@ -179,12 +181,16 @@ public class Behavior {
 					int iCol = entryHeader.getKey();
 					Map<String, String> mapTestSet = listTestSet.get(entryHeader.getValue());
 					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
-					putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
-					putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
+					if (columnStep > 1) {
+						putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
+						if (columnStep == 3) {
+							putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
+						}
+					}
 				}
 			}
 		} catch (IOException e) {
-			log.error(excelPath + "does not exist.");
+			log.error("%s does not exist.", excelPath);
 			log.error(e.getStackTrace());
 		}
 		return listTestSet;

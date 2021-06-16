@@ -241,9 +241,9 @@ function Get-ExampleList {
     #Get Test data set Column Array
     $CurrentCol = $ParamNameCol + 1
     $ColumnNumArray = @()
-    while (-not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text)) {
+    while (-not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderNameRow, $CurrentCol).Text)) {
         if ($HeaderMatcher) {
-            if ($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text -match $HeaderMatcher) {
+            if ($Worksheet.Cells.Item($HeaderNameRow, $CurrentCol).Text -match $HeaderMatcher) {
                 $ColumnNumArray += $CurrentCol
             }
         }

@@ -23,7 +23,8 @@ Describe "Get Speicification by Example & Testcase" {
             -WorksheetName  $SheetName `
             -ParameterNameColumn $ParameterNameColumn `
             -HeaderRow $HeaderRow `
-            -TestResult
+            -Expected:($ExpectedSwitch -eq 'On') `
+            -TestResult:($TestResultSwitch -eq 'On')
         
         $Error.Count | Should -Be 0
 
@@ -42,10 +43,11 @@ Describe "Get Speicification by Example & Testcase" {
         $TestcaseList[0]["ParamName3Expected"] | Should -Be $FirstSetParamName3Expected
         $TestcaseList[0]["ParamName4Expected"] | Should -Be $FirstSetParamName4Expected
 
-        $TestcaseList[0]["ParamName1TestResult"] | Should -Be $FirstSetParamName1TestResult
-        $TestcaseList[0]["ParamName2TestResult"] | Should -Be $FirstSetParamName2TestResult
-        $TestcaseList[0]["ParamName3TestResult"] | Should -Be $FirstSetParamName3TestResult
-        $TestcaseList[0]["ParamName4TestResult"] | Should -Be $FirstSetParamName4TestResult
+        if ($TestResultSwitch -eq 'On') {
+            $TestcaseList[0]["ParamName1TestResult"] | Should -Be $FirstSetParamName1TestResult
+            $TestcaseList[0]["ParamName2TestResult"] | Should -Be $FirstSetParamName2TestResult
+            $TestcaseList[0]["ParamName3TestResult"] | Should -Be $FirstSetParamName3TestResult
+            $TestcaseList[0]["ParamName4TestResult"] | Should -Be $FirstSetParamName4TestResult
+        }
     }
-    
 }

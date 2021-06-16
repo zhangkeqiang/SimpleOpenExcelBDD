@@ -12,19 +12,19 @@
     RootModule        = 'ExcelBDD.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.1.0'
+    ModuleVersion     = '0.2.0'
 
     # ID used to uniquely identify this module
     GUID              = 'bdf35f8c-197a-4256-86ff-35da93432ba0'
 
     # Author of this module
-    Author            = 'Mike Zhang'
+    Author            = 'ExcelBDD Team'
 
     # Company or vendor of this module
-    CompanyName       = 'SimplOpen'
+    CompanyName       = 'ExcelBDD'
 
     # Copyright statement for this module
-    Copyright         = 'Copyright (c) 2021 by Mike Zhang, licensed under Apache 2.0 License.'
+    Copyright         = 'Copyright (c) 2021 by ExcelBDD Team, licensed under Apache 2.0 License.'
 
     # Description of the functionality provided by this module
     Description       = 'Use Excel file as BDD feature file, get example list and testcase list from excel file'
@@ -44,10 +44,7 @@
     VariablesToExport = @()
 
     # # Aliases to export from this module
-    AliasesToExport   = @(
-     
-    )
-
+    AliasesToExport   = @()
 
     # List of all modules packaged with this module
     # ModuleList = @()
@@ -80,7 +77,7 @@
             LicenseUri   = "https://www.apache.org/licenses/LICENSE-2.0.html"
 
             # Release notes for this particular version of the module
-            ReleaseNotes = 'first version of ExcelBDD'
+            ReleaseNotes = 'test format(expected, testresult) example data is supported by new switch in Get-ExampleList'
 
             # Prerelease string of this module
             # Prerelease   = 'beta1'

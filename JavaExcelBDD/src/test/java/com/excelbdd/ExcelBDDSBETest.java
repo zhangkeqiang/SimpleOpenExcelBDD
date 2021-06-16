@@ -15,7 +15,7 @@ public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SpecificationByExample", 1, 'E');
+		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SpecificationByExample", 1, 'E',"","V0.2");
 		return list.stream();
 	}
 
@@ -37,8 +37,7 @@ public class ExcelBDDSBETest {
 		assertEquals("3.0", mapParams.get("MaxBlankThreshold"));
 		System.out.println("HeaderMatcher " + mapParams.get("HeaderMatcher"));
 		assertEquals("Scenario", mapParams.get("HeaderMatcher"));
-		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
-		assertEquals("5.0", mapParams.get("ParameterCount"));
+		
 
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		int nHeaderRow = Double.valueOf(mapParams.get("HeaderRow")).intValue();
@@ -47,6 +46,9 @@ public class ExcelBDDSBETest {
 
 		List<Map<String, String>> list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
 				charParameterNameColumn, mapParams.get("HeaderMatcher"));
+
+		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
+		assertEquals(Behavior.getInt(mapParams.get("ParameterCount")),list.get(0).size());
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
