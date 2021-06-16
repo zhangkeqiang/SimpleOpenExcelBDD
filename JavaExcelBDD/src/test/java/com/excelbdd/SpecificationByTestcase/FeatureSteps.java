@@ -48,7 +48,7 @@ public class FeatureSteps {
 
 	@When("invoke get test data from excel")
 	public void invoke_get_test_data_from_excel() {
-		list = Behavior.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, parameterNameColumn);
+		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, headerRow, parameterNameColumn);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");
 			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
@@ -126,7 +126,7 @@ public class FeatureSteps {
 
 	@When("invoke on a wrong file")
 	public void invoke_on_a_wrong_file() {
-		list = Behavior.getMZExampleWithTestResultList(excelFilePath, "sheetName", 1, 'B');
+		list = Behavior.getExampleListWithTestResult(excelFilePath, "sheetName", 1, 'B');
 	}
 
 	@Then("get blank list because the file doesn't exist")
@@ -137,6 +137,6 @@ public class FeatureSteps {
 
 	@When("invoke on a wrong sheet")
 	public void invoke_on_a_wrong_sheet() {
-		list = Behavior.getMZExampleWithTestResultList(excelFilePath, sheetName, 1, 'B');
+		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, 1, 'B');
 	}
 }
