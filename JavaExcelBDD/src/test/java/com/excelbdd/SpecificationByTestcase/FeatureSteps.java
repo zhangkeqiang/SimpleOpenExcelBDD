@@ -60,8 +60,8 @@ public class FeatureSteps {
 
 	@When("invoke get test data from excel according to Matcher")
 	public void invoke_get_test_data_from_excel_according_to_matcher() {
-		list = Behavior.getMZExampleWithTestResultList(excelFilePath, sheetName, headerRow, headerMatcher,
-				parameterNameColumn);
+		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, headerRow,
+				parameterNameColumn, headerMatcher);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");
 			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
