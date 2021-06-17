@@ -22,10 +22,10 @@ $configuration = [PesterConfiguration]@{
     }
     TestResult   = @{
         Enabled      = $true
-        OutputFormat = 'NUnitXml'
+        OutputFormat = 'JUnitXml'
     }
     Output       = @{
         Verbosity = 'Detailed'
     }
 }
-Invoke-Pester -Configuration $configuration #-Verbose
+Invoke-Pester -Configuration $configuration -Verbose

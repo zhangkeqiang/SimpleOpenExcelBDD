@@ -22,7 +22,7 @@ steps:
 - task: PublishTestResults@2
   inputs:
     # Make sure to use the 'NUnit' test runner
-    testRunner: "NUnit" # !!! # Options: JUnit, NUnit, VSTest, xUnit, cTest
+    testRunner: "JUnit" # !!! # Options: JUnit, NUnit, VSTest, xUnit, cTest
     # Make sure the file name matches the file name you specified.
     # A possibility is to add this as a parameter to the script
     testResultsFiles: "**/testResults.xml"
