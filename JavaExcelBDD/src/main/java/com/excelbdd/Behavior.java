@@ -20,6 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Behavior {
+	private static final String TESTRESULT = "TESTRESULT";
+	private static final String EXPECTED = "EXPECTED";
+	private static final String ANY_MATCHER = ".*";
 	public static final String NEVER_MATCHED_STRING = "i_m_p_o_s_i_b_l_e";
 	protected static Logger log = LogManager.getLogger();
 
@@ -50,8 +53,8 @@ public class Behavior {
 	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnMatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
-		String strRealHeaderMatcher = ".*" + headerMatcher + ".*";
-		String strRealHeaderUnMatcher = ".*" + headerUnMatcher + ".*";
+		String strRealHeaderMatcher = ANY_MATCHER + headerMatcher + ANY_MATCHER;
+		String strRealHeaderUnMatcher = ANY_MATCHER + headerUnMatcher + ANY_MATCHER;
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, Integer> mapTestSetHeader = new HashMap<>();
 		int nTestSet = 0;
@@ -119,23 +122,39 @@ public class Behavior {
 		return collectionTestData;
 	}
 
-	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
+	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn) {
-		String headerMatcher = ".*";
-		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher);
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
+				NEVER_MATCHED_STRING, EXPECTED);
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn) {
-		String headerMatcher = ".*";
+			int headerRow, char parameterNameColumn, String headerMatcher) {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
-				NEVER_MATCHED_STRING, "EXPECTED");
+				NEVER_MATCHED_STRING, EXPECTED);
+	}
+
+	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
+			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
+				EXPECTED);
+	}
+
+	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
+			int headerRow, char parameterNameColumn) {
+		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn, String headerMatcher) {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
-				NEVER_MATCHED_STRING, "TESTRESULT");
+				NEVER_MATCHED_STRING, TESTRESULT);
+	}
+
+	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
+			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
+				TESTRESULT);
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
@@ -144,11 +163,11 @@ public class Behavior {
 		// by default, actualHeaderRow is below
 		int actualHeaderRow = headerRow - 1;
 		int columnStep = 1;
-		if ("TESTRESULT".equals(type)) {
+		if (TESTRESULT.equals(type)) {
 			// because of input/expected/testresult row, the below -2
 			actualHeaderRow = headerRow - 2;
 			columnStep = 3;
-		} else if ("EXPECTED".equals(type)) {
+		} else if (EXPECTED.equals(type)) {
 			actualHeaderRow = headerRow - 2;
 			columnStep = 2;
 		}
