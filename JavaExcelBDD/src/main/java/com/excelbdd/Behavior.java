@@ -57,8 +57,9 @@ public class Behavior {
 		int nTestSet = 0;
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
-			if (cellHeader.getStringCellValue().matches(strRealHeaderMatcher)
-					&& (!cellHeader.getStringCellValue().matches(strRealHeaderUnMatcher))) {
+			String strHeader = cellHeader.getStringCellValue();
+			if ((strHeader != null) && (!strHeader.isEmpty()) && strHeader.matches(strRealHeaderMatcher)
+					&& (!strHeader.matches(strRealHeaderUnMatcher))) {
 				mapTestSetHeader.put(iCol, nTestSet);
 				Map<String, String> mapTestSet = new HashMap<>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
