@@ -73,20 +73,55 @@ class ExcelBDDSBTTest {
 	@MethodSource("provideExampleListWithExpected")
 	void testGetExampleListWithExpected(Map<String, String> mapParams) {
 		assertNotNull(mapParams);
-		System.out.println("Header " + mapParams.get("Header"));
-		System.out.println(String.format("ParamName1 %s", mapParams.get("ParamName1")));
-		System.out.println(String.format("ParamName1 %s", mapParams.get("ParamName2")));
-		System.out.println("ParamName3 " + mapParams.get("ParamName3"));
+		TestWizard.showMap(mapParams);
 		assertTrue(mapParams.get("ParamName1").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2").startsWith("V2."));
+		assertEquals(true,mapParams.get("ParamName3").isEmpty());
+		assertEquals(false,mapParams.get("ParamName4").isEmpty());
+		
+		assertTrue(mapParams.get("ParamName1Expected").startsWith("V1."));
+		assertTrue(mapParams.get("ParamName2Expected").startsWith("V2."));
+		assertEquals(true,mapParams.get("ParamName3Expected").isEmpty());
+		assertEquals(false,mapParams.get("ParamName4Expected").isEmpty());
+		
+		assertNull(mapParams.get("ParamName1TestResult"));
+		assertNull(mapParams.get("ParamName2TestResult"));
+		assertNull(mapParams.get("ParamName3TestResult"));
+		assertNull(mapParams.get("ParamName4TestResult"));
 	}
 
+	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntCharString() {
+		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
+		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 2, 'B',"5");
+		return list.stream();
+	}
 	/**
 	 * Test method for {@link com.excelbdd.Behavior#getExampleListWithTestResult(java.lang.String, java.lang.String, int, char, java.lang.String)}.
 	 */
-	@Test
-	void testGetExampleListWithTestResultStringStringIntCharString() {
-//		fail("Not yet implemented");
+	@ParameterizedTest(name = "TestResult{index}:{0}")
+	@MethodSource("provideExampleListWithTestResultStringStringIntCharString")
+	void testGetExampleListWithTestResultStringStringIntCharString(Map<String, String> mapParams) {
+		assertNotNull(mapParams);
+		TestWizard.showMap(mapParams);
+		assertTrue(mapParams.get("ParamName1").startsWith("V1."));
+		assertTrue(mapParams.get("ParamName2").startsWith("V2."));
+		assertEquals(true,mapParams.get("ParamName3").isEmpty());
+		assertEquals(false,mapParams.get("ParamName4").isEmpty());
+		
+		assertTrue(mapParams.get("ParamName1Expected").startsWith("V1."));
+		assertTrue(mapParams.get("ParamName2Expected").startsWith("V2."));
+		assertEquals(true,mapParams.get("ParamName3Expected").isEmpty());
+		assertEquals(false,mapParams.get("ParamName4Expected").isEmpty());
+		
+		assertNotNull(mapParams.get("ParamName1TestResult"));
+		assertNotNull(mapParams.get("ParamName2TestResult"));
+		assertNotNull(mapParams.get("ParamName3TestResult"));
+		assertNotNull(mapParams.get("ParamName4TestResult"));
+		
+		assertEquals("pass",mapParams.get("ParamName1TestResult"));
+		assertEquals("pass",mapParams.get("ParamName2TestResult"));
+		assertEquals("pass",mapParams.get("ParamName3TestResult"));
+		assertEquals("pass",mapParams.get("ParamName4TestResult"));
 	}
 
 }
