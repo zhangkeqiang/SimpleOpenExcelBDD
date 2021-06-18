@@ -5,9 +5,9 @@ $MaxBlankThreshold = 3
 .Description
 Get worksheet from Excel file according to build sheet path and worksheet name
 .Example
-Get-MZExcelWorksheet -ExcelPath C:\buildsheet.xlsx -WorksheetName 'PaaS SQL DB Build'
+Get-ExcelWorksheet -ExcelPath C:\buildsheet.xlsx -WorksheetName 'PaaS SQL DB Build'
 #>
-function Get-MZExcelWorksheet {
+function Get-ExcelWorksheet {
     param (
         [String]$ExcelPath,
         [String]$WorksheetName
@@ -34,7 +34,7 @@ function Get-MZExcelWorksheet {
     return $Worksheet
 }
 
-function Close-MZExcelWorksheet {
+function Close-ExcelWorksheet {
     try {
         if ($script:appExcel.Name -eq "Microsoft Excel") {
             $script:appExcel.ActiveWorkbook.Close($false)
@@ -74,7 +74,7 @@ Get worksheet information as a hashtable list according to Header Mapping
 #             [void]$List.Add($RowSet)
 #         }
 #     }
-#     Close-MZExcelWorksheet | Out-Null
+#     Close-ExcelWorksheet | Out-Null
 #     return $List
 # }
 
@@ -92,6 +92,15 @@ Get a Hashtable list from excel sheet, one row for one hashtable
         Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
     }
 #>
+function Get-DataTable {
+    param (
+        [String]$ExcelPath,
+        [String]$WorksheetName,
+        $MandatoryColumnNum = 1,
+        $HeaderRow = 1
+    )
+    return (Import-Excel -Path $ExcelPath -WorksheetName $WorksheetName -StartRow $HeaderRow)
+}
 # function Get-MZHashTableListFromExcel {
 #     param (
 #         [String]$ExcelPath,
@@ -101,7 +110,7 @@ Get a Hashtable list from excel sheet, one row for one hashtable
 #     )
 #     $MaxRow = 1000
 #     $MaxCol = 100
-#     $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
+#     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
 #     if ($null -eq $Worksheet ) {
 #         Write-MZDebug "'$WorksheetName' sheet doesn't exist in $ExcelPath."
 #         return $null
@@ -127,52 +136,10 @@ Get a Hashtable list from excel sheet, one row for one hashtable
 #             break
 #         }
 #     }
-#     Close-MZExcelWorksheet | Out-Null
+#     Close-ExcelWorksheet | Out-Null
 #     return $List
 # }
 
-<#
-.Description
-Get Specification By Example Data from Excel ,input and output are separated in columns
-#>
-# function Get-MZExampleList2 {
-#     param (
-#         [String]$ExcelPath,
-#         [String]$WorksheetName,
-#         $MandatoryRowNum = 1,
-#         $ParamNameCol = 3,
-#         $StartRow = 2,
-#         $MaxRow = 1000,
-#         $MaxCol = 100
-#     )
-#     $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-#     if ($null -eq $Worksheet ) {
-#         return $null
-#     }
-#     $StartCol = $ParamNameCol + 1
-#     $List = [System.Collections.ArrayList]::new()
-#     for ($iCol = $StartCol; $iCol -lt $MaxCol; $iCol += 2) {
-#         if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($MandatoryRowNum, $iCol).Text)) {
-#             #This Row has no value
-#             break
-#         }
-#         else {
-#             $DataSet = [ordered]@{}
-#             for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-#                 if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $ParamNameCol).Text)) {
-#                     break
-#                 }
-#                 else {
-#                     $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
-#                     $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "Expected"] = $Worksheet.Cells.Item($iRow, $iCol + 1).Text
-#                 }
-#             }
-#             [void]$List.Add($DataSet)
-#         }
-#     }
-#     Close-MZExcelWorksheet | Out-Null
-#     return $List
-# }
 
 <#
 .Description
@@ -203,9 +170,6 @@ alias is Get-TestcaseList
         Write-Host $DepartmentCurrentMonthKPI2
     }
 }
-    
-
-
 #>
 function Get-ExampleList {
     param (
@@ -217,7 +181,7 @@ function Get-ExampleList {
         [switch]$Expected,
         [switch]$TestResult
     )
-    $Worksheet = Get-MZExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
+    $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
     if ($null -eq $Worksheet ) {
         return $null
     }
@@ -286,6 +250,6 @@ function Get-ExampleList {
         }
         [void]$List.Add($DataSet)
     }
-    Close-MZExcelWorksheet | Out-Null
+    Close-ExcelWorksheet | Out-Null
     return $List
 }

@@ -1,9 +1,11 @@
-Import-Module Pester
-$global:StartPath = (Resolve-Path "$PSScriptRoot/..").Path
 Get-Module ExcelBDD | Remove-Module
-$modulePath = Join-Path $StartPath "ExcelBDD/ExcelBDD.psd1"
-Import-Module $modulePath
+Import-Module Pester
 if (-Not (Get-InstalledModule -Name ImportExcel)) {
     Write-Host "Install ImportExcel"
     Install-Module -Name ImportExcel -Scope CurrentUser -Force
 }
+Import-Module ImportExcel
+$global:StartPath = (Resolve-Path "$PSScriptRoot/..").Path
+Write-Host $global:StartPath
+$modulePath = Join-Path $StartPath "ExcelBDD/ExcelBDD.psm1"
+Import-Module $modulePath
