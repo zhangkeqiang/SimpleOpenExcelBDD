@@ -1,4 +1,4 @@
-$script:ExcelBDDFilePath = "$StartPath/../BDDExcel/ExcelBDD.xlsx"
+$script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 
 Describe "Get BDD Data" {
 

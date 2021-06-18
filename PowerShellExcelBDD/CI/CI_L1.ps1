@@ -1,7 +1,7 @@
 & $PSScriptRoot/InitializeCI.ps1
 
-$TestPath = "$StartPath/Test"
-$CoverageFile = "$StartPath/ExcelBDD/ExcelBDD.psm1"
+$TestPath = "$StartPath/PowerShellExcelBDD/Test"
+$CoverageFile = "$StartPath/PowerShellExcelBDD/ExcelBDD/ExcelBDD.psm1"
 $configuration = [PesterConfiguration]@{
     Run          = @{
         Path = $TestPath

@@ -1,4 +1,4 @@
-$script:ExcelBDDFilePath = "$StartPath/../BDDExcel/ExcelBDD.xlsx"
+$script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 
 Describe "Get Speicification by Example & Testcase" {
     
@@ -18,7 +18,7 @@ Describe "Get Speicification by Example & Testcase" {
         Write-Host "ParameterNameColumn:"$ParameterNameColumn
         Write-Host "HeaderRow:"$HeaderRow
 
-        $TestExcelPath = "$StartPath/../BDDExcel/$ExcelFileName"
+        $TestExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
         $TestcaseList = Get-ExampleList -ExcelPath $TestExcelPath `
             -WorksheetName  $SheetName `
             -ParameterNameColumn $ParameterNameColumn `

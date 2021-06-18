@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- PS*
 
 pool:
   vmImage: ubuntu-latest
@@ -22,6 +23,7 @@ steps:
       Install-Module -Name ImportExcel -Scope CurrentUser -Force
       Write-Host "Installed ImportExcel successfully."
     errorActionPreference: 'continue'
+
 - task: PowerShell@2
   inputs:
     filePath: 'PowerShellExcelBDD/CI/CI_L1.ps1'
