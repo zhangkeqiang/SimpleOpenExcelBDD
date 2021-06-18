@@ -12,7 +12,16 @@ pool:
 steps:
 - script: echo Hello, world!
   displayName: 'ExcelBDD CI'
-
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your PowerShell commands here.
+      
+      Write-Host "Start to install ImportExcel"
+      Install-Module -Name ImportExcel -Scope CurrentUser -Force
+      Write-Host "Installed ImportExcel successfully."
+    errorActionPreference: 'continue'
 - task: PowerShell@2
   inputs:
     filePath: 'PowerShellExcelBDD/CI/CI_L1.ps1'
