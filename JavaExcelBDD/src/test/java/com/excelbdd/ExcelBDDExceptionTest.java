@@ -14,7 +14,7 @@ class ExcelBDDExceptionTest {
 
 	static Stream<Map<String, String>> provideWrongExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filePath, "Exceptions", 2, 'C');
+		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filePath, "Exceptions", 1, 'C');
 		return list.stream();
 	}
 

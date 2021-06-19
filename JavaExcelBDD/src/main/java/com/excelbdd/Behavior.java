@@ -95,16 +95,16 @@ public class Behavior {
 	}
 
 	/**
-	 * @param headerRow
+	 * @param parameterStartRow
 	 * @param parameterNameColumnNum
 	 * @param sheetTestData
 	 * @return
 	 */
-	private static HashMap<Integer, String> getParameterNameMap(int headerRow, int parameterNameColumnNum,
+	private static HashMap<Integer, String> getParameterNameMap(int parameterStartRow, int parameterNameColumnNum,
 			XSSFSheet sheetTestData) {
 		HashMap<Integer, String> mapParameterName = new HashMap<>();
 		int nContinuousBlankCount = 0;
-		for (int iRow = headerRow; iRow <= sheetTestData.getLastRowNum(); iRow++) {
+		for (int iRow = parameterStartRow; iRow <= sheetTestData.getLastRowNum(); iRow++) {
 			if (nContinuousBlankCount > 3) {
 				break;
 			}
@@ -183,13 +183,14 @@ public class Behavior {
 		// poi get row from 0, so 1st headerRow is at 0
 		// by default, actualHeaderRow is below
 		int actualHeaderRow = headerRow - 1;
+		int actualParameterStartRow = headerRow;
 		int columnStep = 1;
 		if (TESTRESULT.equals(type)) {
 			// because of input/expected/testresult row, the below -2
-			actualHeaderRow = headerRow - 2;
+			actualParameterStartRow = headerRow + 1;
 			columnStep = 3;
 		} else if (EXPECTED.equals(type)) {
-			actualHeaderRow = headerRow - 2;
+			actualParameterStartRow = headerRow + 1;
 			columnStep = 2;
 		}
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
@@ -208,7 +209,7 @@ public class Behavior {
 				parameterNameColumnNum, rowHeader, columnStep);
 
 		// Get ParameterNames HashMap
-		HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
+		HashMap<Integer, String> mapParameterName = getParameterNameMap(actualParameterStartRow, parameterNameColumnNum,
 				sheetTestData);
 
 		for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {

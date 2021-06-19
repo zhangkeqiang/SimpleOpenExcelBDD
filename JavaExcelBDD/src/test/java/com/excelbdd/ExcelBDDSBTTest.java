@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class ExcelBDDSBTTest {
 	static Stream<Map<String, String>> provideExampleListWithExpected() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 2, 'B');
+		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 1, 'B');
 		return list.stream();
 	}
 	/**
@@ -46,7 +46,7 @@ class ExcelBDDSBTTest {
 
 	static Stream<Map<String, String>> provideExampleListWithExpectedByMatcher() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 2, 'B',"Scenario");
+		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 1, 'B',"Scenario");
 		return list.stream();
 	}
 	/**
@@ -75,7 +75,7 @@ class ExcelBDDSBTTest {
 	
 	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntChar() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 2, 'B');
+		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 1, 'B');
 		return list.stream();
 	}
 	/**
@@ -108,7 +108,7 @@ class ExcelBDDSBTTest {
 
 	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntCharString() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 2, 'B',"Scenario");
+		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 1, 'B',"Scenario");
 		return list.stream();
 	}
 	/**

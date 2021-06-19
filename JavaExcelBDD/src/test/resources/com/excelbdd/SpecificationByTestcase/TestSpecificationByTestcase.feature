@@ -25,9 +25,9 @@ Feature: Get Test data Set List from Excel Specification by Testcase
 
         Examples:
             | SheetName | HeaderRow | ParameterColumn | ListCount |
-            | SBTSheet1 | 2         | B               | 5         |
-            | SBTSheet2 | 2         | B               | 4         |
-            | SBTSheet3 | 2         | D               | 6         |
+            | SBTSheet1 | 1         | B               | 5         |
+            | SBTSheet2 | 1         | B               | 4         |
+            | SBTSheet3 | 1         | D               | 6         |
 
 
     Scenario Outline: Get list according to header matching
@@ -52,6 +52,6 @@ Feature: Get Test data Set List from Excel Specification by Testcase
 
         Examples:
             | SheetName | HeaderRow | ParameterColumn | Matcher    | ListCount | ParamName1Value | HeaderName |
-            | SBTSheet3 | 2         | D               | Scenario   | 6         | V1.1            | Scenario1  |
-            | SBTSheet3 | 2         | D               | Scenario1  | 2         | V1.1            | Scenario1  |
-            | SBTSheet3 | 2         | D               | Scenario1b | 1         | V1.1            | Scenario1b |
+            | SBTSheet3 | 1         | D               | Scenario   | 6         | V1.1            | Scenario1  |
+            | SBTSheet3 | 1         | D               | Scenario1  | 2         | V1.1            | Scenario1  |
+            | SBTSheet3 | 1         | D               | Scenario1b | 1         | V1.1            | Scenario1b |
