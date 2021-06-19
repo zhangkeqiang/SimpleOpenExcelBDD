@@ -1,4 +1,4 @@
-& $PSScriptRoot/InitializeCI.ps1
+& $PSScriptRoot/InitializeTest.ps1
 
 $TestPath = "$StartPath/PowerShellExcelBDD/Test"
 $CoverageFile = "$StartPath/PowerShellExcelBDD/ExcelBDD/ExcelBDD.psm1"

@@ -96,10 +96,19 @@ function Get-DataTable {
     param (
         [String]$ExcelPath,
         [String]$WorksheetName,
-        $MandatoryColumnNum = 1,
+        $StartColumn = 'A',
         $HeaderRow = 1
     )
-    return (Import-Excel -Path $ExcelPath -WorksheetName $WorksheetName -StartRow $HeaderRow)
+    $IntStartColumn = [int][char]($StartColumn.ToUpper()) - 64
+    $RawDataTableA = Import-Excel -Path $ExcelPath -WorksheetName $WorksheetName `
+        -StartRow $HeaderRow -StartColumn $IntStartColumn
+    $DataTableA = @()
+    foreach ($item in $RawDataTableA) {
+        $HashTableA = @{}
+        $item.psobject.properties | ForEach-Object { $HashTableA[$_.Name] = $_.Value }
+        $DataTableA += $HashTableA
+    }
+    return $DataTableA
 }
 # function Get-MZHashTableListFromExcel {
 #     param (
@@ -246,7 +255,7 @@ function Get-ExampleList {
                 if ($TestResult) {
                     $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim() + "TestResult"] = $Worksheet.Cells.Item($iRow, $iCol + 2).Text
                 }
-            }    
+            }
         }
         [void]$List.Add($DataSet)
     }
