@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() throws IOException {
-		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		return Behavior.getExampleStream(filepath, "SpecificationByExample", 1, 'E', "Scenario", "V0.2");
+		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
+		return Behavior.getExampleStream(filePath, "SpecificationByExample", 1, 'F', "Scenario", "V0.2");
 	}
 
 	@ParameterizedTest(name = "#{index} - Test with Map : {0}")

@@ -200,23 +200,23 @@ function Get-ExampleList {
 
     if ($TestResult) {
         $ColumnStep = 3
-        $HeaderNameRow = $HeaderRow - 1
+        $CurrentRow = $HeaderRow + 2
     }
     elseif ($Expected) {
         $ColumnStep = 2
-        $HeaderNameRow = $HeaderRow - 1
+        $CurrentRow = $HeaderRow + 2
     }
     else {
         $ColumnStep = 1
-        $HeaderNameRow = $HeaderRow
+        $CurrentRow = $HeaderRow + 1
     }
     $ParamNameCol = [int][char]($ParameterNameColumn.ToUpper()) - 64
     #Get Test data set Column Array
     $CurrentCol = $ParamNameCol + 1
     $ColumnNumArray = @()
-    while (-not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderNameRow, $CurrentCol).Text)) {
+    while (-not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text)) {
         if ($HeaderMatcher) {
-            if ($Worksheet.Cells.Item($HeaderNameRow, $CurrentCol).Text -match $HeaderMatcher) {
+            if ($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text -match $HeaderMatcher) {
                 $ColumnNumArray += $CurrentCol
             }
         }
@@ -228,7 +228,7 @@ function Get-ExampleList {
 
     #Get Parameter Row Array
     $RowNumArray = @()
-    $CurrentRow = $HeaderRow + 1
+    
     $ContinuousBlankCount = 0
     do {
         if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($CurrentRow, $ParamNameCol).Text)) {
@@ -247,7 +247,7 @@ function Get-ExampleList {
     foreach ($iCol in $ColumnNumArray) {
         $DataSet = [ordered]@{}
         #Put Header
-        $DataSet["Header"] = $Worksheet.Cells.Item($HeaderNameRow, $iCol).Text.Trim()
+        $DataSet["Header"] = $Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()
         foreach ($iRow in $RowNumArray) {
             $DataSet[$Worksheet.Cells.Item($iRow, $ParamNameCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
             if ($TestResult -or $Expected) {

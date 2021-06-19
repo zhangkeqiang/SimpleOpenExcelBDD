@@ -4,7 +4,7 @@ Describe "Get BDD Data" {
 
     $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByExample' `
-        -ParameterNameColumn E `
+        -ParameterNameColumn F `
         -HeaderRow 1 `
         -HeaderMatcher Scenario
 
