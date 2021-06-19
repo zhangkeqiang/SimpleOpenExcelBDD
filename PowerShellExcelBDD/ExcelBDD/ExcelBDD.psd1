@@ -12,7 +12,7 @@
     RootModule        = 'ExcelBDD.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.2.0'
+    ModuleVersion     = '0.3.0'
 
     # ID used to uniquely identify this module
     GUID              = 'bdf35f8c-197a-4256-86ff-35da93432ba0'
@@ -35,7 +35,7 @@
     TypesToProcess    = @()
 
     # Functions to export from this module
-    FunctionsToExport = "Get-ExampleList"
+    FunctionsToExport = "Get-ExampleList","Get-DataTable"
 
     # # Cmdlets to export from this module
     CmdletsToExport   = @()
@@ -45,6 +45,8 @@
 
     # # Aliases to export from this module
     AliasesToExport   = @()
+
+    RequiredModules = "ImportExcel", "Pester"
 
     # List of all modules packaged with this module
     # ModuleList = @()
@@ -71,7 +73,7 @@
             # IconUri      = ''
 
             # The web address of this module's project or support homepage.
-            ProjectUri   = "https://dev.azure.com/simplopen/ExcelBDD"
+            ProjectUri   = "https://dev.azure.com/simplopen/ExcelBDD/_wiki/wikis/ExcelBDD.wiki/39/ExcelBDD-Homepage"
 
             # The web address of this module's license. Points to a page that's embeddable and linkable.
             LicenseUri   = "https://www.apache.org/licenses/LICENSE-2.0.html"

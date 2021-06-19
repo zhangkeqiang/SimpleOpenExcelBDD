@@ -1,8 +1,8 @@
 package com.excelbdd.SpecificationByTestcase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public class FeatureSteps {
 	}
 
 	@When("invoke get test data from excel")
-	public void invoke_get_test_data_from_excel() {
+	public void invoke_get_test_data_from_excel() throws IOException {
 		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, headerRow, parameterNameColumn);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");
@@ -59,9 +59,9 @@ public class FeatureSteps {
 	}
 
 	@When("invoke get test data from excel according to Matcher")
-	public void invoke_get_test_data_from_excel_according_to_matcher() {
-		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, headerRow,
-				parameterNameColumn, headerMatcher);
+	public void invoke_get_test_data_from_excel_according_to_matcher() throws IOException {
+		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, headerRow, parameterNameColumn,
+				headerMatcher);
 		for (Map<String, String> map : list) {
 			System.out.println(map.get("Header") + " ========== ");
 			for (Map.Entry<String, String> mapEntry : map.entrySet()) {
@@ -119,24 +119,6 @@ public class FeatureSteps {
 			}
 			assertEquals("pass", map.get("TestResult"));
 			assertEquals(map.get("TestResult"), list.get(i).get(map.get("ParameterName") + "TestResult"));
-
 		}
-
-	}
-
-	@When("invoke on a wrong file")
-	public void invoke_on_a_wrong_file() {
-		list = Behavior.getExampleListWithTestResult(excelFilePath, "sheetName", 1, 'B');
-	}
-
-	@Then("get blank list because the file doesn't exist")
-	public void get_blank_list_because_the_file_doesn_t_exist() {
-		assertNotNull(list);
-		assertEquals(0, list.size());
-	}
-
-	@When("invoke on a wrong sheet")
-	public void invoke_on_a_wrong_sheet() {
-		list = Behavior.getExampleListWithTestResult(excelFilePath, sheetName, 1, 'B');
 	}
 }

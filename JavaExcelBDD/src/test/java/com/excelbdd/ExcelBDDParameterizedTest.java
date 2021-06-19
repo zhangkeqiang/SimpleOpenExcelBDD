@@ -3,7 +3,7 @@ package com.excelbdd;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class ExcelBDDParameterizedTest {
 	Map<String, String> mapParams;
 	
 	@Parameters
-    public static Collection<Object[]> prepareData()
+    public static Collection<Object[]> prepareData() throws IOException
     {
     	String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
     	return Behavior.getExampleCollection(filepath, "SpecificationByExample", 1, 'E');

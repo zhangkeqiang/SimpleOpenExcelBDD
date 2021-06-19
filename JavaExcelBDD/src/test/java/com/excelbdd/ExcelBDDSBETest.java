@@ -1,6 +1,7 @@
 package com.excelbdd;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -13,15 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ExcelBDDSBETest {
 
-	static Stream<Map<String, String>> provideExampleList() {
+	static Stream<Map<String, String>> provideExampleList() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleList(filepath, "SpecificationByExample", 1, 'E',"","V0.2");
-		return list.stream();
+		return Behavior.getExampleStream(filepath, "SpecificationByExample", 1, 'E', "Scenario", "V0.2");
 	}
 
 	@ParameterizedTest(name = "#{index} - Test with Map : {0}")
 	@MethodSource("provideExampleList")
-	void testParameterizedTestByMap(Map<String, String> mapParams) {
+	void testParameterizedTestByMap(Map<String, String> mapParams) throws IOException {
 		assertNotNull(mapParams);
 		System.out.println("Header " + mapParams.get("Header"));
 		System.out.println("SheetName " + mapParams.get("SheetName"));

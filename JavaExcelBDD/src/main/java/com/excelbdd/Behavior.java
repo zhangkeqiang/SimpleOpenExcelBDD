@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -16,38 +17,58 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Behavior {
+	private static final String SIMPLE = "SIMPLE";
 	private static final String TESTRESULT = "TESTRESULT";
 	private static final String EXPECTED = "EXPECTED";
 	private static final String ANY_MATCHER = ".*";
 	public static final String NEVER_MATCHED_STRING = "i_m_p_o_s_i_b_l_e";
-	protected static Logger log = LogManager.getLogger();
 
 	private Behavior() {
 	}
 
-	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) {
-		return getExampleList(excelPath, worksheetName, 1, 'C', "");
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) throws IOException {
+		return getExampleList(excelPath, worksheetName, 1, 'C', ANY_MATCHER);
+	}
+
+	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName)
+			throws IOException {
+		return getExampleList(excelPath, worksheetName).stream();
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn) {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, "");
+			char parameterNameColumn) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
+				NEVER_MATCHED_STRING, SIMPLE);
+	}
+
+	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
+			char parameterNameColumn) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
+				NEVER_MATCHED_STRING, SIMPLE).stream();
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher) {
+			char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
 				NEVER_MATCHED_STRING);
 	}
 
+	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
+			char parameterNameColumn, String headerMatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher).stream();
+	}
+
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
+			char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
-				"SIMPLE");
+				SIMPLE);
+	}
+
+	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
+			char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher)
+				.stream();
 	}
 
 	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnMatcher,
@@ -111,10 +132,10 @@ public class Behavior {
 	}
 
 	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn) {
+			char parameterNameColumn) throws IOException {
 		Collection<Object[]> collectionTestData = new ArrayList<>();
 		List<Map<String, String>> listTestData = getExampleList(excelPath, worksheetName, headerRow,
-				parameterNameColumn);
+				parameterNameColumn, ANY_MATCHER, NEVER_MATCHED_STRING, SIMPLE);
 		for (Map<String, String> map : listTestData) {
 			Object[] arrayObj = { map };
 			collectionTestData.add(arrayObj);
@@ -123,42 +144,42 @@ public class Behavior {
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn) {
+			int headerRow, char parameterNameColumn) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
 				NEVER_MATCHED_STRING, EXPECTED);
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn, String headerMatcher) {
+			int headerRow, char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
 				NEVER_MATCHED_STRING, EXPECTED);
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
+			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
 				EXPECTED);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn) {
+			int headerRow, char parameterNameColumn) throws IOException {
 		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn, String headerMatcher) {
+			int headerRow, char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
 				NEVER_MATCHED_STRING, TESTRESULT);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) {
+			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
 				TESTRESULT);
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnMatcher, String type) {
+			char parameterNameColumn, String headerMatcher, String headerUnMatcher, String type) throws IOException {
 		// poi get row from 0, so 1st headerRow is at 0
 		// by default, actualHeaderRow is below
 		int actualHeaderRow = headerRow - 1;
@@ -175,43 +196,37 @@ public class Behavior {
 		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
 		int parameterNameColumnNum = (int) parameterNameColumn - 65;
 
-		try (FileInputStream excelFile = new FileInputStream(new File(excelPath));
-				XSSFWorkbook workbook = new XSSFWorkbook(excelFile)) {
+		FileInputStream excelFile = new FileInputStream(new File(excelPath));
+		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
+		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
+		if (sheetTestData == null) {
+			throw new IOException(worksheetName + " does not exist.");
+		}
 
-			XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
-			if (sheetTestData == null) {
-				log.error("%s does not exist.", worksheetName);
-				return listTestSet;
-			}
+		XSSFRow rowHeader = sheetTestData.getRow(actualHeaderRow);
+		HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnMatcher, listTestSet,
+				parameterNameColumnNum, rowHeader, columnStep);
 
-			XSSFRow rowHeader = sheetTestData.getRow(actualHeaderRow);
-			HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnMatcher, listTestSet,
-					parameterNameColumnNum, rowHeader, columnStep);
+		// Get ParameterNames HashMap
+		HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
+				sheetTestData);
 
-			// Get ParameterNames HashMap
-			HashMap<Integer, String> mapParameterName = getParameterNameMap(headerRow, parameterNameColumnNum,
-					sheetTestData);
+		for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
+			int iRow = aParameterName.getKey();
+			String strParameterName = aParameterName.getValue();
+			XSSFRow rowCurrent = sheetTestData.getRow(iRow);
 
-			for (Map.Entry<Integer, String> aParameterName : mapParameterName.entrySet()) {
-				int iRow = aParameterName.getKey();
-				String strParameterName = aParameterName.getValue();
-				XSSFRow rowCurrent = sheetTestData.getRow(iRow);
-
-				for (Map.Entry<Integer, Integer> entryHeader : mapTestSetHeader.entrySet()) {
-					int iCol = entryHeader.getKey();
-					Map<String, String> mapTestSet = listTestSet.get(entryHeader.getValue());
-					putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
-					if (columnStep > 1) {
-						putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
-						if (columnStep == 3) {
-							putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
-						}
+			for (Map.Entry<Integer, Integer> entryHeader : mapTestSetHeader.entrySet()) {
+				int iCol = entryHeader.getKey();
+				Map<String, String> mapTestSet = listTestSet.get(entryHeader.getValue());
+				putParameter(strParameterName, rowCurrent, mapTestSet, iCol);
+				if (columnStep > 1) {
+					putParameter(strParameterName + "Expected", rowCurrent, mapTestSet, iCol + 1);
+					if (columnStep == 3) {
+						putParameter(strParameterName + "TestResult", rowCurrent, mapTestSet, iCol + 2);
 					}
 				}
 			}
-		} catch (IOException e) {
-			log.error("%s does not exist.", excelPath);
-			log.error(e.getStackTrace());
 		}
 		return listTestSet;
 	}

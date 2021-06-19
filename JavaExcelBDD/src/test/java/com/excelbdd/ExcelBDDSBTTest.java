@@ -5,6 +5,7 @@ package com.excelbdd;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -14,7 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 
 class ExcelBDDSBTTest {
-	static Stream<Map<String, String>> provideExampleListWithExpected() {
+	static Stream<Map<String, String>> provideExampleListWithExpected() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 2, 'B');
 		return list.stream();
@@ -43,7 +44,7 @@ class ExcelBDDSBTTest {
 		assertNull(mapParams.get("ParamName4TestResult"));
 	}
 
-	static Stream<Map<String, String>> provideExampleListWithExpectedByMatcher() {
+	static Stream<Map<String, String>> provideExampleListWithExpectedByMatcher() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 2, 'B',"Scenario");
 		return list.stream();
@@ -72,7 +73,7 @@ class ExcelBDDSBTTest {
 		assertNull(mapParams.get("ParamName4TestResult"));
 	}
 	
-	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntChar() {
+	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntChar() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 2, 'B');
 		return list.stream();
@@ -105,7 +106,7 @@ class ExcelBDDSBTTest {
 		assertEquals("pass",mapParams.get("ParamName4TestResult"));
 	}
 
-	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntCharString() {
+	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntCharString() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 2, 'B',"Scenario");
 		return list.stream();

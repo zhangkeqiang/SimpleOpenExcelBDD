@@ -5,6 +5,7 @@ import com.excelbdd.Behavior;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -38,8 +39,8 @@ public class FeatureSteps {
     }
 
     @When("Get the test dataset list")
-    public void get_the_test_dataset_list() {
-        list = Behavior.getExampleList(excelFilePath, sheetName, headerRow, parameterColumn);
+    public void get_the_test_dataset_list() throws IOException {
+        list = Behavior.getExampleList(excelFilePath, sheetName, headerRow, parameterColumn,"","fdsss","SIMPLE");
     }
 
     @Then("Test dataset list which contains {int} sets is got")
