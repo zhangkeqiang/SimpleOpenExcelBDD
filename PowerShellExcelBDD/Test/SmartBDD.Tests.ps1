@@ -14,7 +14,7 @@ Describe "Get BDD Data only by sheet" {
             -HeaderMatcher $HeaderMatcher `
             -HeaderUnmatcher $HeaderUnmatcher
 
-        Write-Host ($TestcaseList | ConvertTo-Json )
+        # Write-Host ($TestcaseList | ConvertTo-Json )
         
         $TestcaseList[0]["Header"] | Should -Be $Header1Name
         $TestcaseList[0]["ParamName1"] | Should -Be $FirstGridValue
@@ -60,7 +60,7 @@ Describe "Cover SBT" {
 
         [bool]$TestcaseList | Should -Be ($ExcelFileNameExpected -eq 'got')
         [bool]$TestcaseList | Should -Be ($SheetNameExpected -eq 'got')
-        Write-Host ($TestcaseList | ConvertTo-Json -Depth 10)
+        # Write-Host ($TestcaseList | ConvertTo-Json -Depth 10)
 
         $TestcaseList[0]["$FirstSetFirstCheckedParam"] | Should -Be $FirstSetFirstCheckedParamExpected
         $TestcaseList[0]["ParamName1"] | Should -Be $FirstSetParamName1
