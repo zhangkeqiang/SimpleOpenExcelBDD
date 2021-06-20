@@ -26,7 +26,6 @@ Feature: Get Test data Set List from Excel Specification by Testcase
         Examples:
             | SheetName | HeaderRow | ParameterColumn | ListCount |
             | SBTSheet1 | 1         | B               | 5         |
-            | SBTSheet2 | 1         | B               | 4         |
             | SBTSheet3 | 1         | D               | 6         |
 
 

@@ -40,8 +40,6 @@ public class ExcelBDDParameterizedTest {
 		System.out.println("ParameterNameColumn " + mapParams.get("ParameterNameColumn"));
 		
 		assertEquals("Scenario1", mapParams.get("Header1Name"));
-		assertEquals("V1.1", mapParams.get("FirstGridValue"));
-		assertEquals("4.4", mapParams.get("LastGridValue"));
 		assertEquals("V1.2", mapParams.get("ParamName1InSet2Value"));
 		assertEquals("V2.2", mapParams.get("ParamName2InSet2Value"));
 		assertEquals("", mapParams.get("ParamName3Value"));

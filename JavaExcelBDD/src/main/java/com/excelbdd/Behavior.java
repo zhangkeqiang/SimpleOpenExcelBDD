@@ -60,22 +60,28 @@ public class Behavior {
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
+			char parameterNameColumn, String headerMatcher, String headerUnmatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnmatcher,
 				SIMPLE);
 	}
 
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher)
+			char parameterNameColumn, String headerMatcher, String headerUnmatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnmatcher)
 				.stream();
 	}
 
-	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnMatcher,
+	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnmatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
 		String strRealHeaderMatcher = ANY_MATCHER + headerMatcher + ANY_MATCHER;
-		String strRealHeaderUnMatcher = ANY_MATCHER + headerUnMatcher + ANY_MATCHER;
+		String strRealHeaderUnmatcher;
+		if(headerUnmatcher.isEmpty() || headerUnmatcher.equals(NEVER_MATCHED_STRING)) {
+			strRealHeaderUnmatcher = NEVER_MATCHED_STRING;
+		}
+		else {
+			strRealHeaderUnmatcher = ANY_MATCHER + headerUnmatcher + ANY_MATCHER;
+		}
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, Integer> mapTestSetHeader = new HashMap<>();
 		int nTestSet = 0;
@@ -83,7 +89,7 @@ public class Behavior {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			String strHeader = cellHeader.getStringCellValue();
 			if ((strHeader != null) && (!strHeader.isEmpty()) && strHeader.matches(strRealHeaderMatcher)
-					&& (!strHeader.matches(strRealHeaderUnMatcher))) {
+					&& (!strHeader.matches(strRealHeaderUnmatcher))) {
 				mapTestSetHeader.put(iCol, nTestSet);
 				Map<String, String> mapTestSet = new HashMap<>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
@@ -156,8 +162,8 @@ public class Behavior {
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
+			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnmatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnmatcher,
 				EXPECTED);
 	}
 
@@ -173,13 +179,13 @@ public class Behavior {
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
-			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnMatcher) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnMatcher,
+			int headerRow, char parameterNameColumn, String headerMatcher, String headerUnmatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnmatcher,
 				TESTRESULT);
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnMatcher, String type) throws IOException {
+			char parameterNameColumn, String headerMatcher, String headerUnmatcher, String type) throws IOException {
 		// poi get row from 0, so 1st headerRow is at 0
 		// by default, actualHeaderRow is below
 		int actualHeaderRow = headerRow - 1;
@@ -205,7 +211,7 @@ public class Behavior {
 		}
 
 		XSSFRow rowHeader = sheetTestData.getRow(actualHeaderRow);
-		HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnMatcher, listTestSet,
+		HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnmatcher, listTestSet,
 				parameterNameColumnNum, rowHeader, columnStep);
 
 		// Get ParameterNames HashMap

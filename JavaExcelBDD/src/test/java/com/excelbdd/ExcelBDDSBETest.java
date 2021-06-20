@@ -16,12 +16,12 @@ public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		return Behavior.getExampleStream(filePath, "SpecificationByExample", 1, 'F', "Scenario", "V0");
+		return Behavior.getExampleStream(filePath, "SpecificationByExample", 1, 'F');
 	}
 
-	@ParameterizedTest(name = "#{index} - Test with Map : {0}")
+	@ParameterizedTest(name = "Test{index}:{0}")
 	@MethodSource("provideExampleList")
-	void testParameterizedTestByMap(Map<String, String> mapParams) throws IOException {
+	void testParameterizedTestFromgetExampleStream(Map<String, String> mapParams) throws IOException {
 		assertNotNull(mapParams);
 		System.out.println("Header " + mapParams.get("Header"));
 		System.out.println("SheetName " + mapParams.get("SheetName"));
@@ -43,8 +43,18 @@ public class ExcelBDDSBETest {
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
-		List<Map<String, String>> list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
+		List<Map<String, String>> list;
+		if(mapParams.get("TestResultSwitch").equals("On")) {
+			list = Behavior.getExampleListWithTestResult(filepath, mapParams.get("SheetName"), nHeaderRow,
+					charParameterNameColumn, mapParams.get("HeaderMatcher"));
+		}
+		else if(mapParams.get("ExpectedSwitch").equals("On")) {
+		list = Behavior.getExampleListWithExpected(filepath, mapParams.get("SheetName"), nHeaderRow,
 				charParameterNameColumn, mapParams.get("HeaderMatcher"));
+		}else {
+			list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
+					charParameterNameColumn, mapParams.get("HeaderMatcher"), mapParams.get("HeaderUnmatcher"));
+		}
 
 		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
 		assertEquals(TestWizard.getInt(mapParams.get("ParameterCount")),list.get(0).size());
