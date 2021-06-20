@@ -18,7 +18,6 @@ Describe "Get BDD Data only by sheet" {
         
         $TestcaseList[0]["Header"] | Should -Be $Header1Name
         $TestcaseList[0]["ParamName1"] | Should -Be $FirstGridValue
-        $TestcaseList[3]["ParamName4"] | Should -Be $LastGridValue
         $TestcaseList[1]["ParamName1"] | Should -Be $ParamName1InSet2Value
         $TestcaseList[1]["ParamName2"] | Should -Be $ParamName2InSet2Value
         $TestcaseList[0]["ParamName3"] | Should -Be $ParamName3Value
@@ -34,7 +33,7 @@ Describe "Get BDD Data only by sheet" {
         $TestcaseList[0]["ParamName4"] | Should -Be "2021/4/30"
         $TestcaseList[1]["ParamName4"] | Should -Be "0"
         $TestcaseList[2]["ParamName4"] | Should -Be "1"
-        $TestcaseList[3]["ParamName4"] | Should -Be "4.4"
+        $TestcaseList[3]["ParamName4"] | Should -Be $LastGridValue
     }
 }
 

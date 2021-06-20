@@ -28,12 +28,79 @@ public class Behavior {
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) throws IOException {
-		return getExampleList(excelPath, worksheetName, 1, 'C', ANY_MATCHER);
+		return getExampleList(excelPath, worksheetName, ANY_MATCHER);
 	}
 
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName)
 			throws IOException {
 		return getExampleList(excelPath, worksheetName).stream();
+	}
+
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, String headerMatcher)
+			throws IOException {
+		return getExampleList(excelPath, worksheetName, headerMatcher, NEVER_MATCHED_STRING);
+	}
+
+	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName,
+			String headerMatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerMatcher).stream();
+	}
+
+	@SuppressWarnings("resource")
+	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, String headerMatcher,
+			String headerUnmatcher) throws IOException {
+		// Find the Header Row and Parameter Name Column
+
+		FileInputStream excelFile = new FileInputStream(new File(excelPath));
+		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
+		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
+		if (sheetTestData == null) {
+			workbook.close();
+			excelFile.close();
+			throw new IOException(worksheetName + " does not exist.");
+		}
+
+		int headerRow = 0;
+		char parameterNameColumn = 0;
+		String type = null;
+		for (int iRow = 0; iRow < sheetTestData.getLastRowNum(); iRow++) {
+			XSSFRow rowCurrent = sheetTestData.getRow(iRow);
+			if (rowCurrent == null) {
+				continue;
+			}
+			for (int iCol = 0; iCol < rowCurrent.getLastCellNum(); iCol++) {
+				XSSFCell cellCurrent = rowCurrent.getCell(iCol);
+				if (cellCurrent == null) {
+					continue;
+				}
+				String cellValue = cellCurrent.getStringCellValue();
+				if (cellValue.contains("Parameter Name")) {
+					parameterNameColumn = (char) (iCol + 65);
+					if (rowCurrent.getCell(iCol + 1).getStringCellValue().equals("Input")) {
+						headerRow = iRow;
+						if (rowCurrent.getCell(iCol + 3).getStringCellValue().equals("Test Result")) {
+							type = TESTRESULT;
+						} else {
+							type = EXPECTED;
+						}
+					} else {
+						type = SIMPLE;
+						headerRow = iRow + 1;
+					}
+					break;
+				}
+			}
+			if (type != null) {
+				break;
+			}
+		}
+		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
+				headerUnmatcher, type);
+	}
+
+	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName,
+			String headerMatcher, String headerUnmatcher) throws IOException {
+		return getExampleList(excelPath, worksheetName, headerMatcher, headerUnmatcher).stream();
 	}
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
@@ -76,10 +143,9 @@ public class Behavior {
 		// Get Matched Column HashMap
 		String strRealHeaderMatcher = ANY_MATCHER + headerMatcher + ANY_MATCHER;
 		String strRealHeaderUnmatcher;
-		if(headerUnmatcher.isEmpty() || headerUnmatcher.equals(NEVER_MATCHED_STRING)) {
+		if (headerUnmatcher.isEmpty() || headerUnmatcher.equals(NEVER_MATCHED_STRING)) {
 			strRealHeaderUnmatcher = NEVER_MATCHED_STRING;
-		}
-		else {
+		} else {
 			strRealHeaderUnmatcher = ANY_MATCHER + headerUnmatcher + ANY_MATCHER;
 		}
 		int nMaxColumn = rowHeader.getLastCellNum();
@@ -184,8 +250,26 @@ public class Behavior {
 				TESTRESULT);
 	}
 
+	@SuppressWarnings("resource")
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher, String headerUnmatcher, String type) throws IOException {
+
+		FileInputStream excelFile = new FileInputStream(new File(excelPath));
+		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
+		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
+		if (sheetTestData == null) {
+			workbook.close();
+			excelFile.close();
+			throw new IOException(worksheetName + " does not exist.");
+		}
+
+		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
+				headerUnmatcher, type);
+	}
+
+	private static List<Map<String, String>> getExampleListFromWorksheet(FileInputStream excelFile,
+			XSSFSheet sheetTestData, int headerRow, char parameterNameColumn, String headerMatcher,
+			String headerUnmatcher, String type) throws IOException {
 		// poi get row from 0, so 1st headerRow is at 0
 		// by default, actualHeaderRow is below
 		int actualHeaderRow = headerRow - 1;
@@ -202,13 +286,6 @@ public class Behavior {
 		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
 		// poi get column from 0, so Column A's Num is 0, 65 is A's ASCII code
 		int parameterNameColumnNum = (int) parameterNameColumn - 65;
-
-		FileInputStream excelFile = new FileInputStream(new File(excelPath));
-		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
-		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
-		if (sheetTestData == null) {
-			throw new IOException(worksheetName + " does not exist.");
-		}
 
 		XSSFRow rowHeader = sheetTestData.getRow(actualHeaderRow);
 		HashMap<Integer, Integer> mapTestSetHeader = getHeaderMap(headerMatcher, headerUnmatcher, listTestSet,
@@ -235,6 +312,8 @@ public class Behavior {
 				}
 			}
 		}
+		sheetTestData.getWorkbook().close();
+		excelFile.close();
 		return listTestSet;
 	}
 
