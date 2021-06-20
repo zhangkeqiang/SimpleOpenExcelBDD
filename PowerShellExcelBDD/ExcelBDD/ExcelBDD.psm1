@@ -188,6 +188,7 @@ function Get-ExampleList {
         $HeaderRow = 1,
         [string]$ParameterNameColumn = 'C',
         [string]$HeaderMatcher,
+        [string]$HeaderUnmatcher,
         [switch]$Expected,
         [switch]$TestResult
     )
@@ -203,6 +204,7 @@ function Get-ExampleList {
         -HeaderRow $HeaderRow `
         -ParameterNameColumn $ParameterNameColumn `
         -HeaderMatcher $HeaderMatcher `
+        -HeaderUnmatcher $HeaderUnmatcher `
         -Expected:$Expected `
         -TestResult:$TestResult
 }
@@ -214,9 +216,11 @@ function Get-ExampleListFromWorksheet {
         $HeaderRow,
         [string]$ParameterNameColumn,
         [string]$HeaderMatcher,
+        [string]$HeaderUnmatcher,
         [switch]$Expected,
         [switch]$TestResult
     )
+
     if ($TestResult) {
         $ColumnStep = 3
         $CurrentRow = $HeaderRow + 2
@@ -234,8 +238,19 @@ function Get-ExampleListFromWorksheet {
     $CurrentCol = $ParamNameCol + 1
     $ColumnNumArray = @()
     while (-not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text)) {
-        if ($HeaderMatcher) {
+        if ($HeaderMatcher -and (-not $HeaderUnmatcher)) {
             if ($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text -match $HeaderMatcher) {
+                $ColumnNumArray += $CurrentCol
+            }
+        }
+        elseif ((-not $HeaderMatcher) -and $HeaderUnmatcher) {
+            if ($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text -notmatch $HeaderUnmatcher) {
+                $ColumnNumArray += $CurrentCol
+            }
+        }
+        elseif ($HeaderMatcher -and $HeaderUnmatcher) {
+            if (($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text -match $HeaderMatcher) `
+                    -and ($Worksheet.Cells.Item($HeaderRow, $CurrentCol).Text -notmatch $HeaderUnmatcher)) {
                 $ColumnNumArray += $CurrentCol
             }
         }
@@ -286,7 +301,8 @@ function Get-SmartExampleList {
     param (
         [String]$ExcelPath,
         [String]$WorksheetName,
-        [string]$HeaderMatcher
+        [string]$HeaderMatcher,
+        [string]$HeaderUnmatcher
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
     for ($iRow = 1; $iRow -le $Worksheet.Dimension.Rows; $iRow++) {
@@ -318,6 +334,7 @@ function Get-SmartExampleList {
         -HeaderRow $HeaderRow `
         -ParameterNameColumn $ParameterNameColumn `
         -HeaderMatcher $HeaderMatcher `
+        -HeaderUnmatcher $HeaderUnmatcher `
         -Expected:$Expected `
         -TestResult:$TestResult
 }

@@ -19,6 +19,7 @@ Describe "Get BDD Data" {
             -ParameterNameColumn $ParameterNameColumn `
             -HeaderRow $HeaderRow `
             -HeaderMatcher $HeaderMatcher `
+            -HeaderUnmatcher $HeaderUnmatcher `
             -Expected:($ExpectedSwitch -eq 'On') `
             -TestResult:($TestResultSwitch -eq 'On')
 

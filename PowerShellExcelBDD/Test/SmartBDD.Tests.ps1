@@ -7,15 +7,12 @@ Describe "Get BDD Data only by sheet" {
         -ParameterNameColumn F `
         -HeaderRow 1
 
-    It "Easy Success of Column List" -TestCases $BDDTestCaseList {
-        Write-Host "Easy Success of Sheet $SheetName Column $Header"
-        Write-Host "Header Row $HeaderRow"
-        Write-Host "ParameterColumn $ParameterNameColumn"
-        Write-Host "SheetName $SheetName"
-
+    It "Get-SmartExampleList" -TestCases $BDDTestCaseList {
+        Write-Host "Sheet $SheetName Column $Header"
         $TestcaseList = Get-SmartExampleList -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
-            -HeaderMatcher $HeaderMatcher
+            -HeaderMatcher $HeaderMatcher `
+            -HeaderUnmatcher $HeaderUnmatcher
 
         Write-Host ($TestcaseList | ConvertTo-Json )
         
@@ -38,23 +35,5 @@ Describe "Get BDD Data only by sheet" {
         $TestcaseList[1]["ParamName4"] | Should -Be "0"
         $TestcaseList[2]["ParamName4"] | Should -Be "1"
         $TestcaseList[3]["ParamName4"] | Should -Be "4.4"
-    }
-}
-
-Describe "Test filter the dashboard by department" {
-    $ExampleList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'StoryExample1' `
-        -ParameterNameColumn E `
-        -HeaderRow 3
-    It "Run Example one by one" -TestCases $ExampleList {
-        #The below variables are generated automatically from Excel
-        Write-Host "===$Header==="
-        Write-Host $SelectedView
-        Write-Host $DepartmentCount
-        Write-Host $SelectedDepartment
-        Write-Host $FullDepartmentName
-        Write-Host $DepartmentLocation
-        Write-Host $DepartmentCurrentMonthKPI1
-        Write-Host $DepartmentCurrentMonthKPI2
     }
 }

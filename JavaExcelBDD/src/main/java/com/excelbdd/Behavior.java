@@ -22,7 +22,7 @@ public class Behavior {
 	private static final String TESTRESULT = "TESTRESULT";
 	private static final String EXPECTED = "EXPECTED";
 	private static final String ANY_MATCHER = ".*";
-	public static final String NEVER_MATCHED_STRING = "i_m_p_o_s_i_b_l_e";
+	public static final String NEVER_MATCHED_STRING = "i_m_p_o_s_i_b_l_e_matcher";
 
 	private Behavior() {
 	}
