@@ -3,10 +3,11 @@ $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 Describe "Get BDD Data" {
 
     $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'SpecificationByExample' `
         -ParameterNameColumn F `
         -HeaderRow 1 `
         -HeaderMatcher Scenario
+
+    # -WorksheetName 'SpecificationByExample' `
 
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
         Write-Host "Easy Success of Sheet $SheetName Column $Header"

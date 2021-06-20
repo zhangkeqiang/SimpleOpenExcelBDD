@@ -29,7 +29,12 @@ function Get-ExcelWorksheet {
         # Let Excel run in the backend, comment out below line, if debug, remove below #
         # $script:appExcel.Visible = $true
         $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
-        $Worksheet = $WorkBook.Sheets[$WorksheetName]
+        if ($WorksheetName) {
+            $Worksheet = $WorkBook.Sheets[$WorksheetName]
+        }
+        else {
+            $Worksheet = $WorkBook.Sheets[0]
+        }
     }
     return $Worksheet
 }
@@ -49,43 +54,13 @@ function Close-ExcelWorksheet {
         Write-Debug "Excel is closed."
     }
 }
-<#
-.Description
-Get worksheet information as a hashtable list according to Header Mapping
-#>
-# function Get-MZHashTableListFromWorksheet {
-#     param (
-#         $Worksheet,
-#         $HeaderMapping,
-#         $MandatoryColumnNum = 1,
-#         $StartRow = 3,
-#         $MaxRow = 100
-#     )
-#     $List = [System.Collections.ArrayList]::new()
-#     for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-#         if (Test-MZHasValue $Worksheet.Cells.Item($iRow, $MandatoryColumnNum).Text) {
-#             #This Row has values
-#             $RowSet = @{}
-#             for ($iCol = 1; $iCol -lt $HeaderMapping.count; $iCol++) {
-#                 if (Test-MZHasValue $HeaderMapping[$iCol][1]) {
-#                     $RowSet[$HeaderMapping[$iCol][1]] = $Worksheet.Cells.Item($iRow, $iCol).Text
-#                 }
-#             }
-#             [void]$List.Add($RowSet)
-#         }
-#     }
-#     Close-ExcelWorksheet | Out-Null
-#     return $List
-# }
-
-
 
 <#
 .Description
 Get a Hashtable list from excel sheet, one row for one hashtable
 .Example
     #Get TestcaseDataList for Pester Testcase
-    $TestcaseDataList = Get-MZHashTableListFromExcel -WorksheetName SheetName `
+    $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
         -ExcelPath "${StartPath}${SEP}IaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
         -HeaderRow 1
     It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
@@ -94,10 +69,10 @@ Get a Hashtable list from excel sheet, one row for one hashtable
 #>
 function Get-DataTable {
     param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
-        $StartColumn = 'A',
-        $HeaderRow = 1
+        [string]$ExcelPath,
+        [string]$WorksheetName,
+        [int]$HeaderRow = 1,
+        [string]$StartColumn = 'A'
     )
     $IntStartColumn = [int][char]($StartColumn.ToUpper()) - 64
     $RawDataTableA = Import-Excel -Path $ExcelPath -WorksheetName $WorksheetName `
@@ -110,46 +85,6 @@ function Get-DataTable {
     }
     return $DataTableA
 }
-# function Get-MZHashTableListFromExcel {
-#     param (
-#         [String]$ExcelPath,
-#         [String]$WorksheetName,
-#         $MandatoryColumnNum = 1,
-#         $HeaderRow = 1
-#     )
-#     $MaxRow = 1000
-#     $MaxCol = 100
-#     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-#     if ($null -eq $Worksheet ) {
-#         Write-MZDebug "'$WorksheetName' sheet doesn't exist in $ExcelPath."
-#         return $null
-#     }
-#     Write-MZDebug "'$WorksheetName' sheet exists in $ExcelPath."
-#     $List = [System.Collections.ArrayList]::new()
-#     $StartRow = $HeaderRow + 1
-#     for ($iRow = $StartRow; $iRow -lt $MaxRow; $iRow++) {
-#         if (Test-MZHasValue $Worksheet.Cells.Item($iRow, $MandatoryColumnNum).Text) {
-#             #This Row has values
-#             $RowSet = @{}
-#             for ($iCol = 1; $iCol -lt $MaxCol; $iCol++) {
-#                 if (Test-MZHasValue $Worksheet.Cells.Item($HeaderRow, $iCol).Text) {
-#                     $RowSet[$Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
-#                 }
-#                 else {
-#                     break
-#                 }
-#             }
-#             [void]$List.Add($RowSet)
-#         }
-#         else {
-#             break
-#         }
-#     }
-#     Close-ExcelWorksheet | Out-Null
-#     return $List
-# }
-
-
 
 <#
 .Description
@@ -185,7 +120,7 @@ function Get-ExampleList {
     param (
         [string]$ExcelPath,
         [string]$WorksheetName,
-        $HeaderRow = 1,
+        [int]$HeaderRow = 1,
         [string]$ParameterNameColumn = 'C',
         [string]$HeaderMatcher,
         [string]$HeaderUnmatcher,
@@ -213,7 +148,7 @@ function Get-ExampleList {
 function Get-ExampleListFromWorksheet {
     param (
         $Worksheet,
-        $HeaderRow,
+        [int]$HeaderRow,
         [string]$ParameterNameColumn,
         [string]$HeaderMatcher,
         [string]$HeaderUnmatcher,
@@ -299,8 +234,8 @@ function Get-ExampleListFromWorksheet {
 
 function Get-SmartExampleList {
     param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
+        [string]$ExcelPath,
+        [string]$WorksheetName,
         [string]$HeaderMatcher,
         [string]$HeaderUnmatcher
     )

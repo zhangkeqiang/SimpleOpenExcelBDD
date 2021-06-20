@@ -1,10 +1,8 @@
 
 Describe "DataTable" {
     $ExcelBDDFilePath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
-    $DataTableList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'DataTableBDD' `
-        -ParameterNameColumn D `
-        -HeaderRow 4 `
+    $DataTableList = Get-SmartExampleList -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'DataTableBDD' 
 
     It "Check DataTable Reading" -TestCases $DataTableList {
         $ExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
@@ -17,6 +15,8 @@ Describe "DataTable" {
         $DataTable1[5]["Header8"] | Should -Be $LastGridValue
         $DataTable1[5].Count | Should -Be $ColumnCount
     }
+
+    
 }
 
 Describe "Use ImportExcel Only" {
