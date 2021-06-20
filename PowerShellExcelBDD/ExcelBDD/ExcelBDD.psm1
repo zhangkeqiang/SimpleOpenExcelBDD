@@ -150,6 +150,7 @@ function Get-DataTable {
 # }
 
 
+
 <#
 .Description
 Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
@@ -182,11 +183,11 @@ alias is Get-TestcaseList
 #>
 function Get-ExampleList {
     param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
+        [string]$ExcelPath,
+        [string]$WorksheetName,
         $HeaderRow = 1,
-        $ParameterNameColumn = 'C',
-        $HeaderMatcher,
+        [string]$ParameterNameColumn = 'C',
+        [string]$HeaderMatcher,
         [switch]$Expected,
         [switch]$TestResult
     )
@@ -198,6 +199,24 @@ function Get-ExampleList {
         $HeaderRow = [int]$HeaderRow
     }
 
+    return Get-ExampleListFromWorksheet -Worksheet $Worksheet `
+        -HeaderRow $HeaderRow `
+        -ParameterNameColumn $ParameterNameColumn `
+        -HeaderMatcher $HeaderMatcher `
+        -Expected:$Expected `
+        -TestResult:$TestResult
+}
+
+
+function Get-ExampleListFromWorksheet {
+    param (
+        $Worksheet,
+        $HeaderRow,
+        [string]$ParameterNameColumn,
+        [string]$HeaderMatcher,
+        [switch]$Expected,
+        [switch]$TestResult
+    )
     if ($TestResult) {
         $ColumnStep = 3
         $CurrentRow = $HeaderRow + 2
@@ -261,4 +280,44 @@ function Get-ExampleList {
     }
     Close-ExcelWorksheet | Out-Null
     return $List
+}
+
+function Get-SmartExampleList {
+    param (
+        [String]$ExcelPath,
+        [String]$WorksheetName,
+        [string]$HeaderMatcher
+    )
+    $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
+    for ($iRow = 1; $iRow -le $Worksheet.Dimension.Rows; $iRow++) {
+        for ($iColumn = 1; $iColumn -lt $Worksheet.Dimension.Columns; $iColumn++) {
+            if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match 'Parameter Name') {
+                # [int][char]($ParameterNameColumn.ToUpper()) - 64
+                $ParameterNameColumn = [string][char]($iColumn + 64)
+                if ($Worksheet.Cells.Item($iRow, $iColumn + 1).Text -match 'Input') {
+                    $HeaderRow = $iRow - 1
+                    if ($Worksheet.Cells.Item($iRow, $iColumn + 3).Text -match 'Test Result') {
+                        $TestResult = $true
+                    }
+                    else {
+                        $Expected = $true
+                    }
+                }
+                else {
+                    $HeaderRow = $iRow
+                }
+                Break
+            }
+        }
+        if ($HeaderRow) {
+            Break
+        }
+    }
+
+    return Get-ExampleListFromWorksheet -Worksheet $Worksheet `
+        -HeaderRow $HeaderRow `
+        -ParameterNameColumn $ParameterNameColumn `
+        -HeaderMatcher $HeaderMatcher `
+        -Expected:$Expected `
+        -TestResult:$TestResult
 }
