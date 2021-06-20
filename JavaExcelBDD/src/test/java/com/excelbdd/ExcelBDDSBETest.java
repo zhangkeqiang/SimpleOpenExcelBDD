@@ -16,7 +16,7 @@ public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		return Behavior.getExampleStream(filePath, "SpecificationByExample", 1, 'F', "Scenario", "V0.2");
+		return Behavior.getExampleStream(filePath, "SpecificationByExample", 1, 'F', "Scenario", "V0");
 	}
 
 	@ParameterizedTest(name = "#{index} - Test with Map : {0}")
@@ -28,15 +28,14 @@ public class ExcelBDDSBETest {
 		System.out.println("HeaderRow " + mapParams.get("HeaderRow"));
 		System.out.println("ParameterNameColumn " + mapParams.get("ParameterNameColumn"));
 		assertEquals("Scenario1", mapParams.get("Header1Name"));
-		assertEquals("V1.1", mapParams.get("FirstGridValue"));
-		assertEquals("4.4", mapParams.get("LastGridValue"));
 		assertEquals("V1.2", mapParams.get("ParamName1InSet2Value"));
-		assertEquals("V2.2", mapParams.get("ParamName2InSet2Value"));
 		assertEquals("", mapParams.get("ParamName3Value"));
 
 		assertEquals("3.0", mapParams.get("MaxBlankThreshold"));
 		System.out.println("HeaderMatcher " + mapParams.get("HeaderMatcher"));
-		assertEquals("Scenario", mapParams.get("HeaderMatcher"));
+		assertEquals(true, mapParams.get("Header").matches("Scenario.*"));
+		assertEquals(false, mapParams.get("Header").matches("V0.*"));
+
 		
 
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
@@ -59,13 +58,13 @@ public class ExcelBDDSBETest {
 		int testDataSetCount = TestWizard.getInt(mapParams.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
 
-		assertEquals("V1.1", list.get(0).get("ParamName1"));
-		assertEquals("V1.2", list.get(1).get("ParamName1"));
+		assertEquals(mapParams.get("FirstGridValue"), list.get(0).get("ParamName1"));
+		assertEquals(mapParams.get("ParamName1InSet2Value"), list.get(1).get("ParamName1"));
 		assertEquals("V1.3", list.get(2).get("ParamName1"));
 		assertEquals("V1.4", list.get(3).get("ParamName1"));
 
 		assertEquals("V2.1", list.get(0).get("ParamName2"));
-		assertEquals("V2.2", list.get(1).get("ParamName2"));
+		assertEquals(mapParams.get("ParamName2InSet2Value"), list.get(1).get("ParamName2"));
 
 		assertEquals("", list.get(0).get("ParamName3"));
 		assertEquals("", list.get(1).get("ParamName3"));
@@ -75,7 +74,7 @@ public class ExcelBDDSBETest {
 		assertEquals("2021/4/30", list.get(0).get("ParamName4"));
 		assertEquals("false", list.get(1).get("ParamName4"));
 		assertEquals("true", list.get(2).get("ParamName4"));
-		assertEquals("4.4", list.get(3).get("ParamName4"));
+		assertEquals(mapParams.get("LastGridValue"), list.get(3).get("ParamName4"));
 	}
 
 	@Test
