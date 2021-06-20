@@ -17,8 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class ExcelBDDSBTTest {
 	static Stream<Map<String, String>> provideExampleListWithExpected() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 1, 'B');
-		return list.stream();
+		return Behavior.getExampleStream(filepath, "Expected1", TestWizard.ANY_MATCHER, TestWizard.NEVER_MATCHED_STRING);
 	}
 	/**
 	 * Test method for {@link com.excelbdd.Behavior#getExampleListWithExpected(java.lang.String, java.lang.String, int, char)}.

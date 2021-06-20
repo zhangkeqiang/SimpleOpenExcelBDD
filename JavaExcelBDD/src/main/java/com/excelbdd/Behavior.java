@@ -21,14 +21,18 @@ public class Behavior {
 	private static final String SIMPLE = "SIMPLE";
 	private static final String TESTRESULT = "TESTRESULT";
 	private static final String EXPECTED = "EXPECTED";
-	private static final String ANY_MATCHER = ".*";
-	public static final String NEVER_MATCHED_STRING = "i_m_p_o_s_i_b_l_e_matcher";
-
 	private Behavior() {
 	}
 
+	
+	/**
+	 * @param excelPath
+	 * @param worksheetName
+	 * @return Example List
+	 * @throws IOException
+	 */
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName) throws IOException {
-		return getExampleList(excelPath, worksheetName, ANY_MATCHER);
+		return getExampleList(excelPath, worksheetName, TestWizard.ANY_MATCHER);
 	}
 
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName)
@@ -38,7 +42,7 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, String headerMatcher)
 			throws IOException {
-		return getExampleList(excelPath, worksheetName, headerMatcher, NEVER_MATCHED_STRING);
+		return getExampleList(excelPath, worksheetName, headerMatcher, TestWizard.NEVER_MATCHED_STRING);
 	}
 
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName,
@@ -62,7 +66,7 @@ public class Behavior {
 
 		int headerRow = 0;
 		char parameterNameColumn = 0;
-		String type = null;
+		String columnType = null;
 		for (int iRow = 0; iRow < sheetTestData.getLastRowNum(); iRow++) {
 			XSSFRow rowCurrent = sheetTestData.getRow(iRow);
 			if (rowCurrent == null) {
@@ -79,23 +83,23 @@ public class Behavior {
 					if (rowCurrent.getCell(iCol + 1).getStringCellValue().equals("Input")) {
 						headerRow = iRow;
 						if (rowCurrent.getCell(iCol + 3).getStringCellValue().equals("Test Result")) {
-							type = TESTRESULT;
+							columnType = TESTRESULT;
 						} else {
-							type = EXPECTED;
+							columnType = EXPECTED;
 						}
 					} else {
-						type = SIMPLE;
+						columnType = SIMPLE;
 						headerRow = iRow + 1;
 					}
 					break;
 				}
 			}
-			if (type != null) {
+			if (columnType != null) {
 				break;
 			}
 		}
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
-				headerUnmatcher, type);
+				headerUnmatcher, columnType);
 	}
 
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName,
@@ -105,22 +109,41 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
-				NEVER_MATCHED_STRING, SIMPLE);
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, TestWizard.ANY_MATCHER,
+				TestWizard.NEVER_MATCHED_STRING, SIMPLE);
 	}
 
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
-				NEVER_MATCHED_STRING, SIMPLE).stream();
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, TestWizard.ANY_MATCHER,
+				TestWizard.NEVER_MATCHED_STRING, SIMPLE).stream();
 	}
 
+	
+	/**
+	 * @param excelPath
+	 * @param worksheetName
+	 * @param headerRow
+	 * @param parameterNameColumn
+	 * @param headerMatcher
+	 * @return Example list
+	 * @throws IOException
+	 */
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
-				NEVER_MATCHED_STRING);
+				TestWizard.NEVER_MATCHED_STRING);
 	}
 
+	/**
+	 * @param excelPath
+	 * @param worksheetName
+	 * @param headerRow
+	 * @param parameterNameColumn
+	 * @param headerMatcher
+	 * @return Example Stream
+	 * @throws IOException
+	 */
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher).stream();
@@ -132,6 +155,7 @@ public class Behavior {
 				SIMPLE);
 	}
 
+	
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher, String headerUnmatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnmatcher)
@@ -141,12 +165,12 @@ public class Behavior {
 	private static HashMap<Integer, Integer> getHeaderMap(String headerMatcher, String headerUnmatcher,
 			ArrayList<Map<String, String>> listTestSet, int parameterNameColumnNum, XSSFRow rowHeader, int step) {
 		// Get Matched Column HashMap
-		String strRealHeaderMatcher = ANY_MATCHER + headerMatcher + ANY_MATCHER;
+		String strRealHeaderMatcher = TestWizard.makeMatcherString(headerMatcher);
 		String strRealHeaderUnmatcher;
-		if (headerUnmatcher.isEmpty() || headerUnmatcher.equals(NEVER_MATCHED_STRING)) {
-			strRealHeaderUnmatcher = NEVER_MATCHED_STRING;
+		if (headerUnmatcher.isEmpty() || headerUnmatcher.equals(TestWizard.NEVER_MATCHED_STRING)) {
+			strRealHeaderUnmatcher = TestWizard.NEVER_MATCHED_STRING;
 		} else {
-			strRealHeaderUnmatcher = ANY_MATCHER + headerUnmatcher + ANY_MATCHER;
+			strRealHeaderUnmatcher = TestWizard.makeMatcherString(headerUnmatcher);
 		}
 		int nMaxColumn = rowHeader.getLastCellNum();
 		HashMap<Integer, Integer> mapTestSetHeader = new HashMap<>();
@@ -166,12 +190,6 @@ public class Behavior {
 		return mapTestSetHeader;
 	}
 
-	/**
-	 * @param parameterStartRow
-	 * @param parameterNameColumnNum
-	 * @param sheetTestData
-	 * @return
-	 */
 	private static HashMap<Integer, String> getParameterNameMap(int parameterStartRow, int parameterNameColumnNum,
 			XSSFSheet sheetTestData) {
 		HashMap<Integer, String> mapParameterName = new HashMap<>();
@@ -207,7 +225,7 @@ public class Behavior {
 			char parameterNameColumn) throws IOException {
 		Collection<Object[]> collectionTestData = new ArrayList<>();
 		List<Map<String, String>> listTestData = getExampleList(excelPath, worksheetName, headerRow,
-				parameterNameColumn, ANY_MATCHER, NEVER_MATCHED_STRING, SIMPLE);
+				parameterNameColumn, TestWizard.ANY_MATCHER, TestWizard.NEVER_MATCHED_STRING, SIMPLE);
 		for (Map<String, String> map : listTestData) {
 			Object[] arrayObj = { map };
 			collectionTestData.add(arrayObj);
@@ -217,14 +235,14 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn) throws IOException {
-		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER,
-				NEVER_MATCHED_STRING, EXPECTED);
+		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, TestWizard.ANY_MATCHER,
+				TestWizard.NEVER_MATCHED_STRING, EXPECTED);
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
-				NEVER_MATCHED_STRING, EXPECTED);
+				TestWizard.NEVER_MATCHED_STRING, EXPECTED);
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
@@ -235,13 +253,13 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn) throws IOException {
-		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, ANY_MATCHER);
+		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, TestWizard.ANY_MATCHER);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn, String headerMatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher,
-				NEVER_MATCHED_STRING, TESTRESULT);
+				TestWizard.NEVER_MATCHED_STRING, TESTRESULT);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
@@ -252,7 +270,7 @@ public class Behavior {
 
 	@SuppressWarnings("resource")
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnmatcher, String type) throws IOException {
+			char parameterNameColumn, String headerMatcher, String headerUnmatcher, String columnType) throws IOException {
 
 		FileInputStream excelFile = new FileInputStream(new File(excelPath));
 		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
@@ -264,22 +282,22 @@ public class Behavior {
 		}
 
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
-				headerUnmatcher, type);
+				headerUnmatcher, columnType);
 	}
 
 	private static List<Map<String, String>> getExampleListFromWorksheet(FileInputStream excelFile,
 			XSSFSheet sheetTestData, int headerRow, char parameterNameColumn, String headerMatcher,
-			String headerUnmatcher, String type) throws IOException {
+			String headerUnmatcher, String columnType) throws IOException {
 		// poi get row from 0, so 1st headerRow is at 0
 		// by default, actualHeaderRow is below
 		int actualHeaderRow = headerRow - 1;
 		int actualParameterStartRow = headerRow;
 		int columnStep = 1;
-		if (TESTRESULT.equals(type)) {
+		if (TESTRESULT.equals(columnType)) {
 			// because of input/expected/testresult row, the below -2
 			actualParameterStartRow = headerRow + 1;
 			columnStep = 3;
-		} else if (EXPECTED.equals(type)) {
+		} else if (EXPECTED.equals(columnType)) {
 			actualParameterStartRow = headerRow + 1;
 			columnStep = 2;
 		}

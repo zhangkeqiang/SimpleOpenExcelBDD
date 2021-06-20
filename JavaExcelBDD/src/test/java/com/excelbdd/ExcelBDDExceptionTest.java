@@ -14,8 +14,7 @@ class ExcelBDDExceptionTest {
 
 	static Stream<Map<String, String>> provideWrongFileExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filePath, "WrongFile", 1, 'C');
-		return list.stream();
+		return Behavior.getExampleStream(filePath, "WrongFile", "Wrong");
 	}
 
 	@ParameterizedTest(name = "#{index}-TestException: {0}")
@@ -33,7 +32,7 @@ class ExcelBDDExceptionTest {
 		System.out.println(exception.toString());
 		System.out.println(exception.getClass().getSimpleName());
 		assertEquals(mapParams.get("ExcelFileNameExpected"), exception.getClass().getSimpleName());
-		assertTrue(exception.getMessage().indexOf(mapParams.get("SheetNameExpected")) >= 0);
+		assertTrue(exception.getMessage().contains(mapParams.get("SheetNameExpected")));
 	}
 	
 	static Stream<Map<String, String>> provideWrongOtherExampleList() throws IOException {
