@@ -3,13 +3,11 @@ $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 Describe "Get BDD Data only by sheet" {
 
     $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'SmartBDD' `
-        -ParameterNameColumn F `
-        -HeaderRow 1
+        -WorksheetName 'SmartBDD' 
 
     It "Get-SmartExampleList" -TestCases $BDDTestCaseList {
         Write-Host "Sheet $SheetName Column $Header"
-        $TestcaseList = Get-SmartExampleList -ExcelPath $ExcelBDDFilePath `
+        $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
             -HeaderMatcher $HeaderMatcher `
             -HeaderUnmatcher $HeaderUnmatcher
@@ -38,9 +36,9 @@ Describe "Get BDD Data only by sheet" {
 }
 
 Describe "Cover SBT" {
-    $SpecificationByTestcaseList = Get-SmartExampleList -ExcelPath $ExcelBDDFilePath `
-    -WorksheetName 'SpecificationByTestcase' 
 
+    $SpecificationByTestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'SpecificationByTestcase' 
     It "SpecificationByTestcase" -Testcases $SpecificationByTestcaseList {
         $Error.Clear()
 
@@ -52,7 +50,7 @@ Describe "Cover SBT" {
         Write-Host "HeaderRow:"$HeaderRow
 
         $TestExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
-        $TestcaseList = Get-SmartExampleList -ExcelPath $TestExcelPath `
+        $TestcaseList = Get-ExampleList -ExcelPath $TestExcelPath `
             -WorksheetName  $SheetName 
         
         $Error.Count | Should -Be 0

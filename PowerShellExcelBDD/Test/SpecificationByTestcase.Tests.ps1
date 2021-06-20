@@ -3,10 +3,7 @@ $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 Describe "Get Speicification by Example & Testcase" {
     
     $SpecificationByTestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'SpecificationByTestcase' `
-        -ParameterNameColumn F `
-        -HeaderRow 3 `
-        -TestResult
+        -WorksheetName 'SpecificationByTestcase' 
 
     It "SpecificationByTestcase" -Testcases $SpecificationByTestcaseList {
         $Error.Clear()
@@ -20,11 +17,7 @@ Describe "Get Speicification by Example & Testcase" {
 
         $TestExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
         $TestcaseList = Get-ExampleList -ExcelPath $TestExcelPath `
-            -WorksheetName  $SheetName `
-            -ParameterNameColumn $ParameterNameColumn `
-            -HeaderRow $HeaderRow `
-            -Expected:($ExpectedSwitch -eq 'On') `
-            -TestResult:($TestResultSwitch -eq 'On')
+            -WorksheetName  $SheetName 
         
         $Error.Count | Should -Be 0
 

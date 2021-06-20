@@ -13,7 +13,7 @@ function Get-ExcelWorksheet {
         [String]$WorksheetName
     )
     if (-not (Test-Path $ExcelPath)) {
-        throw "$ExcelPath file doesn't exist."
+        throw "File $ExcelPath does not exist."
     }
     try {
         $script:appExcel = Open-ExcelPackage -Path $ExcelPath
@@ -35,6 +35,9 @@ function Get-ExcelWorksheet {
         else {
             $Worksheet = $WorkBook.Sheets[0]
         }
+    }
+    if ($null -eq $Worksheet ) {
+        throw "$WorksheetName does not exist."
     }
     return $Worksheet
 }
@@ -91,15 +94,17 @@ function Get-DataTable {
 Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
 alias is Get-TestcaseList
 .Example
+Describe "Test Get-ExampleList" {
     use default HeaderRow which is 1, and default ParameterNameColumn which is C
-    $ExampleList = Get-ExampleList -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
+    $ExampleList = Get-ExampleListByHeader -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
     It "Easy Success of SBE" -TestCases $ExampleList {
         [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
         [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
     }
+}
 
-    Describe "Test filter the dashboard by department" {
-    $ExampleList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+Describe "Test filter the dashboard by department" {
+    $ExampleList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'StoryExample1' `
         -ParameterNameColumn E `
         -HeaderRow 3
@@ -116,7 +121,7 @@ alias is Get-TestcaseList
     }
 }
 #>
-function Get-ExampleList {
+function Get-ExampleListByHeader {
     param (
         [string]$ExcelPath,
         [string]$WorksheetName,
@@ -128,9 +133,7 @@ function Get-ExampleList {
         [switch]$TestResult
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-    if ($null -eq $Worksheet ) {
-        return $null
-    }
+
     if ($HeaderRow.GetType().Name -eq 'String') {
         $HeaderRow = [int]$HeaderRow
     }
@@ -197,7 +200,7 @@ function Get-ExampleListFromWorksheet {
 
     #Get Parameter Row Array
     $RowNumArray = @()
-    
+
     $ContinuousBlankCount = 0
     do {
         if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($CurrentRow, $ParamNameCol).Text)) {
@@ -232,7 +235,37 @@ function Get-ExampleListFromWorksheet {
     return $List
 }
 
-function Get-SmartExampleList {
+
+<#
+.Description
+Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
+
+.Example
+Describe "Test Get-ExampleList" {
+    $ExampleList = Get-ExampleList -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
+    It "Easy Success of SBE" -TestCases $ExampleList {
+        [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
+        [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
+    }
+}
+
+Describe "Test filter the dashboard by department" {
+    $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'StoryExample1'
+    It "Run Example one by one" -TestCases $TestcaseList {
+        #The below variables are generated automatically from Excel
+        Write-Host "===$Header==="
+        Write-Host $SelectedView
+        Write-Host $DepartmentCount
+        Write-Host $SelectedDepartment
+        Write-Host $FullDepartmentName
+        Write-Host $DepartmentLocation
+        Write-Host $DepartmentCurrentMonthKPI1
+        Write-Host $DepartmentCurrentMonthKPI2
+    }
+}
+#>
+function Get-ExampleList {
     param (
         [string]$ExcelPath,
         [string]$WorksheetName,

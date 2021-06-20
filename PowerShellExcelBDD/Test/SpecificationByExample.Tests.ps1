@@ -2,7 +2,7 @@ $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 
 Describe "Get BDD Data" {
 
-    $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+    $BDDTestCaseList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
         -ParameterNameColumn F `
         -HeaderRow 1 `
         -HeaderMatcher Scenario
@@ -17,12 +17,8 @@ Describe "Get BDD Data" {
 
         $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
-            -ParameterNameColumn $ParameterNameColumn `
-            -HeaderRow $HeaderRow `
             -HeaderMatcher $HeaderMatcher `
-            -HeaderUnmatcher $HeaderUnmatcher `
-            -Expected:($ExpectedSwitch -eq 'On') `
-            -TestResult:($TestResultSwitch -eq 'On')
+            -HeaderUnmatcher $HeaderUnmatcher 
 
         Write-Host ($TestcaseList | ConvertTo-Json )
         

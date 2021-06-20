@@ -1,7 +1,7 @@
 
 Describe "DataTable" {
     $ExcelBDDFilePath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
-    $DataTableList = Get-SmartExampleList -ExcelPath $ExcelBDDFilePath `
+    $DataTableList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'DataTableBDD' 
 
     It "Check DataTable Reading" -TestCases $DataTableList {
@@ -16,7 +16,7 @@ Describe "DataTable" {
         $DataTable1[5].Count | Should -Be $ColumnCount
     }
 
-    
+
 }
 
 Describe "Use ImportExcel Only" {
