@@ -18,4 +18,8 @@ public class TestWizard {
 			System.out.println(String.format("%s --- %s", param.getKey(), param.getValue()));
 		}
 	}
+
+	public static int getInt(String string) {
+		return Double.valueOf(string).intValue();
+	}
 }

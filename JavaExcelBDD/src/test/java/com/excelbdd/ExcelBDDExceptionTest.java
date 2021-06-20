@@ -12,18 +12,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class ExcelBDDExceptionTest {
 
-	static Stream<Map<String, String>> provideWrongExampleList() throws IOException {
+	static Stream<Map<String, String>> provideWrongFileExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filePath, "Exceptions", 1, 'C');
+		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filePath, "WrongFile", 1, 'C');
 		return list.stream();
 	}
 
 	@ParameterizedTest(name = "#{index}-TestException: {0}")
-	@MethodSource("provideWrongExampleList")
-	void testGetExampleListStringString(Map<String, String> mapParams) {
+	@MethodSource("provideWrongFileExampleList")
+	void testGetWrongFileExampleList(Map<String, String> mapParams) {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/"
 				+ mapParams.get("ExcelFileName");
-		int headerRow = Behavior.getInt(mapParams.get("HeaderRow"));
+		int headerRow = TestWizard.getInt(mapParams.get("HeaderRow"));
 		char parameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		Throwable exception = assertThrows(IOException.class, () -> {
 			List<Map<String, String>> targetlist = Behavior.getExampleListWithExpected(filepath,
@@ -34,5 +34,25 @@ class ExcelBDDExceptionTest {
 		System.out.println(exception.getClass().getSimpleName());
 		assertEquals(mapParams.get("ExcelFileNameExpected"), exception.getClass().getSimpleName());
 		assertTrue(exception.getMessage().indexOf(mapParams.get("SheetNameExpected")) >= 0);
+	}
+	
+	static Stream<Map<String, String>> provideWrongOtherExampleList() throws IOException {
+		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
+		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filePath, "WrongOther", 1, 'C');
+		return list.stream();
+	}
+
+	@ParameterizedTest(name = "#{index}-TestException: {0}")
+	@MethodSource("provideWrongOtherExampleList")
+	void testGetWrongOtherExampleList(Map<String, String> mapParams) throws IOException {
+		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/"
+				+ mapParams.get("ExcelFileName");
+		int headerRow = TestWizard.getInt(mapParams.get("HeaderRow"));
+		char parameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
+		List<Map<String, String>> targetList = Behavior.getExampleList(filepath,
+					mapParams.get("SheetName"), headerRow, parameterNameColumn);
+		
+		assertEquals(TestWizard.getInt(mapParams.get("HeaderRowExpected")),targetList.size());
+		assertEquals(TestWizard.getInt(mapParams.get("ParameterNameColumnExpected")),targetList.get(0).size());
 	}
 }

@@ -48,7 +48,7 @@ public class ExcelBDDSBETest {
 				charParameterNameColumn, mapParams.get("HeaderMatcher"));
 
 		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
-		assertEquals(Behavior.getInt(mapParams.get("ParameterCount")),list.get(0).size());
+		assertEquals(TestWizard.getInt(mapParams.get("ParameterCount")),list.get(0).size());
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
@@ -56,7 +56,7 @@ public class ExcelBDDSBETest {
 
 		// int testDataSetCount =
 		// Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
-		int testDataSetCount = Behavior.getInt(mapParams.get("TestDataSetCount"));
+		int testDataSetCount = TestWizard.getInt(mapParams.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
 
 		assertEquals("V1.1", list.get(0).get("ParamName1"));
@@ -80,9 +80,9 @@ public class ExcelBDDSBETest {
 
 	@Test
 	void testgetInt() {
-		assertEquals(5, Behavior.getInt("5.5666"));
-		assertEquals(5, Behavior.getInt("5"));
-		assertEquals(5, Behavior.getInt("5.99999"));
+		assertEquals(5, TestWizard.getInt("5.5666"));
+		assertEquals(5, TestWizard.getInt("5"));
+		assertEquals(5, TestWizard.getInt("5.99999"));
 	}
 
 	@Test

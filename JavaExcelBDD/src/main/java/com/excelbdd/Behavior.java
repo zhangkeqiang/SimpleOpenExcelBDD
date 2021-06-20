@@ -258,8 +258,4 @@ public class Behavior {
 			mapTestSet.put(strParameterName, cellCurrent.getRawValue());
 		}
 	}
-
-	public static int getInt(String string) {
-		return Double.valueOf(string).intValue();
-	}
 }
