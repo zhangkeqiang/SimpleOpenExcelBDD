@@ -13,7 +13,7 @@ function Get-ExcelWorksheet {
         [String]$WorksheetName
     )
     if (-not (Test-Path $ExcelPath)) {
-        throw "File $ExcelPath does not exist."
+        throw "$ExcelPath file does not exist."
     }
     try {
         $script:appExcel = Open-ExcelPackage -Path $ExcelPath
@@ -37,7 +37,7 @@ function Get-ExcelWorksheet {
         }
     }
     if ($null -eq $Worksheet ) {
-        throw "$WorksheetName does not exist."
+        throw "$WorksheetName sheet does not exist."
     }
     return $Worksheet
 }
@@ -275,7 +275,7 @@ function Get-ExampleList {
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
     for ($iRow = 1; $iRow -le $Worksheet.Dimension.Rows; $iRow++) {
         for ($iColumn = 1; $iColumn -lt $Worksheet.Dimension.Columns; $iColumn++) {
-            if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match 'Parameter Name') {
+            if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match "Param.*Name") {
                 # [int][char]($ParameterNameColumn.ToUpper()) - 64
                 $ParameterNameColumn = [string][char]($iColumn + 64)
                 if ($Worksheet.Cells.Item($iRow, $iColumn + 1).Text -match 'Input') {
