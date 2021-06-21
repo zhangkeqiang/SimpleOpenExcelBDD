@@ -19,7 +19,7 @@ class ExcelBDDExceptionTest {
 
 	@ParameterizedTest(name = "#{index}-TestException: {0}")
 	@MethodSource("provideWrongFileExampleList")
-	void testGetWrongFileExampleList(Map<String, String> mapParams) {
+	void testGetWrongFileExampleList(Map<String, String> mapParams) throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/"
 				+ mapParams.get("ExcelFileName");
 		int headerRow = TestWizard.getInt(mapParams.get("HeaderRow"));
@@ -32,6 +32,7 @@ class ExcelBDDExceptionTest {
 		System.out.println(exception.toString());
 		System.out.println(exception.getClass().getSimpleName());
 		assertEquals(mapParams.get("ExcelFileNameExpected"), exception.getClass().getSimpleName());
+		System.out.println(exception.getMessage());
 		assertTrue(exception.getMessage().contains(mapParams.get("SheetNameExpected")));
 	}
 	

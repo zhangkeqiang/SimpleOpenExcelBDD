@@ -22,7 +22,7 @@ public class FeatureSteps {
 	List<Map<String, String>> list;
 
 	@Given("The Excel file is {string}")
-	public void the_excel_file_is(String string) {
+	public void the_excel_file_is(String string) throws IOException {
 		excelFilePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + string;
 	}
 

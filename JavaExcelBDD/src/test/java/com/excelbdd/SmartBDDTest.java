@@ -49,5 +49,4 @@ class SmartBDDTest {
 		assertEquals("true", list.get(2).get("ParamName4"));
 		assertEquals(mapParams.get("LastGridValue"), list.get(3).get("ParamName4"));
 	}
-
 }

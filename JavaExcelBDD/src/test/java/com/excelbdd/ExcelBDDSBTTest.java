@@ -13,14 +13,16 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-
 class ExcelBDDSBTTest {
 	static Stream<Map<String, String>> provideExampleListWithExpected() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		return Behavior.getExampleStream(filepath, "Expected1", TestWizard.ANY_MATCHER, TestWizard.NEVER_MATCHED_STRING);
+		return Behavior.getExampleStream(filepath, "Expected1", TestWizard.ANY_MATCHER,
+				TestWizard.NEVER_MATCHED_STRING);
 	}
+
 	/**
-	 * Test method for {@link com.excelbdd.Behavior#getExampleListWithExpected(java.lang.String, java.lang.String, int, char)}.
+	 * Test method for
+	 * {@link com.excelbdd.Behavior#getExampleListWithExpected(java.lang.String, java.lang.String, int, char)}.
 	 */
 	@ParameterizedTest(name = "#{index}-TestExpected : {0}")
 	@MethodSource("provideExampleListWithExpected")
@@ -29,14 +31,14 @@ class ExcelBDDSBTTest {
 		TestWizard.showMap(mapParams);
 		assertTrue(mapParams.get("ParamName1").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4").isEmpty());
-		
+		assertEquals(true, mapParams.get("ParamName3").isEmpty());
+		assertEquals(false, mapParams.get("ParamName4").isEmpty());
+
 		assertTrue(mapParams.get("ParamName1Expected").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2Expected").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3Expected").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4Expected").isEmpty());
-		
+		assertTrue(mapParams.get("ParamName3Expected").isEmpty());
+		assertFalse(mapParams.get("ParamName4Expected").isEmpty());
+
 		assertNull(mapParams.get("ParamName1TestResult"));
 		assertNull(mapParams.get("ParamName2TestResult"));
 		assertNull(mapParams.get("ParamName3TestResult"));
@@ -45,11 +47,13 @@ class ExcelBDDSBTTest {
 
 	static Stream<Map<String, String>> provideExampleListWithExpectedByMatcher() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 1, 'B',"Scenario");
+		List<Map<String, String>> list = Behavior.getExampleListWithExpected(filepath, "Expected1", 1, 'B', "Scenario");
 		return list.stream();
 	}
+
 	/**
-	 * Test method for {@link com.excelbdd.Behavior#getExampleListWithExpected(java.lang.String, java.lang.String, int, char, java.lang.String)}.
+	 * Test method for
+	 * {@link com.excelbdd.Behavior#getExampleListWithExpected(java.lang.String, java.lang.String, int, char, java.lang.String)}.
 	 */
 	@ParameterizedTest(name = "#{index}-TestExpected : {0}")
 	@MethodSource("provideExampleListWithExpectedByMatcher")
@@ -58,27 +62,29 @@ class ExcelBDDSBTTest {
 		TestWizard.showMap(mapParams);
 		assertTrue(mapParams.get("ParamName1").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4").isEmpty());
-		
+		assertEquals(true, mapParams.get("ParamName3").isEmpty());
+		assertEquals(false, mapParams.get("ParamName4").isEmpty());
+
 		assertTrue(mapParams.get("ParamName1Expected").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2Expected").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3Expected").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4Expected").isEmpty());
-		
+		assertTrue(mapParams.get("ParamName3Expected").isEmpty());
+		assertFalse(mapParams.get("ParamName4Expected").isEmpty());
+
 		assertNull(mapParams.get("ParamName1TestResult"));
 		assertNull(mapParams.get("ParamName2TestResult"));
 		assertNull(mapParams.get("ParamName3TestResult"));
 		assertNull(mapParams.get("ParamName4TestResult"));
 	}
-	
+
 	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntChar() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 1, 'B');
 		return list.stream();
 	}
+
 	/**
-	 * Test method for {@link com.excelbdd.Behavior#getExampleListWithTestResult(java.lang.String, java.lang.String, int, char)}.
+	 * Test method for
+	 * {@link com.excelbdd.Behavior#getExampleListWithTestResult(java.lang.String, java.lang.String, int, char)}.
 	 */
 	@ParameterizedTest(name = "TestResult{index}:{0}")
 	@MethodSource("provideExampleListWithTestResultStringStringIntChar")
@@ -86,32 +92,33 @@ class ExcelBDDSBTTest {
 		TestWizard.showMap(mapParams);
 		assertTrue(mapParams.get("ParamName1").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4").isEmpty());
-		
+		assertEquals(true, mapParams.get("ParamName3").isEmpty());
+		assertEquals(false, mapParams.get("ParamName4").isEmpty());
+
 		assertTrue(mapParams.get("ParamName1Expected").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2Expected").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3Expected").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4Expected").isEmpty());
-		
+		assertTrue(mapParams.get("ParamName3Expected").isEmpty());
+		assertFalse(mapParams.get("ParamName4Expected").isEmpty());
+
 		assertNotNull(mapParams.get("ParamName1TestResult"));
 		assertNotNull(mapParams.get("ParamName2TestResult"));
 		assertNotNull(mapParams.get("ParamName3TestResult"));
 		assertNotNull(mapParams.get("ParamName4TestResult"));
-		
-		assertEquals("pass",mapParams.get("ParamName1TestResult"));
-		assertEquals("pass",mapParams.get("ParamName2TestResult"));
-		assertEquals("pass",mapParams.get("ParamName3TestResult"));
-		assertEquals("pass",mapParams.get("ParamName4TestResult"));
+
+		assertEquals("pass", mapParams.get("ParamName1TestResult"));
+		assertEquals("pass", mapParams.get("ParamName2TestResult"));
+		assertEquals("pass", mapParams.get("ParamName3TestResult"));
+		assertEquals("pass", mapParams.get("ParamName4TestResult"));
 	}
 
 	static Stream<Map<String, String>> provideExampleListWithTestResultStringStringIntCharString() throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		List<Map<String, String>> list = Behavior.getExampleListWithTestResult(filepath, "SBTSheet1", 1, 'B',"Scenario");
-		return list.stream();
+		return Behavior.getExampleStream(filepath, "SBTSheet1", "Scenario");
 	}
+
 	/**
-	 * Test method for {@link com.excelbdd.Behavior#getExampleListWithTestResult(java.lang.String, java.lang.String, int, char, java.lang.String)}.
+	 * Test method for
+	 * {@link com.excelbdd.Behavior#getExampleListWithTestResult(java.lang.String, java.lang.String, int, char, java.lang.String)}.
 	 */
 	@ParameterizedTest(name = "TestResult{index}:{0}")
 	@MethodSource("provideExampleListWithTestResultStringStringIntCharString")
@@ -119,22 +126,22 @@ class ExcelBDDSBTTest {
 		TestWizard.showMap(mapParams);
 		assertTrue(mapParams.get("ParamName1").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4").isEmpty());
-		
+		assertEquals(true, mapParams.get("ParamName3").isEmpty());
+		assertEquals(false, mapParams.get("ParamName4").isEmpty());
+
 		assertTrue(mapParams.get("ParamName1Expected").startsWith("V1."));
 		assertTrue(mapParams.get("ParamName2Expected").startsWith("V2."));
-		assertEquals(true,mapParams.get("ParamName3Expected").isEmpty());
-		assertEquals(false,mapParams.get("ParamName4Expected").isEmpty());
-		
+		assertTrue(mapParams.get("ParamName3Expected").isEmpty());
+		assertFalse(mapParams.get("ParamName4Expected").isEmpty());
+
 		assertNotNull(mapParams.get("ParamName1TestResult"));
 		assertNotNull(mapParams.get("ParamName2TestResult"));
 		assertNotNull(mapParams.get("ParamName3TestResult"));
 		assertNotNull(mapParams.get("ParamName4TestResult"));
-		
-		assertEquals("pass",mapParams.get("ParamName1TestResult"));
-		assertEquals("pass",mapParams.get("ParamName2TestResult"));
-		assertEquals("pass",mapParams.get("ParamName3TestResult"));
-		assertEquals("pass",mapParams.get("ParamName4TestResult"));
+
+		assertEquals("pass", mapParams.get("ParamName1TestResult"));
+		assertEquals("pass", mapParams.get("ParamName2TestResult"));
+		assertEquals("pass", mapParams.get("ParamName3TestResult"));
+		assertEquals("pass", mapParams.get("ParamName4TestResult"));
 	}
 }

@@ -36,28 +36,25 @@ public class ExcelBDDSBETest {
 		assertEquals(true, mapParams.get("Header").matches("Scenario.*"));
 		assertEquals(false, mapParams.get("Header").matches("V0.*"));
 
-		
-
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		int nHeaderRow = Double.valueOf(mapParams.get("HeaderRow")).intValue();
 		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
 		List<Map<String, String>> list;
-		if(mapParams.get("TestResultSwitch").equals("On")) {
+		if (mapParams.get("TestResultSwitch").equals("On")) {
 			list = Behavior.getExampleListWithTestResult(filepath, mapParams.get("SheetName"), nHeaderRow,
 					charParameterNameColumn, mapParams.get("HeaderMatcher"));
-		}
-		else if(mapParams.get("ExpectedSwitch").equals("On")) {
-		list = Behavior.getExampleListWithExpected(filepath, mapParams.get("SheetName"), nHeaderRow,
-				charParameterNameColumn, mapParams.get("HeaderMatcher"));
-		}else {
-			list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow,
-					charParameterNameColumn, mapParams.get("HeaderMatcher"), mapParams.get("HeaderUnmatcher"));
+		} else if (mapParams.get("ExpectedSwitch").equals("On")) {
+			list = Behavior.getExampleListWithExpected(filepath, mapParams.get("SheetName"), nHeaderRow,
+					charParameterNameColumn, mapParams.get("HeaderMatcher"));
+		} else {
+			list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow, charParameterNameColumn,
+					mapParams.get("HeaderMatcher"), mapParams.get("HeaderUnmatcher"));
 		}
 
 		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
-		assertEquals(TestWizard.getInt(mapParams.get("ParameterCount")),list.get(0).size());
+		assertEquals(TestWizard.getInt(mapParams.get("ParameterCount")), list.get(0).size());
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
@@ -95,7 +92,7 @@ public class ExcelBDDSBETest {
 	}
 
 	@Test
-	void testBDDExcelPath2() {
+	void testBDDExcelPath2() throws IOException {
 		String ExcelFilePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
 		File f = new File(ExcelFilePath);
 		assertTrue(f.exists());

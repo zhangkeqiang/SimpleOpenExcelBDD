@@ -21,10 +21,10 @@ public class Behavior {
 	private static final String SIMPLE = "SIMPLE";
 	private static final String TESTRESULT = "TESTRESULT";
 	private static final String EXPECTED = "EXPECTED";
+
 	private Behavior() {
 	}
 
-	
 	/**
 	 * @param excelPath
 	 * @param worksheetName
@@ -61,7 +61,7 @@ public class Behavior {
 		if (sheetTestData == null) {
 			workbook.close();
 			excelFile.close();
-			throw new IOException(worksheetName + " does not exist.");
+			throw new IOException(worksheetName + " sheet does not exist.");
 		}
 
 		int headerRow = 0;
@@ -77,8 +77,13 @@ public class Behavior {
 				if (cellCurrent == null) {
 					continue;
 				}
-				String cellValue = cellCurrent.getStringCellValue();
-				if (cellValue.contains("Parameter Name")) {
+				String cellValue;
+				if (cellCurrent.getCellType().equals(CellType.STRING)) {
+					cellValue = cellCurrent.getStringCellValue();
+				} else {
+					continue;
+				}
+				if (isParameterNameGrid(cellValue)) {
 					parameterNameColumn = (char) (iCol + 65);
 					if (rowCurrent.getCell(iCol + 1).getStringCellValue().equals("Input")) {
 						headerRow = iRow;
@@ -102,6 +107,10 @@ public class Behavior {
 				headerUnmatcher, columnType);
 	}
 
+	private static boolean isParameterNameGrid(String cellValue) {
+		return cellValue.matches("Param.*Name.*");
+	}
+
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName,
 			String headerMatcher, String headerUnmatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerMatcher, headerUnmatcher).stream();
@@ -119,7 +128,6 @@ public class Behavior {
 				TestWizard.NEVER_MATCHED_STRING, SIMPLE).stream();
 	}
 
-	
 	/**
 	 * @param excelPath
 	 * @param worksheetName
@@ -155,7 +163,6 @@ public class Behavior {
 				SIMPLE);
 	}
 
-	
 	public static Stream<Map<String, String>> getExampleStream(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn, String headerMatcher, String headerUnmatcher) throws IOException {
 		return getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn, headerMatcher, headerUnmatcher)
@@ -178,8 +185,7 @@ public class Behavior {
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
 			String strHeader = cellHeader.getStringCellValue();
-			if ((strHeader != null) && (!strHeader.isEmpty()) && strHeader.matches(strRealHeaderMatcher)
-					&& (!strHeader.matches(strRealHeaderUnmatcher))) {
+			if (isHeaderValid(strRealHeaderMatcher, strRealHeaderUnmatcher, strHeader)) {
 				mapTestSetHeader.put(iCol, nTestSet);
 				Map<String, String> mapTestSet = new HashMap<>();
 				mapTestSet.put("Header", cellHeader.getStringCellValue());
@@ -188,6 +194,11 @@ public class Behavior {
 			}
 		}
 		return mapTestSetHeader;
+	}
+
+	private static boolean isHeaderValid(String strRealHeaderMatcher, String strRealHeaderUnmatcher, String strHeader) {
+		return (strHeader != null) && (!strHeader.isEmpty()) && strHeader.matches(strRealHeaderMatcher)
+				&& (!strHeader.matches(strRealHeaderUnmatcher));
 	}
 
 	private static HashMap<Integer, String> getParameterNameMap(int parameterStartRow, int parameterNameColumnNum,
@@ -253,7 +264,8 @@ public class Behavior {
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
 			int headerRow, char parameterNameColumn) throws IOException {
-		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn, TestWizard.ANY_MATCHER);
+		return getExampleListWithTestResult(excelPath, worksheetName, headerRow, parameterNameColumn,
+				TestWizard.ANY_MATCHER);
 	}
 
 	public static List<Map<String, String>> getExampleListWithTestResult(String excelPath, String worksheetName,
@@ -270,7 +282,8 @@ public class Behavior {
 
 	@SuppressWarnings("resource")
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, int headerRow,
-			char parameterNameColumn, String headerMatcher, String headerUnmatcher, String columnType) throws IOException {
+			char parameterNameColumn, String headerMatcher, String headerUnmatcher, String columnType)
+			throws IOException {
 
 		FileInputStream excelFile = new FileInputStream(new File(excelPath));
 		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
@@ -278,7 +291,7 @@ public class Behavior {
 		if (sheetTestData == null) {
 			workbook.close();
 			excelFile.close();
-			throw new IOException(worksheetName + " does not exist.");
+			throw new IOException(worksheetName + " sheet does not exist.");
 		}
 
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
