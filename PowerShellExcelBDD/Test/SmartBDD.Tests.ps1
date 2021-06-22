@@ -7,7 +7,8 @@ Describe "Get BDD Data only by sheet" {
 
     It "Get-SmartExampleList" -TestCases $BDDTestCaseList {
         Write-Host "Sheet $SheetName Column $Header"
-        $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        $TestExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
+        $TestcaseList = Get-ExampleList -ExcelPath $TestExcelPath `
             -WorksheetName $SheetName `
             -HeaderMatcher $HeaderMatcher `
             -HeaderUnmatcher $HeaderUnmatcher
@@ -51,7 +52,7 @@ Describe "Cover SBT" {
 
         $TestExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
         $TestcaseList = Get-ExampleList -ExcelPath $TestExcelPath `
-            -WorksheetName  $SheetName 
+            -WorksheetName $SheetName 
         
         $Error.Count | Should -Be 0
 
