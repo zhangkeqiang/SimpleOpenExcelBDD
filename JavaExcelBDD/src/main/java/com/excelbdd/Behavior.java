@@ -80,9 +80,9 @@ public class Behavior {
 				}
 				if (isParameterNameGrid(cellValue)) {
 					parameterNameColumn = (char) (iCol + 65);
-					if (rowCurrent.getCell(iCol + 1).getStringCellValue().equals("Input")) {
+					if (hasInputGrid(rowCurrent, iCol)) {
 						headerRow = iRow;
-						if (rowCurrent.getCell(iCol + 3).getStringCellValue().equals("Test Result")) {
+						if (hasTestResultGrid(rowCurrent, iCol)) {
 							columnType = TESTRESULT;
 						} else {
 							columnType = EXPECTED;
@@ -100,6 +100,22 @@ public class Behavior {
 		}
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
 				headerUnmatcher, columnType);
+	}
+
+	protected static boolean hasInputGrid(XSSFRow rowCurrent, int iCol) {
+		try {
+			return rowCurrent.getCell(iCol + 1).getStringCellValue().equals("Input");
+		} catch (NullPointerException e) {
+			return false;
+		}
+	}
+
+	protected static boolean hasTestResultGrid(XSSFRow rowCurrent, int iCol) {
+		try {
+			return rowCurrent.getCell(iCol + 3).getStringCellValue().equals("Test Result");
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	protected static XSSFSheet getExampleSheet(String worksheetName, FileInputStream excelFile, XSSFWorkbook workbook)
@@ -190,6 +206,9 @@ public class Behavior {
 		int nTestSet = 0;
 		for (int iCol = parameterNameColumnNum + 1; iCol < nMaxColumn; iCol += step) {
 			XSSFCell cellHeader = rowHeader.getCell(iCol);
+			if (cellHeader == null) {
+				break;
+			}
 			String strHeader = cellHeader.getStringCellValue();
 			if (isHeaderValid(strRealHeaderMatcher, strRealHeaderUnmatcher, strHeader)) {
 				mapTestSetHeader.put(iCol, nTestSet);
@@ -357,22 +376,21 @@ public class Behavior {
 	 */
 	private static void putParameter(String strParameterName, XSSFRow rowCurrent, Map<String, String> mapTestSet,
 			int iCol) {
-
 		XSSFCell cellCurrent = rowCurrent.getCell(iCol);
-		if (cellCurrent.getCellType() == CellType.STRING) {
-			mapTestSet.put(strParameterName, cellCurrent.getStringCellValue());
-		} else if (cellCurrent.getCellType() == CellType.NUMERIC) {
-			mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getNumericCellValue()));
-		} else if (cellCurrent.getCellType() == CellType._NONE) {
-			mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getDateCellValue()));
-		} else if (cellCurrent.getCellType() == CellType.BLANK) {
+		if (cellCurrent == null) {
 			mapTestSet.put(strParameterName, "");
-		} else if (cellCurrent.getCellType() == CellType.BOOLEAN) {
-			mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getBooleanCellValue()));
-		} else if (cellCurrent.getCellType() == CellType.FORMULA) {
-			mapTestSet.put(strParameterName, cellCurrent.getRawValue());
 		} else {
-			mapTestSet.put(strParameterName, cellCurrent.getRawValue());
+			if (cellCurrent.getCellType().equals(CellType.STRING)) {
+				mapTestSet.put(strParameterName, cellCurrent.getStringCellValue());
+			} else if (cellCurrent.getCellType().equals(CellType.BLANK)) {
+				mapTestSet.put(strParameterName, "");
+			} else if (cellCurrent.getCellType().equals(CellType.NUMERIC)) {
+				mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getNumericCellValue()));
+			} else if (cellCurrent.getCellType().equals(CellType.BOOLEAN)) {
+				mapTestSet.put(strParameterName, String.valueOf(cellCurrent.getBooleanCellValue()));
+			} else {
+				mapTestSet.put(strParameterName, cellCurrent.getRawValue());
+			}
 		}
 	}
 }
