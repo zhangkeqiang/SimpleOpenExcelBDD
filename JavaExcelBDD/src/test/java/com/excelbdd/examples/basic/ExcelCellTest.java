@@ -33,7 +33,7 @@ class ExcelCellTest {
 				}
 				break;
 			case "string":
-				assertfalse(strCellValue.isEmpty());
+				assertFalse(strCellValue.isEmpty());
 				break;
 			case "boolean":
 				assertTrue(strCellValue.matches("true|false"));
@@ -44,12 +44,5 @@ class ExcelCellTest {
 			default:
 				fail("no others");
 		}
-
 	}
-
-	private void assertfalse(boolean empty) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
