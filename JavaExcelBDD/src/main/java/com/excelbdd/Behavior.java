@@ -57,12 +57,7 @@ public class Behavior {
 
 		FileInputStream excelFile = new FileInputStream(new File(excelPath));
 		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
-		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
-		if (sheetTestData == null) {
-			workbook.close();
-			excelFile.close();
-			throw new IOException(worksheetName + " sheet does not exist.");
-		}
+		XSSFSheet sheetTestData = getExampleSheet(worksheetName, excelFile, workbook);
 
 		int headerRow = 0;
 		char parameterNameColumn = 0;
@@ -105,6 +100,17 @@ public class Behavior {
 		}
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
 				headerUnmatcher, columnType);
+	}
+
+	protected static XSSFSheet getExampleSheet(String worksheetName, FileInputStream excelFile, XSSFWorkbook workbook)
+			throws IOException {
+		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
+		if (sheetTestData == null) {
+			workbook.close();
+			excelFile.close();
+			throw new IOException(worksheetName + " sheet does not exist.");
+		}
+		return sheetTestData;
 	}
 
 	private static boolean isParameterNameGrid(String cellValue) {
@@ -287,12 +293,7 @@ public class Behavior {
 
 		FileInputStream excelFile = new FileInputStream(new File(excelPath));
 		XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
-		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
-		if (sheetTestData == null) {
-			workbook.close();
-			excelFile.close();
-			throw new IOException(worksheetName + " sheet does not exist.");
-		}
+		XSSFSheet sheetTestData = getExampleSheet(worksheetName, excelFile, workbook);
 
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
 				headerUnmatcher, columnType);

@@ -31,7 +31,7 @@ public class TestWizard {
 		return Double.valueOf(string).intValue();
 	}
 
-	public static String makeMatcherString(String headerMatcher) {
-		return ANY_MATCHER + headerMatcher + ANY_MATCHER;
+	public static String makeMatcherString(String matcher) {
+		return ANY_MATCHER + matcher + ANY_MATCHER;
 	}
 }
