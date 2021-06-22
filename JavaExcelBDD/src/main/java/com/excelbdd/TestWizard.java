@@ -20,9 +20,9 @@ public class TestWizard {
 		}
 	}
 
-	public static void showMap(Map<String, String> mapParams) {
-		System.out.println(String.format("=======Header: %s=====", mapParams.get("Header")));
-		for (Map.Entry<String, String> param : mapParams.entrySet()) {
+	public static void showMap(Map<String, String> parameterMap) {
+		System.out.println(String.format("=======Header: %s=====", parameterMap.get("Header")));
+		for (Map.Entry<String, String> param : parameterMap.entrySet()) {
 			System.out.println(String.format("%s --- %s", param.getKey(), param.getValue()));
 		}
 	}

@@ -19,21 +19,21 @@ class ExcelBDDExceptionTest {
 
 	@ParameterizedTest(name = "#{index}-TestException: {0}")
 	@MethodSource("provideWrongFileExampleList")
-	void testGetWrongFileExampleList(Map<String, String> mapParams) throws IOException {
+	void testGetWrongFileExampleList(Map<String, String> parameterMap) throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/"
-				+ mapParams.get("ExcelFileName");
-		int headerRow = TestWizard.getInt(mapParams.get("HeaderRow"));
-		char parameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
+				+ parameterMap.get("ExcelFileName");
+		int headerRow = TestWizard.getInt(parameterMap.get("HeaderRow"));
+		char parameterNameColumn = parameterMap.get("ParameterNameColumn").charAt(0);
 		Throwable exception = assertThrows(IOException.class, () -> {
 			List<Map<String, String>> targetlist = Behavior.getExampleListWithExpected(filepath,
-					mapParams.get("SheetName"), headerRow, parameterNameColumn);
+					parameterMap.get("SheetName"), headerRow, parameterNameColumn);
 		});
 		
 		System.out.println(exception.toString());
 		System.out.println(exception.getClass().getSimpleName());
-		assertEquals(mapParams.get("ExcelFileNameExpected"), exception.getClass().getSimpleName());
+		assertEquals(parameterMap.get("ExcelFileNameExpected"), exception.getClass().getSimpleName());
 		System.out.println(exception.getMessage());
-		assertTrue(exception.getMessage().contains(mapParams.get("SheetNameExpected")));
+		assertTrue(exception.getMessage().contains(parameterMap.get("SheetNameExpected")));
 	}
 	
 	static Stream<Map<String, String>> provideWrongOtherExampleList() throws IOException {
@@ -44,15 +44,15 @@ class ExcelBDDExceptionTest {
 
 	@ParameterizedTest(name = "#{index}-TestException: {0}")
 	@MethodSource("provideWrongOtherExampleList")
-	void testGetWrongOtherExampleList(Map<String, String> mapParams) throws IOException {
+	void testGetWrongOtherExampleList(Map<String, String> parameterMap) throws IOException {
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/"
-				+ mapParams.get("ExcelFileName");
-		int headerRow = TestWizard.getInt(mapParams.get("HeaderRow"));
-		char parameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
+				+ parameterMap.get("ExcelFileName");
+		int headerRow = TestWizard.getInt(parameterMap.get("HeaderRow"));
+		char parameterNameColumn = parameterMap.get("ParameterNameColumn").charAt(0);
 		List<Map<String, String>> targetList = Behavior.getExampleList(filepath,
-					mapParams.get("SheetName"), headerRow, parameterNameColumn);
+					parameterMap.get("SheetName"), headerRow, parameterNameColumn);
 		
-		assertEquals(TestWizard.getInt(mapParams.get("HeaderRowExpected")),targetList.size());
-		assertEquals(TestWizard.getInt(mapParams.get("ParameterNameColumnExpected")),targetList.get(0).size());
+		assertEquals(TestWizard.getInt(parameterMap.get("HeaderRowExpected")),targetList.size());
+		assertEquals(TestWizard.getInt(parameterMap.get("ParameterNameColumnExpected")),targetList.get(0).size());
 	}
 }

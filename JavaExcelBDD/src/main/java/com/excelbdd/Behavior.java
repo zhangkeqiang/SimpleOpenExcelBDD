@@ -25,6 +25,14 @@ public class Behavior {
 	private Behavior() {
 	}
 
+	public static List<Map<String, String>> getExampleList(String excelPath) throws IOException {
+		return getExampleList(excelPath, "", TestWizard.ANY_MATCHER);
+	}
+
+	public static Stream<Map<String, String>> getExampleStream(String excelPath) throws IOException {
+		return getExampleList(excelPath).stream();
+	}
+
 	/**
 	 * @param excelPath
 	 * @param worksheetName
@@ -120,7 +128,12 @@ public class Behavior {
 
 	protected static XSSFSheet getExampleSheet(String worksheetName, FileInputStream excelFile, XSSFWorkbook workbook)
 			throws IOException {
-		XSSFSheet sheetTestData = workbook.getSheet(worksheetName);
+		XSSFSheet sheetTestData;
+		if (worksheetName.isEmpty()) {
+			sheetTestData = workbook.getSheetAt(0);
+		} else {
+			sheetTestData = workbook.getSheet(worksheetName);
+		}
 		if (sheetTestData == null) {
 			workbook.close();
 			excelFile.close();

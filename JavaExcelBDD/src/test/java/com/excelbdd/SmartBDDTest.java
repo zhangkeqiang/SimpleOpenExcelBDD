@@ -19,25 +19,25 @@ class SmartBDDTest {
 
 	@ParameterizedTest(name = "Test{index}:{0}")
 	@MethodSource("provideExampleList")
-	void testgetSmartExampleStream(Map<String, String> mapParams) throws IOException {
+	void testgetSmartExampleStream(Map<String, String> parameterMap) throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/"
-				+ mapParams.get("ExcelFileName");
-		System.out.println("Header " + mapParams.get("Header"));
-		System.out.println("SheetName " + mapParams.get("SheetName"));
+				+ parameterMap.get("ExcelFileName");
+		System.out.println("Header " + parameterMap.get("Header"));
+		System.out.println("SheetName " + parameterMap.get("SheetName"));
 
-		List<Map<String, String>> list = Behavior.getExampleList(filePath, mapParams.get("SheetName"),
-				mapParams.get("HeaderMatcher"), mapParams.get("HeaderUnmatcher"));
+		List<Map<String, String>> list = Behavior.getExampleList(filePath, parameterMap.get("SheetName"),
+				parameterMap.get("HeaderMatcher"), parameterMap.get("HeaderUnmatcher"));
 		assertNotNull(list);
 
-		int testDataSetCount = TestWizard.getInt(mapParams.get("TestDataSetCount"));
+		int testDataSetCount = TestWizard.getInt(parameterMap.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
-		assertEquals(mapParams.get("FirstGridValue"), list.get(0).get("ParamName1"));
-		assertEquals(mapParams.get("ParamName1InSet2Value"), list.get(1).get("ParamName1"));
+		assertEquals(parameterMap.get("FirstGridValue"), list.get(0).get("ParamName1"));
+		assertEquals(parameterMap.get("ParamName1InSet2Value"), list.get(1).get("ParamName1"));
 		assertEquals("V1.3", list.get(2).get("ParamName1"));
 		assertEquals("V1.4", list.get(3).get("ParamName1"));
 
 		assertEquals("V2.1", list.get(0).get("ParamName2"));
-		assertEquals(mapParams.get("ParamName2InSet2Value"), list.get(1).get("ParamName2"));
+		assertEquals(parameterMap.get("ParamName2InSet2Value"), list.get(1).get("ParamName2"));
 
 		assertEquals("", list.get(0).get("ParamName3"));
 		assertEquals("", list.get(1).get("ParamName3"));
@@ -47,6 +47,6 @@ class SmartBDDTest {
 		assertEquals("2021/4/30", list.get(0).get("ParamName4"));
 		assertEquals("false", list.get(1).get("ParamName4"));
 		assertEquals("true", list.get(2).get("ParamName4"));
-		assertEquals(mapParams.get("LastGridValue"), list.get(3).get("ParamName4"));
+		assertEquals(parameterMap.get("LastGridValue"), list.get(3).get("ParamName4"));
 	}
 }

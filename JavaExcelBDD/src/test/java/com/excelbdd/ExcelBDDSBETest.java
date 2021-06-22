@@ -21,57 +21,57 @@ public class ExcelBDDSBETest {
 
 	@ParameterizedTest(name = "Test{index}:{0}")
 	@MethodSource("provideExampleList")
-	void testParameterizedTestFromgetExampleStream(Map<String, String> mapParams) throws IOException {
-		assertNotNull(mapParams);
-		System.out.println("Header " + mapParams.get("Header"));
-		System.out.println("SheetName " + mapParams.get("SheetName"));
-		System.out.println("HeaderRow " + mapParams.get("HeaderRow"));
-		System.out.println("ParameterNameColumn " + mapParams.get("ParameterNameColumn"));
-		assertEquals("Scenario1", mapParams.get("Header1Name"));
-		assertEquals("V1.2", mapParams.get("ParamName1InSet2Value"));
-		assertEquals("", mapParams.get("ParamName3Value"));
+	void testParameterizedTestFromgetExampleStream(Map<String, String> parameterMap) throws IOException {
+		assertNotNull(parameterMap);
+		System.out.println("Header " + parameterMap.get("Header"));
+		System.out.println("SheetName " + parameterMap.get("SheetName"));
+		System.out.println("HeaderRow " + parameterMap.get("HeaderRow"));
+		System.out.println("ParameterNameColumn " + parameterMap.get("ParameterNameColumn"));
+		assertEquals("Scenario1", parameterMap.get("Header1Name"));
+		assertEquals("V1.2", parameterMap.get("ParamName1InSet2Value"));
+		assertEquals("", parameterMap.get("ParamName3Value"));
 
-		assertEquals("3.0", mapParams.get("MaxBlankThreshold"));
-		System.out.println("HeaderMatcher " + mapParams.get("HeaderMatcher"));
-		assertEquals(true, mapParams.get("Header").matches("Scenario.*"));
-		assertEquals(false, mapParams.get("Header").matches("V0.*"));
+		assertEquals("3.0", parameterMap.get("MaxBlankThreshold"));
+		System.out.println("HeaderMatcher " + parameterMap.get("HeaderMatcher"));
+		assertEquals(true, parameterMap.get("Header").matches("Scenario.*"));
+		assertEquals(false, parameterMap.get("Header").matches("V0.*"));
 
 		String filepath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		int nHeaderRow = Double.valueOf(mapParams.get("HeaderRow")).intValue();
-		char charParameterNameColumn = mapParams.get("ParameterNameColumn").charAt(0);
+		int nHeaderRow = Double.valueOf(parameterMap.get("HeaderRow")).intValue();
+		char charParameterNameColumn = parameterMap.get("ParameterNameColumn").charAt(0);
 		System.out.println("ParameterNameColumn " + charParameterNameColumn);
 
 		List<Map<String, String>> list;
-		if (mapParams.get("TestResultSwitch").equals("On")) {
-			list = Behavior.getExampleListWithTestResult(filepath, mapParams.get("SheetName"), nHeaderRow,
-					charParameterNameColumn, mapParams.get("HeaderMatcher"));
-		} else if (mapParams.get("ExpectedSwitch").equals("On")) {
-			list = Behavior.getExampleListWithExpected(filepath, mapParams.get("SheetName"), nHeaderRow,
-					charParameterNameColumn, mapParams.get("HeaderMatcher"));
+		if (parameterMap.get("TestResultSwitch").equals("On")) {
+			list = Behavior.getExampleListWithTestResult(filepath, parameterMap.get("SheetName"), nHeaderRow,
+					charParameterNameColumn, parameterMap.get("HeaderMatcher"));
+		} else if (parameterMap.get("ExpectedSwitch").equals("On")) {
+			list = Behavior.getExampleListWithExpected(filepath, parameterMap.get("SheetName"), nHeaderRow,
+					charParameterNameColumn, parameterMap.get("HeaderMatcher"));
 		} else {
-			list = Behavior.getExampleList(filepath, mapParams.get("SheetName"), nHeaderRow, charParameterNameColumn,
-					mapParams.get("HeaderMatcher"), mapParams.get("HeaderUnmatcher"));
+			list = Behavior.getExampleList(filepath, parameterMap.get("SheetName"), nHeaderRow, charParameterNameColumn,
+					parameterMap.get("HeaderMatcher"), parameterMap.get("HeaderUnmatcher"));
 		}
 
-		System.out.println("ParameterCount " + mapParams.get("ParameterCount"));
-		assertEquals(TestWizard.getInt(mapParams.get("ParameterCount")), list.get(0).size());
+		System.out.println("ParameterCount " + parameterMap.get("ParameterCount"));
+		assertEquals(TestWizard.getInt(parameterMap.get("ParameterCount")), list.get(0).size());
 		System.out.println(list.get(0).toString());
 		System.out.println(list.get(1).toString());
 		System.out.println(list.get(2).toString());
 		System.out.println(list.get(3).toString());
 
 		// int testDataSetCount =
-		// Double.valueOf(mapParams.get("TestDataSetCount")).intValue();
-		int testDataSetCount = TestWizard.getInt(mapParams.get("TestDataSetCount"));
+		// Double.valueOf(parameterMap.get("TestDataSetCount")).intValue();
+		int testDataSetCount = TestWizard.getInt(parameterMap.get("TestDataSetCount"));
 		assertEquals(testDataSetCount, list.size());
 
-		assertEquals(mapParams.get("FirstGridValue"), list.get(0).get("ParamName1"));
-		assertEquals(mapParams.get("ParamName1InSet2Value"), list.get(1).get("ParamName1"));
+		assertEquals(parameterMap.get("FirstGridValue"), list.get(0).get("ParamName1"));
+		assertEquals(parameterMap.get("ParamName1InSet2Value"), list.get(1).get("ParamName1"));
 		assertEquals("V1.3", list.get(2).get("ParamName1"));
 		assertEquals("V1.4", list.get(3).get("ParamName1"));
 
 		assertEquals("V2.1", list.get(0).get("ParamName2"));
-		assertEquals(mapParams.get("ParamName2InSet2Value"), list.get(1).get("ParamName2"));
+		assertEquals(parameterMap.get("ParamName2InSet2Value"), list.get(1).get("ParamName2"));
 
 		assertEquals("", list.get(0).get("ParamName3"));
 		assertEquals("", list.get(1).get("ParamName3"));
@@ -81,7 +81,7 @@ public class ExcelBDDSBETest {
 		assertEquals("2021/4/30", list.get(0).get("ParamName4"));
 		assertEquals("false", list.get(1).get("ParamName4"));
 		assertEquals("true", list.get(2).get("ParamName4"));
-		assertEquals(mapParams.get("LastGridValue"), list.get(3).get("ParamName4"));
+		assertEquals(parameterMap.get("LastGridValue"), list.get(3).get("ParamName4"));
 	}
 
 	@Test
