@@ -25,8 +25,7 @@ class ExcelBDDExceptionTest {
 		int headerRow = TestWizard.getInt(parameterMap.get("HeaderRow"));
 		char parameterNameColumn = parameterMap.get("ParameterNameColumn").charAt(0);
 		Throwable exception = assertThrows(IOException.class, () -> {
-			List<Map<String, String>> targetlist = Behavior.getExampleListWithExpected(filepath,
-					parameterMap.get("SheetName"), headerRow, parameterNameColumn);
+			List<Map<String, String>> targetList = Behavior.getExampleList(filepath,parameterMap.get("SheetName"));
 		});
 		
 		System.out.println(exception.toString());
@@ -55,4 +54,6 @@ class ExcelBDDExceptionTest {
 		assertEquals(TestWizard.getInt(parameterMap.get("HeaderRowExpected")),targetList.size());
 		assertEquals(TestWizard.getInt(parameterMap.get("ParameterNameColumnExpected")),targetList.get(0).size());
 	}
+	
+	
 }

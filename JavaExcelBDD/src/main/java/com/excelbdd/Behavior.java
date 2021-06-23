@@ -106,6 +106,9 @@ public class Behavior {
 				break;
 			}
 		}
+		if (columnType == null) {
+			throw new IOException("Parameter Name grid is not found.");
+		}
 		return getExampleListFromWorksheet(excelFile, sheetTestData, headerRow, parameterNameColumn, headerMatcher,
 				headerUnmatcher, columnType);
 	}
