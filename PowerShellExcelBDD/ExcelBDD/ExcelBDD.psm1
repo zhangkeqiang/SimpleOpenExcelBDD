@@ -275,7 +275,7 @@ function Get-ExampleList {
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
     for ($iRow = 1; $iRow -le $Worksheet.Dimension.Rows; $iRow++) {
         for ($iColumn = 1; $iColumn -lt $Worksheet.Dimension.Columns; $iColumn++) {
-            if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match "Param.*Name") {
+            if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match "^Param.*Name") {
                 # [int][char]($ParameterNameColumn.ToUpper()) - 64
                 $ParameterNameColumn = [string][char]($iColumn + 64)
                 if ($Worksheet.Cells.Item($iRow, $iColumn + 1).Text -match 'Input') {
@@ -297,7 +297,9 @@ function Get-ExampleList {
             Break
         }
     }
-
+    if (-Not $HeaderRow) {
+        throw "Parameter Name grid is not found"
+    }
     return Get-ExampleListFromWorksheet -Worksheet $Worksheet `
         -HeaderRow $HeaderRow `
         -ParameterNameColumn $ParameterNameColumn `
