@@ -12,7 +12,7 @@
     RootModule        = 'ExcelBDD.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.4.0'
+    ModuleVersion     = '0.4.1'
 
     # ID used to uniquely identify this module
     GUID              = 'bdf35f8c-197a-4256-86ff-35da93432ba0'
@@ -79,7 +79,7 @@
             LicenseUri   = "https://www.apache.org/licenses/LICENSE-2.0.html"
 
             # Release notes for this particular version of the module
-            ReleaseNotes = 'Get the example list accordingly without the specified header, and get datatable'
+            ReleaseNotes = 'handle exception when missing parameter name grid'
         }
     }
 }
