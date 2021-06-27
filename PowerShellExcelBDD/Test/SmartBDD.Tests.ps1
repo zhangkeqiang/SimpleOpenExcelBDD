@@ -13,7 +13,7 @@ Describe "Get BDD Data only by sheet" {
             -HeaderMatcher $HeaderMatcher `
             -HeaderUnmatcher $HeaderUnmatcher
 
-        # Write-Host ($TestcaseList | ConvertTo-Json )
+        Show-ExampleList $TestcaseList
         
         $TestcaseList[0]["Header"] | Should -Be $Header1Name
         $TestcaseList[0]["ParamName1"] | Should -Be $FirstGridValue

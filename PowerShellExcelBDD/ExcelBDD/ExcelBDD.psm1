@@ -89,24 +89,24 @@ function Get-DataTable2 {
     return $DataTableA
 }
 
-<#
-.Description 
-Get a Hashtable list from excel sheet, one row for one hashtable
-.Example
-    #Get TestcaseDataList for Pester Testcase
-    $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
-        -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
-        -HeaderRow 1
-    It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
-        Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
-    }
-#>
+
+
 function Get-DataTable {
     param (
-        [String]$ExcelPath,
-        [String]$WorksheetName,
+        [string]
+        # Specifies the excel file full path, or valid relative path
+        $ExcelPath,
+        [string]
+        # Specifies the sheet name, if omit, the 1st sheet will be selected
+        $WorksheetName,
+        [int]
+        # Header Row's number, if omit, it is 1
         $HeaderRow = 1,
+        [string]
+        # first column to read, if omit, it is A column
         $StartColumn = 'A',
+        [string]
+        # if StartColumn's value matches this matcher, this row will be collected, default is all
         $RowMatcher = ""
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
@@ -139,6 +139,24 @@ function Get-DataTable {
     }
     Close-ExcelWorksheet | Out-Null
     return $List
+    <#
+        .SYNOPSIS
+        Get a Hashtable list from excel sheet
+        .Description 
+        Get a Hashtable list from excel sheet, one row for one hashtable, duplicated header name will be added suffix "00"
+        .Example
+        #Get TestcaseDataList for Pester Testcase
+        $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
+            -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
+            -HeaderRow 1
+        It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
+            Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
+        }
+
+        .Example
+        # Get TestcaseDataList from 1st sheet
+        $TestcaseDataList = Get-DataTable -ExcelPath $ExcelFullPath
+    #>
 }
 
 function Get-HeaderName {
@@ -160,13 +178,109 @@ function Get-HeaderName {
         }
     }
 }
+
+
 function Show-ExampleList {
     param (
         [array]$ExampleList
     )
-    Write-Host ($ExampleList | ConvertTo-Json)
+    $MaxLength = 60
+    $ToBeShewFields = $ExampleList[0].Keys
+    
+    #Get the length of each field
+    $ToBeShewFieldHashTable = @{}
+    foreach ($field in $ToBeShewFields) {
+        $ToBeShewFieldHashTable[$field] = $field.Length
+    }
+    foreach ($item in $ExampleList) {
+        foreach ($field in $ToBeShewFields) {
+            if (-not [String]::IsNullOrEmpty($item.$field)) {
+                $ItemFieldLength = $item.$field.ToString().Length
+                if (($ItemFieldLength -gt $ToBeShewFieldHashTable[$field]) -and ($ItemFieldLength -le $MaxLength)) {
+                    $ToBeShewFieldHashTable[$field] = $ItemFieldLength
+                }
+                elseif ($ItemFieldLength -gt $MaxLength) {
+                    $ToBeShewFieldHashTable[$field] = $MaxLength
+                }
+            }
+        }
+    }
+
+    $MaxDashLine = "------------------------------------------------------------------------------------------------"
+    #Show the Header
+    $HeaderRow = "|"
+    $AllDashLine = "-"
+    $DividingLine = "|"
+    $RowLength = -2
+    foreach ($field in $ToBeShewFields) {
+        $HeaderRow += (Get-FixedLengthString $field $ToBeShewFieldHashTable[$field]) + " |"
+        $AllDashLine += (Get-FixedLengthString $MaxDashLine $ToBeShewFieldHashTable[$field]) + "--"
+        $DividingLine += (Get-FixedLengthString $MaxDashLine $ToBeShewFieldHashTable[$field]) + "-|"
+        $RowLength += ($ToBeShewFieldHashTable[$field] + 2)
+    }
+
+    Write-Host $AllDashLine
+    Write-Host $HeaderRow
+    Write-Host $DividingLine
+
+    #Show the main contents in table
+    $sb = [System.Text.StringBuilder]::new()
+    $RowCount = $ExampleList.Count
+    for ($i = 0; $i -lt $RowCount - 1 ; $i++) {
+        $item = $ExampleList[$i]
+        [void]$sb.Append("|")
+        # }
+        # foreach ($item in $ExampleList) {
+        foreach ($field in $ToBeShewFields) {
+            [void]$sb.Append( (Get-FixedLengthString $item.$field $ToBeShewFieldHashTable[$field]) + " |")
+        }
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine($DividingLine)
+    }
+    #Show last Row
+    if ($RowCount -eq 1) {
+        $item = $ExampleList
+    }
+    else {
+        $item = $ExampleList[$RowCount - 1]
+    }
+    
+    [void]$sb.Append("|")
+    foreach ($field in $ToBeShewFields) {
+        [void]$sb.Append((Get-FixedLengthString $item.$field $ToBeShewFieldHashTable[$field]) + " |")
+    }
+    [void]$sb.AppendLine()
+    [void]$sb.AppendLine($AllDashLine)
+    [void]$sb.Append("|")
+    [void]$sb.AppendLine((Get-FixedLengthString "Total Row Count: $RowCount" $RowLength) + " |")
+    [void]$sb.AppendLine($AllDashLine)
+    Write-Host $sb.ToString()
 }
 
+function Get-FixedLengthString {
+    param (
+        $Field,
+        $FixedLength
+    )
+    if ([String]::IsNullOrEmpty($Field)) {
+        $FieldLength = 0
+    }
+    else {
+        $FieldLength = $Field.ToString().Length
+    }
+    if ($FieldLength -le $FixedLength) {
+        $sb = [System.Text.StringBuilder]::new()
+        [void]$sb.Append($Field)
+        for ($i = 0; $i -lt ($FixedLength - $FieldLength); $i++) {
+            [void]$sb.Append(" ")
+        }  
+        $FixedLengthField = $sb.ToString()
+    }
+    else {
+        $FixedLengthField = $Field.ToString().Substring(0, $FixedLength)
+    }
+    return $FixedLengthField
+}
 
 <#
 .Description
