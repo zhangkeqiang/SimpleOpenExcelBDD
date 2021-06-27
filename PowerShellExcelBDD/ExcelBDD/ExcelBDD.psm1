@@ -70,7 +70,7 @@ Get a Hashtable list from excel sheet, one row for one hashtable
         Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
     }
 #>
-function Get-DataTable {
+function Get-DataTable2 {
     param (
         [string]$ExcelPath,
         [string]$WorksheetName,
@@ -89,6 +89,63 @@ function Get-DataTable {
     return $DataTableA
 }
 
+<#
+.Description 
+Get a Hashtable list from excel sheet, one row for one hashtable
+.Example
+    #Get TestcaseDataList for Pester Testcase
+    $TestcaseDataList = Get-MZHashTableListFromExcel -WorksheetName SheetName `
+        -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
+        -HeaderRow 1
+    It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
+        Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
+    }
+#>
+function Get-DataTable {
+    param (
+        [String]$ExcelPath,
+        [String]$WorksheetName,
+        $HeaderRow = 1,
+        $StartColumn = 'A',
+        $RowMatcher = ""
+    )
+    $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
+    
+    
+    $IntStartColumn = [int][char]($StartColumn.ToUpper()) - 64
+    $StartRow = [int]$HeaderRow + 1
+    #TODO find the all valid header
+    $List = @()
+    for ($iRow = $StartRow; $iRow -le ($HeaderRow + $Worksheet.Dimension.Rows - 1); $iRow++) {
+        if (-Not [String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $IntStartColumn).Text)) {
+            #This Row has values
+            if ($Worksheet.Cells.Item($iRow, $IntStartColumn).Text -match $RowMatcher) {
+                $RowSet = @{}
+                for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $Worksheet.Dimension.Columns - 1); $iCol++) {
+                    if (-Not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderRow, $iCol).Text)) {
+                        $RowSet[$Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
+                    }
+                    else {
+                        break
+                    }
+                }
+                $List += $RowSet
+            }
+        }
+        else {
+            break
+        }
+    }
+    Close-ExcelWorksheet | Out-Null
+    return $List
+}
+
+function Show-ExampleList {
+    param (
+        [array]$ExampleList
+    )
+    Write-Host ($ExampleList | ConvertTo-Json)
+}
 <#
 .Description
 Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
