@@ -94,7 +94,7 @@ function Get-DataTable2 {
 Get a Hashtable list from excel sheet, one row for one hashtable
 .Example
     #Get TestcaseDataList for Pester Testcase
-    $TestcaseDataList = Get-MZHashTableListFromExcel -WorksheetName SheetName `
+    $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
         -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
         -HeaderRow 1
     It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
@@ -115,37 +115,59 @@ function Get-DataTable {
     $IntStartColumn = [int][char]($StartColumn.ToUpper()) - 64
     $StartRow = [int]$HeaderRow + 1
     #TODO find the all valid header
-    $List = @()
-    for ($iRow = $StartRow; $iRow -le ($HeaderRow + $Worksheet.Dimension.Rows - 1); $iRow++) {
-        if (-Not [String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $IntStartColumn).Text)) {
-            #This Row has values
-            if ($Worksheet.Cells.Item($iRow, $IntStartColumn).Text -match $RowMatcher) {
-                $RowSet = @{}
-                for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $Worksheet.Dimension.Columns - 1); $iCol++) {
-                    if (-Not [String]::IsNullOrEmpty($Worksheet.Cells.Item($HeaderRow, $iCol).Text)) {
-                        $RowSet[$Worksheet.Cells.Item($HeaderRow, $iCol).Text.Trim()] = $Worksheet.Cells.Item($iRow, $iCol).Text
-                    }
-                    else {
-                        break
-                    }
-                }
-                $List += $RowSet
-            }
+    $HeaderHashTable = @{}
+    for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $Worksheet.Dimension.Columns - 1); $iCol++) {
+        $CurrentHeaderName = $Worksheet.Cells.Item($HeaderRow, $iCol).Text
+        if (-Not [String]::IsNullOrEmpty($CurrentHeaderName)) {
+            $HeaderHashTable[$iCol] = Get-HeaderName $HeaderHashTable $CurrentHeaderName
         }
         else {
             break
+        }
+    }
+    $List = @()
+    for ($iRow = $StartRow; $iRow -le ($HeaderRow + $Worksheet.Dimension.Rows - 1); $iRow++) {
+        $CurrentStartColumnText = $Worksheet.Cells.Item($iRow, $IntStartColumn).Text
+        if ((-Not [String]::IsNullOrEmpty($CurrentStartColumnText)) -and ($CurrentStartColumnText -match $RowMatcher)) {
+            #This Row has values and matched
+            $RowSet = @{}
+            foreach ($iCol in $HeaderHashTable.Keys) {
+                $RowSet[$HeaderHashTable[$iCol]] = $Worksheet.Cells.Item($iRow, $iCol).Text
+            }
+            $List += $RowSet
         }
     }
     Close-ExcelWorksheet | Out-Null
     return $List
 }
 
+function Get-HeaderName {
+    param (
+        $HeaderHashTable,
+        $CurrentHeaderName
+    )
+    if ($HeaderHashTable.Values -NotContains $CurrentHeaderName) {
+        return $CurrentHeaderName
+    }
+    else {
+        $CurrentHeaderNameEnd = $CurrentHeaderName.substring($CurrentHeaderName.length - 2)
+        if ($CurrentHeaderNameEnd -match "^\d{2}$") {
+            $NewCurrentHeaderName = $CurrentHeaderName.substring(0, ($CurrentHeaderName.length - 2)) + ([int]$CurrentHeaderNameEnd + 1).ToString("00")
+            Get-HeaderName $HeaderHashTable $NewCurrentHeaderName
+        }
+        else {
+            Get-HeaderName $HeaderHashTable "${CurrentHeaderName}02"
+        }
+    }
+}
 function Show-ExampleList {
     param (
         [array]$ExampleList
     )
     Write-Host ($ExampleList | ConvertTo-Json)
 }
+
+
 <#
 .Description
 Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
