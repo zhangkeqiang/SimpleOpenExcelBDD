@@ -90,7 +90,24 @@ function Get-DataTable2 {
 }
 
 
+<#
+.SYNOPSIS
+    Get a Hashtable list from excel sheet
+.Description 
+    Get a Hashtable list from excel sheet, one row for one hashtable, duplicated header name will be added suffix "00"
+.Example
+    #Get TestcaseDataList for Pester Testcase
+    $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
+        -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
+        -HeaderRow 1
+    It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
+        Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
+    }
 
+.Example
+    # Get TestcaseDataList from 1st sheet
+    $TestcaseDataList = Get-DataTable -ExcelPath $ExcelFullPath
+#>
 function Get-DataTable {
     param (
         [string]
@@ -118,8 +135,13 @@ function Get-DataTable {
     $HeaderHashTable = @{}
     for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $Worksheet.Dimension.Columns - 1); $iCol++) {
         $CurrentHeaderName = $Worksheet.Cells.Item($HeaderRow, $iCol).Text
-        if (-Not [String]::IsNullOrEmpty($CurrentHeaderName)) {
-            $HeaderHashTable[$iCol] = Get-HeaderName $HeaderHashTable $CurrentHeaderName
+        if ($CurrentHeaderName) {
+            if (-Not [String]::IsNullOrEmpty($CurrentHeaderName.Trim())) {
+                $HeaderHashTable[$iCol] = Get-HeaderName $HeaderHashTable $CurrentHeaderName.Trim()
+            }
+            else {
+                break
+            }
         }
         else {
             break
@@ -128,36 +150,24 @@ function Get-DataTable {
     $List = @()
     for ($iRow = $StartRow; $iRow -le ($HeaderRow + $Worksheet.Dimension.Rows - 1); $iRow++) {
         $CurrentStartColumnText = $Worksheet.Cells.Item($iRow, $IntStartColumn).Text
-        if ((-Not [String]::IsNullOrEmpty($CurrentStartColumnText)) -and ($CurrentStartColumnText -match $RowMatcher)) {
-            #This Row has values and matched
-            $RowSet = @{}
-            foreach ($iCol in $HeaderHashTable.Keys) {
-                $RowSet[$HeaderHashTable[$iCol]] = $Worksheet.Cells.Item($iRow, $iCol).Text
+        if (-Not [String]::IsNullOrEmpty($CurrentStartColumnText)) {  
+            if ($CurrentStartColumnText -match $RowMatcher) {
+                #This Row has values and matched
+                $RowSet = @{}
+                foreach ($iCol in $HeaderHashTable.Keys) {
+                    $RowSet[$HeaderHashTable[$iCol]] = $Worksheet.Cells.Item($iRow, $iCol).Text
+                }
+                $List += $RowSet
             }
-            $List += $RowSet
+        }
+        else {
+            break
         }
     }
     Close-ExcelWorksheet | Out-Null
     return $List
-    <#
-        .SYNOPSIS
-        Get a Hashtable list from excel sheet
-        .Description 
-        Get a Hashtable list from excel sheet, one row for one hashtable, duplicated header name will be added suffix "00"
-        .Example
-        #Get TestcaseDataList for Pester Testcase
-        $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
-            -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
-            -HeaderRow 1
-        It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
-            Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
-        }
-
-        .Example
-        # Get TestcaseDataList from 1st sheet
-        $TestcaseDataList = Get-DataTable -ExcelPath $ExcelFullPath
-    #>
 }
+
 
 function Get-HeaderName {
     param (
@@ -283,36 +293,40 @@ function Get-FixedLengthString {
 }
 
 <#
-.Description
-Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
-alias is Get-TestcaseList
-.Example
-Describe "Test Get-ExampleList" {
-    use default HeaderRow which is 1, and default ParameterNameColumn which is C
-    $ExampleList = Get-ExampleListByHeader -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
-    It "Easy Success of SBE" -TestCases $ExampleList {
-        [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
-        [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
-    }
-}
+.SYNOPSIS
+    Get hashtable list of Example data
 
-Describe "Test filter the dashboard by department" {
-    $ExampleList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'StoryExample1' `
-        -ParameterNameColumn E `
-        -HeaderRow 3
-    It "Run Example one by one" -TestCases $ExampleList {
-        #The below variables are generated automatically from Excel
-        Write-Host "===$Header==="
-        Write-Host $SelectedView
-        Write-Host $DepartmentCount
-        Write-Host $SelectedDepartment
-        Write-Host $FullDepartmentName
-        Write-Host $DepartmentLocation
-        Write-Host $DepartmentCurrentMonthKPI1
-        Write-Host $DepartmentCurrentMonthKPI2
+.Description
+    Every row in the excel sheet will be one Hashtable 
+
+.Example
+    Describe "Test Get-ExampleList" {
+        use default HeaderRow which is 1, and default ParameterNameColumn which is C
+        $ExampleList = Get-ExampleListByHeader -ExcelPath ".\Excel\Example1.xlsx" -WorksheetName 'Scenario1'
+        It "Easy Success of SBE" -TestCases $ExampleList {
+            [int]$BlackSweaterCountAtCustomer | Should -BeGreaterOrEqual $BlackSweaterCountReturned
+            [int]$BlackSweaterCountInInvertory1 + [int]$BlackSweaterCountReturned | Should -Be $BlackSweaterCountInInvertory2
+        }
     }
-}
+
+.Example
+    Describe "Test filter the dashboard by department" {
+        $ExampleList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
+            -WorksheetName 'StoryExample1' `
+            -ParameterNameColumn E `
+            -HeaderRow 3
+        It "Run Example one by one" -TestCases $ExampleList {
+            #The below variables are generated automatically from Excel
+            Write-Host "===$Header==="
+            Write-Host $SelectedView
+            Write-Host $DepartmentCount
+            Write-Host $SelectedDepartment
+            Write-Host $FullDepartmentName
+            Write-Host $DepartmentLocation
+            Write-Host $DepartmentCurrentMonthKPI1
+            Write-Host $DepartmentCurrentMonthKPI2
+        }
+    }
 #>
 function Get-ExampleListByHeader {
     param (
@@ -430,8 +444,11 @@ function Get-ExampleListFromWorksheet {
 
 
 <#
+.SYNOPSIS
+Get hashtable list of Example data
+
 .Description
-Get hashtable list of Example data, one Hashtable from one example data area in excel sheet
+One Hashtable from one example data area in excel sheet
 
 .Example
 Describe "Test Get-ExampleList" {
@@ -442,6 +459,7 @@ Describe "Test Get-ExampleList" {
     }
 }
 
+.Example
 Describe "Test filter the dashboard by department" {
     $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'StoryExample1'
