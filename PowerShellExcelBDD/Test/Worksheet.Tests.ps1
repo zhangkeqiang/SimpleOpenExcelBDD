@@ -1,4 +1,4 @@
-Describe "Excel Worksheet" {
+Describe "Excel Worksheet" -Skip {
     Context "ExcelApplication" {
         It "Specified Worksheet" {
             $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
@@ -17,7 +17,7 @@ Describe "Excel Worksheet" {
             $ColummnCountA | Should -Be $ColummnCountB
         }
 
-        It "Default Worksheet" -Skip {
+        It "Default Worksheet"  {
             $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
             $WorkSheetA = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath
             $RowCountA = $WorkSheetA.UsedRange.Rows.Count
