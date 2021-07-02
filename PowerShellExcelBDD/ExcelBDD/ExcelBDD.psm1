@@ -18,20 +18,10 @@ function Get-ExcelWorksheet {
     }
     # $ExcelApplication = $true
     if ($ExcelApplication) {
-        try {
-            $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
-        catch {
-            $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
+        $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
     else {
-        try {
-            $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
-        catch {
-            $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
+        $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
     
     if ($null -eq $Worksheet ) {
@@ -62,18 +52,24 @@ function Get-ExcelWorksheetFromExcelApplication {
         [String]$ExcelPath,
         [String]$WorksheetName
     )
-    $script:appExcel = New-Object -ComObject Excel.Application
-    # Let Excel run in the backend, comment out below line, if debug, remove below #
-    # $script:appExcel.Visible = $true
-    $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
-    if ($WorksheetName) {
-        $Worksheet = $WorkBook.Sheets[$WorksheetName]
+    try {
+        $script:appExcel = New-Object -ComObject Excel.Application
+        # Let Excel run in the backend, comment out below line, if debug, remove below #
+        # $script:appExcel.Visible = $true
+        $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
+        if ($WorksheetName) {
+            $Worksheet = $WorkBook.Sheets[$WorksheetName]
+        }
+        else {
+            $Worksheet = $WorkBook.Sheets(1)
+        }
+        $script:RowsCount = $Worksheet.UsedRange.Rows.Count
+        $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
     }
-    else {
-        $Worksheet = $WorkBook.Sheets(1)
+    catch {
+        return Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
-    $script:RowsCount = $Worksheet.UsedRange.Rows.Count
-    $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
+
     return $Worksheet
 }
 
