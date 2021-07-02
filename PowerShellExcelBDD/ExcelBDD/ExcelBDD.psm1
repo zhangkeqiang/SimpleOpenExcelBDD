@@ -40,7 +40,7 @@ function Get-ExcelWorksheetFromImportExcel {
         $Worksheet = $appExcel.Workbook.Worksheets[$WorksheetName]
     }
     else {
-        $Worksheet = $appExcel.Workbook.Worksheets | Select-Object -First 1
+        $Worksheet = $appExcel.Workbook.Worksheets[1]
     }
     $script:RowsCount = $Worksheet.Dimension.Rows
     $script:ColumnsCount = $Worksheet.Dimension.Columns
