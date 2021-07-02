@@ -1,17 +1,36 @@
 Describe "Excel Worksheet" {
     Context "ExcelApplication" {
-        It "Get-ExcelWorksheetFromExcelApplication" {
+        It "Specified Worksheet" {
             $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
             $WorksheetName = 'DataTable3'
             $WorkSheetA = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-            $WorkSheetA.UsedRange.Rows.Count
-            $WorkSheetA.UsedRange.Columns.Count
+            $RowCountA = $WorkSheetA.UsedRange.Rows.Count
+            $ColummnCountA = $WorkSheetA.UsedRange.Columns.Count
             Close-ExcelWorksheet
 
             $WorkSheetB = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-            $WorkSheetB.Dimension.Rows
-            $WorkSheetB.Dimension.Columns
+            $RowCountB = $WorkSheetB.Dimension.Rows
+            $ColummnCountB = $WorkSheetB.Dimension.Columns
             Close-ExcelWorksheet
+
+            $RowCountA | Should -Be $RowCountB
+            $ColummnCountA | Should -Be $ColummnCountB
+        }
+
+        It "Default Worksheet" {
+            $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
+            $WorkSheetA = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath
+            $RowCountA = $WorkSheetA.UsedRange.Rows.Count
+            $ColummnCountA = $WorkSheetA.UsedRange.Columns.Count
+            Close-ExcelWorksheet
+
+            $WorkSheetB = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath
+            $RowCountB = $WorkSheetB.Dimension.Rows
+            $ColummnCountB = $WorkSheetB.Dimension.Columns
+            Close-ExcelWorksheet
+
+            $RowCountA | Should -Be $RowCountB
+            $ColummnCountA | Should -Be $ColummnCountB
         }
     }
 }

@@ -52,8 +52,8 @@ function Get-ExcelWorksheetFromImportExcel {
     else {
         $Worksheet = $appExcel.Workbook.Worksheets | Select-Object -First 1
     }
-    $script:RowsCount = $Worksheet.UsedRange.Rows.Count
-    $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
+    $script:RowsCount = $Worksheet.Dimension.Rows
+    $script:ColumnsCount = $Worksheet.Dimension.Columns
     return $Worksheet
 }
 
@@ -64,18 +64,19 @@ function Get-ExcelWorksheetFromExcelApplication {
     )
     $script:appExcel = New-Object -ComObject Excel.Application
     # Let Excel run in the backend, comment out below line, if debug, remove below #
-    $script:appExcel.Visible = $true
+    # $script:appExcel.Visible = $true
     $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
     if ($WorksheetName) {
         $Worksheet = $WorkBook.Sheets[$WorksheetName]
     }
     else {
-        $Worksheet = $WorkBook.Sheets[0]
+        $Worksheet = $WorkBook.Sheets(1)
     }
     $script:RowsCount = $Worksheet.UsedRange.Rows.Count
     $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
     return $Worksheet
 }
+
 function Close-ExcelWorksheet {
     try {
         if ($script:appExcel.Name -eq "Microsoft Excel") {
