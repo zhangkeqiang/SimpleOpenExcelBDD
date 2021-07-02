@@ -10,38 +10,72 @@ Get-ExcelWorksheet -ExcelPath C:\buildsheet.xlsx -WorksheetName 'PaaS SQL DB Bui
 function Get-ExcelWorksheet {
     param (
         [String]$ExcelPath,
-        [String]$WorksheetName
+        [String]$WorksheetName,
+        [switch]$ExcelApplication
     )
     if (-not (Test-Path $ExcelPath)) {
         throw "$ExcelPath file does not exist."
     }
-    try {
-        $script:appExcel = Open-ExcelPackage -Path $ExcelPath
-        if ($WorksheetName) {
-            $Worksheet = $appExcel.Workbook.Worksheets[$WorksheetName]
+    # $ExcelApplication = $true
+    if ($ExcelApplication) {
+        try {
+            $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
         }
-        else {
-            $Worksheet = $appExcel.Workbook.Worksheets | Select-Object -First 1
-        }
-    }
-    catch {
-        $script:appExcel = New-Object -ComObject Excel.Application
-        # Let Excel run in the backend, comment out below line, if debug, remove below #
-        # $script:appExcel.Visible = $true
-        $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
-        if ($WorksheetName) {
-            $Worksheet = $WorkBook.Sheets[$WorksheetName]
-        }
-        else {
-            $Worksheet = $WorkBook.Sheets[0]
+        catch {
+            $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
         }
     }
+    else {
+        try {
+            $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
+        }
+        catch {
+            $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
+        }
+    }
+    
     if ($null -eq $Worksheet ) {
         throw "$WorksheetName sheet does not exist."
     }
     return $Worksheet
 }
 
+function Get-ExcelWorksheetFromImportExcel {
+    param (
+        [String]$ExcelPath,
+        [String]$WorksheetName
+    )
+    $script:appExcel = Open-ExcelPackage -Path $ExcelPath
+    if ($WorksheetName) {
+        $Worksheet = $appExcel.Workbook.Worksheets[$WorksheetName]
+    }
+    else {
+        $Worksheet = $appExcel.Workbook.Worksheets | Select-Object -First 1
+    }
+    $script:RowsCount = $Worksheet.UsedRange.Rows.Count
+    $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
+    return $Worksheet
+}
+
+function Get-ExcelWorksheetFromExcelApplication {
+    param (
+        [String]$ExcelPath,
+        [String]$WorksheetName
+    )
+    $script:appExcel = New-Object -ComObject Excel.Application
+    # Let Excel run in the backend, comment out below line, if debug, remove below #
+    $script:appExcel.Visible = $true
+    $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
+    if ($WorksheetName) {
+        $Worksheet = $WorkBook.Sheets[$WorksheetName]
+    }
+    else {
+        $Worksheet = $WorkBook.Sheets[0]
+    }
+    $script:RowsCount = $Worksheet.UsedRange.Rows.Count
+    $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
+    return $Worksheet
+}
 function Close-ExcelWorksheet {
     try {
         if ($script:appExcel.Name -eq "Microsoft Excel") {
@@ -58,37 +92,6 @@ function Close-ExcelWorksheet {
     }
 }
 
-<#
-.Description
-Get a Hashtable list from excel sheet, one row for one hashtable
-.Example
-    #Get TestcaseDataList for Pester Testcase
-    $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
-        -ExcelPath "${StartPath}${SEP}IaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
-        -HeaderRow 1
-    It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
-        Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
-    }
-#>
-function Get-DataTable2 {
-    param (
-        [string]$ExcelPath,
-        [string]$WorksheetName,
-        [int]$HeaderRow = 1,
-        [string]$StartColumn = 'A'
-    )
-    $IntStartColumn = [int][char]($StartColumn.ToUpper()) - 64
-    $RawDataTableA = Import-Excel -Path $ExcelPath -WorksheetName $WorksheetName `
-        -StartRow $HeaderRow -StartColumn $IntStartColumn
-    $DataTableA = @()
-    foreach ($item in $RawDataTableA) {
-        $HashTableA = @{}
-        $item.psobject.properties | ForEach-Object { $HashTableA[$_.Name] = $_.Value }
-        $DataTableA += $HashTableA
-    }
-    return $DataTableA
-}
-
 
 <#
 .SYNOPSIS
@@ -98,7 +101,7 @@ function Get-DataTable2 {
 .Example
     #Get TestcaseDataList for Pester Testcase
     $TestcaseDataList = Get-DataTable -WorksheetName SheetName `
-        -ExcelPath "${StartPath}${SEP}MZIaCSQLDBToolKit${SEP}TestData${SEP}DBTestCaseData.xlsx"  `
+        -ExcelPath "${StartPath}DataTableExample.xlsx"  `
         -HeaderRow 1
     It "Full Rule Except Email From Excel File" -Testcases $TestcaseDataList {
         Test-MZIsPropertyValid -PropertyName $PropertyName -PropertyValue $PropertyValue -Rule $Rule | Should -Be ($Expected -eq "TRUE")
@@ -133,7 +136,7 @@ function Get-DataTable {
     $StartRow = [int]$HeaderRow + 1
     #TODO find the all valid header
     $HeaderHashTable = @{}
-    for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $Worksheet.Dimension.Columns - 1); $iCol++) {
+    for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $script:ColumnsCount - 1); $iCol++) {
         $CurrentHeaderName = $Worksheet.Cells.Item($HeaderRow, $iCol).Text
         if ($CurrentHeaderName) {
             if (-Not [String]::IsNullOrEmpty($CurrentHeaderName.Trim())) {
@@ -148,7 +151,7 @@ function Get-DataTable {
         }
     }
     $List = @()
-    for ($iRow = $StartRow; $iRow -le ($HeaderRow + $Worksheet.Dimension.Rows - 1); $iRow++) {
+    for ($iRow = $StartRow; $iRow -le ($HeaderRow + $script:RowsCount - 1); $iRow++) {
         $CurrentStartColumnText = $Worksheet.Cells.Item($iRow, $IntStartColumn).Text
         if (-Not [String]::IsNullOrEmpty($CurrentStartColumnText)) {  
             if ($CurrentStartColumnText -match $RowMatcher) {
@@ -484,8 +487,8 @@ function Get-ExampleList {
         [string]$HeaderUnmatcher
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-    for ($iRow = 1; $iRow -le $Worksheet.Dimension.Rows; $iRow++) {
-        for ($iColumn = 1; $iColumn -lt $Worksheet.Dimension.Columns; $iColumn++) {
+    for ($iRow = 1; $iRow -le $script:RowsCount; $iRow++) {
+        for ($iColumn = 1; $iColumn -lt $script:ColumnsCount; $iColumn++) {
             if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match "^Param.*Name") {
                 # [int][char]($ParameterNameColumn.ToUpper()) - 64
                 $ParameterNameColumn = [string][char]($iColumn + 64)

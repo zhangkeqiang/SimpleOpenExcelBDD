@@ -2,8 +2,8 @@
 Describe "DataTable" {
     $ExcelBDDFilePath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
     $DataTableList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'DataTableBDD' 
-        # -HeaderMatcher 'Scenario'
+        -WorksheetName 'DataTableBDD' `
+        -HeaderMatcher 'Scenario1'
 
     It "Check DataTable Reading" -TestCases $DataTableList {
         $ExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
@@ -26,7 +26,7 @@ Describe "Use ImportExcel Only" {
     It "Read From Excel" {
         $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
         $DataTable1 = Import-Excel -Path $ExcelPath -WorksheetName "DataTable1"  -StartRow 2 -StartColumn 1
-        $DataTable1.Count | Should -Be 6
+        $DataTable1.Count | Should -Be 8
         Write-Host $DataTable1[0]."Header01"
         # $DataTableV05 = Import-Excel -Path $ExcelPath -WorksheetName 'DataTableV0.5' -NoHeader
     }
