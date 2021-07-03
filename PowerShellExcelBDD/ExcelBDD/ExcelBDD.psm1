@@ -67,6 +67,7 @@ function Get-ExcelWorksheetFromExcelApplication {
         $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
     }
     catch {
+        Write-Debug "MS Excel is not found, use ImportExcel instead."
         return Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
 

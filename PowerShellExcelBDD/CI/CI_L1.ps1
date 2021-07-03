@@ -9,7 +9,7 @@ $configuration = [PesterConfiguration]@{
     }
     Filter       = @{
         #Tag = 'Acceptance'
-        #ExcludeTag = 'WindowsOnly'
+        ExcludeTag = 'DefaultSheet'
     }
     Should       = @{
         ErrorAction = 'Continue'
