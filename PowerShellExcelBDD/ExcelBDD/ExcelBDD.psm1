@@ -25,6 +25,7 @@ function Get-ExcelWorksheet {
     }
     
     if ($null -eq $Worksheet ) {
+        Close-ExcelWorksheet
         throw "$WorksheetName sheet does not exist."
     }
     return $Worksheet

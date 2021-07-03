@@ -1,23 +1,31 @@
 $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 
-Describe "Get BDD Data" {
+Describe "Get-ExampleListByHeader" {
 
     $BDDTestCaseList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
         -WorksheetName 'SpecificationByExample' `
         -ParameterNameColumn F `
-        -HeaderRow "1" `
+        -HeaderRow 1 `
         -HeaderMatcher Scenario
 
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
-        Write-Host "Easy Success of Sheet $SheetName Column $Header"
-        Write-Host "Header Row $HeaderRow"
-        Write-Host "ParameterColumn $ParameterNameColumn"
+        Write-Host "Header $Header"
         Write-Host "SheetName $SheetName"
+        Write-Host "HeaderRow $HeaderRow"
+        Write-Host "ParameterColumn $ParameterNameColumn"
+        Write-Host "HeaderMatcher $HeaderMatcher"
+        Write-Host "HeaderUnmatcher $HeaderUnmatcher"
+        Write-Host "Expected:($ExpectedSwitch -eq 'On')"
+        Write-Host "TestResult:($TestResultSwitch -eq 'On')"
 
-        $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        $TestcaseList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
+            -ParameterNameColumn $ParameterNameColumn `
+            -HeaderRow $HeaderRow `
             -HeaderMatcher $HeaderMatcher `
-            -HeaderUnmatcher $HeaderUnmatcher 
+            -HeaderUnmatcher $HeaderUnmatcher `
+            -Expected:($ExpectedSwitch -eq 'On') `
+            -TestResult:($TestResultSwitch -eq 'On')
 
         Write-Host ($TestcaseList | ConvertTo-Json )
         
