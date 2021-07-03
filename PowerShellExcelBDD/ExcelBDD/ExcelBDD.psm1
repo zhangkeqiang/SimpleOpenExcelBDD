@@ -341,11 +341,6 @@ function Get-ExampleListByHeader {
         [switch]$TestResult
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-
-    if ($HeaderRow.GetType().Name -eq 'String') {
-        $HeaderRow = [int]$HeaderRow
-    }
-
     return Get-ExampleListFromWorksheet -Worksheet $Worksheet `
         -HeaderRow $HeaderRow `
         -ParameterNameColumn $ParameterNameColumn `

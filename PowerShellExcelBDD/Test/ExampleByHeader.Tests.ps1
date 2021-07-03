@@ -2,10 +2,11 @@ $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 
 Describe "Get BDD Data" {
 
-    $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+    $BDDTestCaseList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'SpecificationByExample' `
+        -ParameterNameColumn F `
+        -HeaderRow "1" `
         -HeaderMatcher Scenario
-
-    # -WorksheetName 'SpecificationByExample' `
 
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
         Write-Host "Easy Success of Sheet $SheetName Column $Header"
@@ -38,21 +39,5 @@ Describe "Get BDD Data" {
         $TestcaseList[1]["ParamName4"] | Should -Be "0"
         $TestcaseList[2]["ParamName4"] | Should -Be "1"
         $TestcaseList[3]["ParamName4"] | Should -Be $LastGridValue
-    }
-}
-
-Describe "Test filter the dashboard by department" {
-    $ExampleList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'StoryExample1' 
-    It "Run Example one by one" -TestCases $ExampleList {
-        #The below variables are generated automatically from Excel
-        Write-Host "===$Header==="
-        Write-Host $SelectedView
-        Write-Host $DepartmentCount
-        Write-Host $SelectedDepartment
-        Write-Host $FullDepartmentName
-        Write-Host $DepartmentLocation
-        Write-Host $DepartmentCurrentMonthKPI1
-        Write-Host $DepartmentCurrentMonthKPI2
     }
 }

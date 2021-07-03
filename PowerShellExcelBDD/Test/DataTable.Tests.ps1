@@ -2,8 +2,7 @@
 Describe "DataTable" {
     $ExcelBDDFilePath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
     $DataTableList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'DataTableBDD' `
-        -HeaderMatcher 'Scenario1'
+        -WorksheetName 'DataTableBDD'
 
     It "Check DataTable Reading" -TestCases $DataTableList {
         $ExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
