@@ -12,7 +12,7 @@
     RootModule        = 'ExcelBDD.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.4.1'
+    ModuleVersion     = '0.5.0'
 
     # ID used to uniquely identify this module
     GUID              = 'bdf35f8c-197a-4256-86ff-35da93432ba0'
@@ -35,7 +35,7 @@
     TypesToProcess    = @()
 
     # Functions to export from this module
-    FunctionsToExport = "Get-ExampleList","Get-ExampleListByHeader","Get-DataTable"
+    FunctionsToExport = "Get-ExampleList","Get-ExampleListByHeader","Get-DataTable","Show-ExampleList"
 
     # # Cmdlets to export from this module
     CmdletsToExport   = @()
@@ -79,7 +79,7 @@
             LicenseUri   = "https://www.apache.org/licenses/LICENSE-2.0.html"
 
             # Release notes for this particular version of the module
-            ReleaseNotes = 'handle exception when missing parameter name grid'
+            ReleaseNotes = 'read data from duplicated headers'
         }
     }
 }

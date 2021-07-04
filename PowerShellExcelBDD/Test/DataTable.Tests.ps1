@@ -15,9 +15,9 @@ Describe "DataTable" {
         $DataTableA[0].GetType().Name | Should -Be 'HashTable'
         $DataTableA[0]["Header01"] | Should -Be $FirstGridValue
         $DataTableA[5]["Header08"] | Should -Be $LastGridValue
-        $DataTableA[2]["Header03"] | Should -Be $Header03InThirdSet
-
         $DataTableA[5].Count | Should -Be $ColumnCount
+        # one check is added for V0.5
+        $DataTableA[2]["Header03"] | Should -Be $Header03InThirdSet
     }
 }
 
@@ -32,15 +32,38 @@ Describe "Use ImportExcel Only" {
 }
 
 
-Describe "Use ExcelBDD to get DataTable" {
+Describe "Use ExcelBDD to get DataTable V0.4" {
+    #get hashtable list as a data table
     $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
-    $DataTable1 = Get-DataTable -ExcelPath $ExcelPath -WorksheetName DataTable1 -HeaderRow 2
+    $DataTable1 = Get-DataTable -ExcelPath $ExcelPath -WorksheetName DataTable1 -HeaderRow 2 -StartColumn 'A'
     Show-ExampleList $DataTable1
-    It "Use the DataTable" -Testcases $DataTable1 {
+    #Then use the hashtable list
+    It "Use the DataTable V0.4" -Testcases $DataTable1 {
+        $Header01 | Should -Match "^Value1"
+        $Header02 | Should -Match "^Value2"
+        $Header03 | Should -Match "^Value3"
+        $Header04 | Should -Match "^Value4"
+        $Header05 | Should -Match "^Value5"
+        $Header06 | Should -Match "^Value6"
+        $Header07 | Should -Match "^Value7"
+        $Header08 | Should -Match "^Value8"
+    }
+}
 
-        Write-Host $Header01
-        Write-Host $Header02
-        Write-Host $Header08
-        $Header01 | Should -Not -BeNullOrEmpty
+Describe "Use ExcelBDD to get DataTable V0.5" {
+    $ExcelPath = "$StartPath/BDDExcel/DataTableBDD.xlsx"
+    #get hashtable list as a data table, if StartColumn is 1, it can be ignored
+    $DataTableV05 = Get-DataTable -ExcelPath $ExcelPath -WorksheetName "DataTableV0.5" -HeaderRow 2
+    Show-ExampleList $DataTableV05
+    #Then use the hashtable list
+    It "Use the DataTable V0.5" -Testcases $DataTableV05 {
+        $Header01 | Should -Match "^Value1"
+        $Header02 | Should -Match "^Value2"
+        $Header03 | Should -Match "^Value3"
+        $Header04 | Should -Match "^Value4"
+        $Header05 | Should -Match "^Value5"
+        $Header06 | Should -Match "^Value6"
+        $Header07 | Should -Match "^Value7"
+        $Header08 | Should -Match "^Value8"
     }
 }
