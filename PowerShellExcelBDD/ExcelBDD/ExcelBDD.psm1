@@ -18,23 +18,14 @@ function Get-ExcelWorksheet {
     }
     # $ExcelApplication = $true
     if ($ExcelApplication) {
-        try {
-            $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
-        catch {
-            $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
+        $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
     else {
-        try {
-            $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
-        catch {
-            $Worksheet = Get-ExcelWorksheetFromExcelApplication -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
-        }
+        $Worksheet = Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
     
     if ($null -eq $Worksheet ) {
+        Close-ExcelWorksheet
         throw "$WorksheetName sheet does not exist."
     }
     return $Worksheet
@@ -50,7 +41,7 @@ function Get-ExcelWorksheetFromImportExcel {
         $Worksheet = $appExcel.Workbook.Worksheets[$WorksheetName]
     }
     else {
-        $Worksheet = $appExcel.Workbook.Worksheets | Select-Object -First 1
+        $Worksheet = $appExcel.Workbook.Worksheets[1]
     }
     $script:RowsCount = $Worksheet.Dimension.Rows
     $script:ColumnsCount = $Worksheet.Dimension.Columns
@@ -62,18 +53,25 @@ function Get-ExcelWorksheetFromExcelApplication {
         [String]$ExcelPath,
         [String]$WorksheetName
     )
-    $script:appExcel = New-Object -ComObject Excel.Application
-    # Let Excel run in the backend, comment out below line, if debug, remove below #
-    # $script:appExcel.Visible = $true
-    $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
-    if ($WorksheetName) {
-        $Worksheet = $WorkBook.Sheets[$WorksheetName]
+    try {
+        $script:appExcel = New-Object -ComObject Excel.Application
+        # Let Excel run in the backend, comment out below line, if debug, remove below #
+        # $script:appExcel.Visible = $true
+        $WorkBook = $script:appExcel.Workbooks.Open($ExcelPath)
+        if ($WorksheetName) {
+            $Worksheet = $WorkBook.Sheets[$WorksheetName]
+        }
+        else {
+            $Worksheet = $WorkBook.Sheets(1)
+        }
+        $script:RowsCount = $Worksheet.UsedRange.Rows.Count
+        $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
     }
-    else {
-        $Worksheet = $WorkBook.Sheets(1)
+    catch {
+        Write-Debug "MS Excel is not found, use ImportExcel instead."
+        return Get-ExcelWorksheetFromImportExcel -ExcelPath $ExcelPath  -WorksheetName $WorksheetName
     }
-    $script:RowsCount = $Worksheet.UsedRange.Rows.Count
-    $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
+
     return $Worksheet
 }
 
@@ -344,11 +342,6 @@ function Get-ExampleListByHeader {
         [switch]$TestResult
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-
-    if ($HeaderRow.GetType().Name -eq 'String') {
-        $HeaderRow = [int]$HeaderRow
-    }
-
     return Get-ExampleListFromWorksheet -Worksheet $Worksheet `
         -HeaderRow $HeaderRow `
         -ParameterNameColumn $ParameterNameColumn `

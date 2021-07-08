@@ -7,10 +7,10 @@ $configuration = [PesterConfiguration]@{
         Path = $TestPath
         Exit = $false
     }
-    Filter       = @{
-        #Tag = 'Acceptance'
-        ExcludeTag = 'DefaultSheet'
-    }
+    # Filter       = @{
+    #     #Tag = 'Acceptance'
+    #     ExcludeTag = 'DefaultSheet'
+    # }
     Should       = @{
         ErrorAction = 'Continue'
     }

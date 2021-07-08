@@ -1,22 +1,31 @@
 $script:ExcelBDDFilePath = "$StartPath/BDDExcel/ExcelBDD.xlsx"
 
-Describe "Get BDD Data" {
+Describe "Get-ExampleListByHeader" {
 
-    $BDDTestCaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+    $BDDTestCaseList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
+        -WorksheetName 'SpecificationByExample' `
+        -ParameterNameColumn F `
+        -HeaderRow 1 `
         -HeaderMatcher Scenario
 
-    # -WorksheetName 'SpecificationByExample' `
-
     It "Easy Success of Column List" -TestCases $BDDTestCaseList {
-        Write-Host "Easy Success of Sheet $SheetName Column $Header"
-        Write-Host "Header Row $HeaderRow"
-        Write-Host "ParameterColumn $ParameterNameColumn"
+        Write-Host "Header $Header"
         Write-Host "SheetName $SheetName"
+        Write-Host "HeaderRow $HeaderRow"
+        Write-Host "ParameterColumn $ParameterNameColumn"
+        Write-Host "HeaderMatcher $HeaderMatcher"
+        Write-Host "HeaderUnmatcher $HeaderUnmatcher"
+        Write-Host "Expected:($ExpectedSwitch -eq 'On')"
+        Write-Host "TestResult:($TestResultSwitch -eq 'On')"
 
-        $TestcaseList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
+        $TestcaseList = Get-ExampleListByHeader -ExcelPath $ExcelBDDFilePath `
             -WorksheetName $SheetName `
+            -ParameterNameColumn $ParameterNameColumn `
+            -HeaderRow $HeaderRow `
             -HeaderMatcher $HeaderMatcher `
-            -HeaderUnmatcher $HeaderUnmatcher 
+            -HeaderUnmatcher $HeaderUnmatcher `
+            -Expected:($ExpectedSwitch -eq 'On') `
+            -TestResult:($TestResultSwitch -eq 'On')
 
         Write-Host ($TestcaseList | ConvertTo-Json )
         
@@ -38,21 +47,5 @@ Describe "Get BDD Data" {
         $TestcaseList[1]["ParamName4"] | Should -Be "0"
         $TestcaseList[2]["ParamName4"] | Should -Be "1"
         $TestcaseList[3]["ParamName4"] | Should -Be $LastGridValue
-    }
-}
-
-Describe "Test filter the dashboard by department" {
-    $ExampleList = Get-ExampleList -ExcelPath $ExcelBDDFilePath `
-        -WorksheetName 'StoryExample1' 
-    It "Run Example one by one" -TestCases $ExampleList {
-        #The below variables are generated automatically from Excel
-        Write-Host "===$Header==="
-        Write-Host $SelectedView
-        Write-Host $DepartmentCount
-        Write-Host $SelectedDepartment
-        Write-Host $FullDepartmentName
-        Write-Host $DepartmentLocation
-        Write-Host $DepartmentCurrentMonthKPI1
-        Write-Host $DepartmentCurrentMonthKPI2
     }
 }
