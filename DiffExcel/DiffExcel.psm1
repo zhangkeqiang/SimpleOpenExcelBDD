@@ -25,17 +25,25 @@ function Compare-Excel {
             # Write-Host "$($Worksheet.Name) is a new worksheet."
         }
     }
+    if ($OldFile.IndexOf("Temp") -gt 0) {
+        [void]$OldWorkBook.Close($false)
+        $OpenWorkBook = $NewWorkBook
+    }
+    else {
+        [void]$NewWorkBook.Close($false)
+        $OpenWorkBook = $OldWorkBook
+    }
+
     Show-Result $Result
     if ($IsChanged) {
         Start-Sleep 5
         $ExcelApp.Visible = $true
     }
     else {
-        [void]$NewWorkBook.Close($false)
-        [void]$OldWorkBook.Close($false)
+        [void]$OpenWorkBook.Close($false)
         [void]$ExcelApp.Quit()
-        [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($ExcelApp)
     }
+    [void][System.Runtime.Interopservices.Marshal]::ReleaseComObject($ExcelApp)
     return $Result
 }
 
@@ -137,7 +145,7 @@ function Show-Result {
                 Write-Host $DiffItem
             }
             else {
-                Write-Host "Diff Grid $($DiffItem.Grid), New $($DiffItem.New), old $($DiffItem.Old)"
+                Write-Host "Diff Grid:$($DiffItem.Grid), New:'$($DiffItem.New)', old:'$($DiffItem.Old)'"
             }
         }
     }
