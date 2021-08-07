@@ -1,1 +1,1 @@
-PowerShell -file E:\Code\ExcelBDD\DiffExcel\DiffExcel.ps1 %2 %5
+PowerShell -executionpolicy remotesigned -file E:\Code\ExcelBDD\DiffExcel\DiffExcel.ps1 %2 %5
