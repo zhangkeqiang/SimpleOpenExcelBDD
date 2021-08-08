@@ -1,16 +1,23 @@
 Get-Module DiffExcel | Remove-Module
-$StartPath = (Resolve-Path "$PSScriptRoot/..").Path
+$script:StartPath = (Resolve-Path "$PSScriptRoot/..").Path
 Write-Host $StartPath
 $modulePath = Join-Path $StartPath "DiffExcel.psm1"
 Import-Module $modulePath
+
 Describe "Campare Whole File" {
-    It "ItName" {
+    It "By Function" {
         $NewFile = "$PSScriptRoot\NewFile.xlsx"
         $OldFile = "$PSScriptRoot\OldFile.xlsx"
         $Result = Compare-Excel $OldFile $NewFile -Test
         # $Result | ConvertTo-Json -Depth 10 | Out-Host
         Write-Host "========================================================"
         Show-Result $Result
+    }
+
+    It "By Cmdlet" {
+        $NewFile = "$PSScriptRoot\NewFile.xlsx"
+        $OldFile = "$PSScriptRoot\OldFile.xlsx"
+        & $StartPath\DiffExcel.ps1 $OldFile $NewFile -Test
     }
 }
 
