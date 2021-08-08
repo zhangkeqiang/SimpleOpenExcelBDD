@@ -19,7 +19,6 @@ if ($NewFile.IndexOf(":") -lt 0) {
 if ($OldFile.IndexOf(":") -lt 0) {
     $OldFile = Join-Path $(Get-Location) $OldFile
 }
-Write-Output "File $NewFile"
-Write-Output "Old File $OldFile"
+Write-Host "File $NewFile"
+Write-Host "Old File $OldFile"
 Compare-Excel $OldFile $NewFile | Out-Null
-# Show-Result $Result

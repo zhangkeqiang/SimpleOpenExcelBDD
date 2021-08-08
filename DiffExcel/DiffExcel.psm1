@@ -2,7 +2,8 @@
 function Compare-Excel {
     param (
         $OldFile,
-        $NewFile
+        $NewFile,
+        [Switch]$Test
     )
     $ExcelApp = New-Object -ComObject Excel.Application
     # $ExcelApp.Visible = $true
@@ -22,7 +23,6 @@ function Compare-Excel {
             $IsChanged = $true
             # Write-Host $_
             $Result[$Worksheet.Name] = "New worksheet"
-            # Write-Host "$($Worksheet.Name) is a new worksheet."
         }
     }
     if ($OldFile.IndexOf("Temp") -gt 0) {
@@ -35,7 +35,7 @@ function Compare-Excel {
     }
 
     Show-Result $Result
-    if ($IsChanged) {
+    if ($IsChanged -and (-Not $Test)) {
         Start-Sleep 5
         $ExcelApp.Visible = $true
     }
@@ -53,14 +53,14 @@ function Compare-Worksheet {
         $NewWorksheet
     )
     $DiffList = @()
-    $NewRowsCount = $NewWorksheet.UsedRange.Rows.Count
+    $NewRowsCount = $NewWorksheet.UsedRange.Row + $NewWorksheet.UsedRange.Rows.Count - 1
     # Write-Host "RowsCount $NewRowsCount"
-    $NewColumnsCount = $NewWorksheet.UsedRange.Columns.Count
+    $NewColumnsCount = $NewWorksheet.UsedRange.Column + $NewWorksheet.UsedRange.Columns.Count - 1
     # Write-Host "ColumnsCount $NewColumnsCount"
 
-    $OldRowsCount = $OldWorksheet.UsedRange.Rows.Count
+    $OldRowsCount = $OldWorksheet.UsedRange.Row + $OldWorksheet.UsedRange.Rows.Count - 1
     # Write-Host "OldRowsCount $OldRowsCount"
-    $OldColumnsCount = $OldWorksheet.UsedRange.Columns.Count
+    $OldColumnsCount = $OldWorksheet.UsedRange.Column + $OldWorksheet.UsedRange.Columns.Count - 1
     # Write-Host "OldColumnsCount $OldColumnsCount"
     
     for ($iRow = 1; $iRow -le $NewRowsCount; $iRow++) {
