@@ -25,7 +25,7 @@
 
 .RELEASENOTES
 now supports the following features:
-Diff two excel files
+Diff two excel files, open current version if diff
 
 #>
 
@@ -83,7 +83,7 @@ function Compare-Excel {
             $Result[$Worksheet.Name] = "New worksheet"
         }
     }
-    if ($OldFile.IndexOf("Temp") -gt 0) {
+    if ($NewFile.IndexOf("Temp") -lt 0) {
         [void]$OldWorkBook.Close($false)
         $OpenWorkBook = $NewWorkBook
     }
