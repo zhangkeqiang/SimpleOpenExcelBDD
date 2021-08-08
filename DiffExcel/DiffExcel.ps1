@@ -43,7 +43,7 @@ param (
     $NewFile,
     [Switch]$Test
 )
-Write-Host "DiffExcel V1.0 developed by Zhang Keqiang for ExclBDD"
+Write-Host "DiffExcel V1.2 developed by Zhang Keqiang for ExclBDD"
 if ((-not $OldFile) -or (-not $NewFile)) {
     return
 }
