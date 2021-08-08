@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 1.1
+.VERSION 1.2
 
 .GUID c623da06-d9d6-4890-8171-627b0023c972
 
@@ -83,6 +83,21 @@ function Compare-Excel {
             $Result[$Worksheet.Name] = "New worksheet"
         }
     }
+
+    foreach ($Worksheet in $OldWorkBook.Worksheets) {
+        try {
+            if(-Not $NewWorkBook.Worksheets[$Worksheet.Name]){
+                $IsChanged = $true
+                $Result[$Worksheet.Name] = "Missing worksheet"
+            }
+        }
+        catch {
+            # Write-Host $_
+            $IsChanged = $true
+            $Result[$Worksheet.Name] = "Missing worksheet"
+        }
+    }
+
     if ($NewFile.IndexOf("Temp") -lt 0) {
         [void]$OldWorkBook.Close($false)
         $OpenWorkBook = $NewWorkBook
@@ -126,7 +141,7 @@ function Compare-Worksheet {
             try {
                 if ($NewWorksheet.Cells.Item($iRow, $iColumn).Text -cne $OldWorksheet.Cells.Item($iRow, $iColumn).Text) {
                     $DiffItem = [PSCustomObject]@{
-                        Grid = "$([char]($iColumn+64))$iRow"
+                        Cell = "$([char]($iColumn+64))$iRow"
                         # Row    = $iRow
                         # Column = $iColumn
                         Old  = $OldWorksheet.Cells.Item($iRow, $iColumn).Text
@@ -138,7 +153,7 @@ function Compare-Worksheet {
             catch {
                 # Write-Host $_
                 $DiffItem = [PSCustomObject]@{
-                    Grid = "$([char]($iColumn+64))$iRow"
+                    Cell = "$([char]($iColumn+64))$iRow"
                     # Row    = $iRow
                     # Column = $iColumn
                     Old  = $null
@@ -155,7 +170,7 @@ function Compare-Worksheet {
             for ($iColumn = 1; $iColumn -le $NewColumnsCount; $iColumn++) {
                 if (-Not [String]::IsNullOrWhiteSpace($OldWorksheet.Cells.Item($iRow, $iColumn).Text)) {
                     $DiffItem = [PSCustomObject]@{
-                        Grid = "$([char]($iColumn+64))$iRow"
+                        Cell = "$([char]($iColumn+64))$iRow"
                         # Row    = $iRow
                         # Column = $iColumn
                         Old  = $OldWorksheet.Cells.Item($iRow, $iColumn).Text
@@ -175,7 +190,7 @@ function Compare-Worksheet {
             for ($iColumn = $NewColumnsCount + 1; $iColumn -le $OldColumnsCount; $iColumn++) {
                 if (-Not [String]::IsNullOrWhiteSpace($OldWorksheet.Cells.Item($iRow, $iColumn).Text)) {
                     $DiffItem = [PSCustomObject]@{
-                        Grid = "$([char]($iColumn+64))$iRow"
+                        Cell = "$([char]($iColumn+64))$iRow"
                         # Row    = $iRow
                         # Column = $iColumn
                         Old  = $OldWorksheet.Cells.Item($iRow, $iColumn).Text
@@ -203,7 +218,7 @@ function Show-Result {
                 Write-Host $DiffItem
             }
             else {
-                Write-Host "Diff Grid:$($DiffItem.Grid), New:'$($DiffItem.New)', old:'$($DiffItem.Old)'"
+                Write-Host "Diff Cell:$($DiffItem.Cell), New:'$($DiffItem.New)', old:'$($DiffItem.Old)'"
             }
         }
     }

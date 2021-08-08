@@ -1,8 +1,11 @@
 Get-Module DiffExcel | Remove-Module
-$script:StartPath = (Resolve-Path "$PSScriptRoot/..").Path
+$script:StartPath = (Resolve-Path "$PSScriptRoot\..").Path
 Write-Host $StartPath
 $modulePath = Join-Path $StartPath "DiffExcel.psm1"
 Import-Module $modulePath
+
+$ExcelBDDPath = Join-Path $StartPath "..\PowerShellExcelBDD\ExcelBDD\ExcelBDD.psm1"
+Import-Module $ExcelBDDPath
 
 Describe "Campare Whole File" {
     It "By Function" {
