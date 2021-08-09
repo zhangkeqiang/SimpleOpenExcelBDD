@@ -1,6 +1,3 @@
-#Define max blank lines for ending sheet reading
-$MaxBlankThreshold = 3
-
 <#
 .Description
 Get worksheet from Excel file according to build sheet path and worksheet name
@@ -70,7 +67,7 @@ function Get-ExcelWorksheetFromExcelApplication {
         $script:RowsCount = $Worksheet.UsedRange.Rows.Count
         $script:StartRow = [int](($Address[2] -split ":")[0])
         $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
-        $script:StartColumn = [int][char]$Address[1] -64
+        $script:StartColumn = [int][char]$Address[1] - 64
     }
     catch {
         Write-Debug "MS Excel is not found, use ImportExcel instead."
@@ -412,20 +409,13 @@ function Get-ExampleListFromWorksheet {
 
     #Get Parameter Row Array
     $RowNumArray = @()
-
-    $ContinuousBlankCount = 0
-    do {
-        if ([String]::IsNullOrEmpty($Worksheet.Cells.Item($CurrentRow, $ParamNameCol).Text)) {
-            $ContinuousBlankCount++
-        }
-        else {
-            $ContinuousBlankCount = 0
-            if ("NA" -ne $Worksheet.Cells.Item($CurrentRow, $ParamNameCol).Text) {
-                $RowNumArray += $CurrentRow
+    for ($iRow = $CurrentRow; $iRow -lt ($script:StartRow + $script:RowsCount); $iRow++) {
+        if (-Not [String]::IsNullOrEmpty($Worksheet.Cells.Item($iRow, $ParamNameCol).Text)) {
+            if ("NA" -ne $Worksheet.Cells.Item($iRow, $ParamNameCol).Text) {
+                $RowNumArray += $iRow
             }
         }
-        $CurrentRow++
-    }while ($ContinuousBlankCount -le $MaxBlankThreshold)
+    }
 
     $List = [System.Collections.ArrayList]::new()
     foreach ($iCol in $ColumnNumArray) {
