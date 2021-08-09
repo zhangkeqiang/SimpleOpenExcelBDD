@@ -44,7 +44,9 @@ function Get-ExcelWorksheetFromImportExcel {
         $Worksheet = $appExcel.Workbook.Worksheets[1]
     }
     $script:RowsCount = $Worksheet.Dimension.Rows
+    $script:StartRow = $Worksheet.Dimension.Start.Row
     $script:ColumnsCount = $Worksheet.Dimension.Columns
+    $script:StartColumn = $Worksheet.Dimension.Start.Column
     return $Worksheet
 }
 
@@ -64,8 +66,11 @@ function Get-ExcelWorksheetFromExcelApplication {
         else {
             $Worksheet = $WorkBook.Sheets(1)
         }
+        $Address = $Worksheet.UsedRange.Address() -split "\$"
         $script:RowsCount = $Worksheet.UsedRange.Rows.Count
+        $script:StartRow = [int](($Address[2] -split ":")[0])
         $script:ColumnsCount = $Worksheet.UsedRange.Columns.Count
+        $script:StartColumn = [int][char]$Address[1] -64
     }
     catch {
         Write-Debug "MS Excel is not found, use ImportExcel instead."
@@ -135,7 +140,7 @@ function Get-DataTable {
     $StartRow = [int]$HeaderRow + 1
     #TODO find the all valid header
     $HeaderHashTable = @{}
-    for ($iCol = $IntStartColumn; $iCol -le ($IntStartColumn + $script:ColumnsCount - 1); $iCol++) {
+    for ($iCol = $IntStartColumn; $iCol -lt ($script:StartColumn + $script:ColumnsCount); $iCol++) {
         $CurrentHeaderName = $Worksheet.Cells.Item($HeaderRow, $iCol).Text
         if ($CurrentHeaderName) {
             if (-Not [String]::IsNullOrEmpty($CurrentHeaderName.Trim())) {
@@ -150,7 +155,7 @@ function Get-DataTable {
         }
     }
     $List = @()
-    for ($iRow = $StartRow; $iRow -le ($HeaderRow + $script:RowsCount - 1); $iRow++) {
+    for ($iRow = $StartRow; $iRow -lt ($script:StartRow + $script:RowsCount); $iRow++) {
         $CurrentStartColumnText = $Worksheet.Cells.Item($iRow, $IntStartColumn).Text
         if (-Not [String]::IsNullOrEmpty($CurrentStartColumnText)) {  
             if ($CurrentStartColumnText -match $RowMatcher) {
@@ -400,6 +405,9 @@ function Get-ExampleListFromWorksheet {
             $ColumnNumArray += $CurrentCol
         }
         $CurrentCol += $ColumnStep
+        if ($CurrentCol -ge ($script:StartColumn + $script:ColumnsCount)) {
+            break
+        }
     }
 
     #Get Parameter Row Array
@@ -481,8 +489,8 @@ function Get-ExampleList {
         [string]$HeaderUnmatcher
     )
     $Worksheet = Get-ExcelWorksheet -ExcelPath $ExcelPath -WorksheetName $WorksheetName
-    for ($iRow = 1; $iRow -le $script:RowsCount; $iRow++) {
-        for ($iColumn = 1; $iColumn -lt $script:ColumnsCount; $iColumn++) {
+    for ($iRow = $script:StartRow; $iRow -lt ($script:StartRow + $script:RowsCount); $iRow++) {
+        for ($iColumn = $script:StartColumn; $iColumn -lt ($script:StartColumn + $script:ColumnsCount); $iColumn++) {
             if ($Worksheet.Cells.Item($iRow, $iColumn).Text -match "^Param.*Name") {
                 # [int][char]($ParameterNameColumn.ToUpper()) - 64
                 $ParameterNameColumn = [string][char]($iColumn + 64)
