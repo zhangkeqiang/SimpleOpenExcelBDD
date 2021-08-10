@@ -247,7 +247,7 @@ public class Behavior {
 		HashMap<Integer, String> mapParameterName = new HashMap<>();
 		int nContinuousBlankCount = 0;
 		for (int iRow = parameterStartRow; iRow <= sheetTestData.getLastRowNum(); iRow++) {
-			if (nContinuousBlankCount > 3) {
+			if (nContinuousBlankCount > 10) {
 				break;
 			}
 			XSSFRow rowCurrent = sheetTestData.getRow(iRow);
