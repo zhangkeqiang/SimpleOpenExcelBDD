@@ -2,6 +2,7 @@ package com.excelbdd;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -408,5 +409,44 @@ public class Behavior {
 				mapTestSet.put(strParameterName, cellCurrent.getRawValue());
 			}
 		}
+	}
+
+	public static List<Map<String, String>> getDataTable(String excelPath, String worksheetName, int headerRow,
+			char startColumn) throws IOException {
+		ArrayList<Map<String, String>> listTestSet = new ArrayList<>();
+		try (FileInputStream excelFile = new FileInputStream(new File(excelPath));) {
+			XSSFWorkbook workbook = null;
+			try {
+				workbook = new XSSFWorkbook(excelFile);
+				XSSFSheet sheetTestData = getExampleSheet(worksheetName, excelFile, workbook);
+				// poi get row from 0, so 1st Row is at 0
+				int actualHeaderRow = headerRow - 1;
+				int startColumnNum = (int) startColumn - 65;
+				XSSFRow rowHeader = sheetTestData.getRow(actualHeaderRow);
+				int nMaxColumn = rowHeader.getLastCellNum();
+
+				for (int iRow = headerRow; iRow < sheetTestData.getLastRowNum(); iRow++) {
+					XSSFRow rowCurrent = sheetTestData.getRow(iRow);
+					if (rowCurrent == null) {
+						continue;
+					}
+					Map<String, String> mapTestSet = new HashMap<>();
+					for (int iCol = startColumnNum; iCol <= nMaxColumn; iCol++) {
+						XSSFCell cellHeader = rowHeader.getCell(iCol);
+						if (cellHeader != null) {
+							putParameter(cellHeader.getStringCellValue(), rowCurrent, mapTestSet, iCol);
+						}
+					}
+					listTestSet.add(mapTestSet);
+				}
+			} catch (Exception e) {
+				System.out.print(e.getMessage());
+				e.printStackTrace();
+				throw (e);
+			} finally {
+				workbook.close();
+			}
+		}
+		return listTestSet;
 	}
 }

@@ -2,6 +2,9 @@ package com.excelbdd;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class TestWizard {
@@ -13,9 +16,9 @@ public class TestWizard {
 
 	public static String getExcelBDDStartPath(String childPath) throws IOException {
 		String absolutePath = new File(".").getAbsolutePath();
-		if(absolutePath.lastIndexOf(childPath) >= 0) {
+		if (absolutePath.lastIndexOf(childPath) >= 0) {
 			return absolutePath.substring(0, absolutePath.lastIndexOf(childPath));
-		}else {
+		} else {
 			throw new IOException(childPath + " is not in " + absolutePath);
 		}
 	}
@@ -33,5 +36,14 @@ public class TestWizard {
 
 	public static String makeMatcherString(String matcher) {
 		return ANY_MATCHER + matcher + ANY_MATCHER;
+	}
+
+	public static Collection<Object[]> getExampleCollection(List<Map<String, String>> listTestData) {
+		Collection<Object[]> collectionTestData = new ArrayList<>();
+		for (Map<String, String> map : listTestData) {
+			Object[] arrayObj = { map };
+			collectionTestData.add(arrayObj);
+		}
+		return collectionTestData;
 	}
 }

@@ -16,7 +16,7 @@ public class ExcelBDDSBETest {
 
 	static Stream<Map<String, String>> provideExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/ExcelBDD.xlsx";
-		return Behavior.getExampleStream(filePath, "SpecificationByExample", 1, 'F');
+		return Behavior.getExampleStream(filePath, "SpecificationByExample");
 	}
 
 	@ParameterizedTest(name = "Test{index}:{0}")

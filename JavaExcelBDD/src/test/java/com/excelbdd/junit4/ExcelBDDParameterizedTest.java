@@ -1,4 +1,4 @@
-package com.excelbdd;
+package com.excelbdd.junit4;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,6 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import com.excelbdd.Behavior;
+import com.excelbdd.TestWizard;
 
 @RunWith(Parameterized.class)
 public class ExcelBDDParameterizedTest {

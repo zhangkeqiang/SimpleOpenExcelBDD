@@ -24,16 +24,16 @@ Describe "Campare Whole File" {
     }
 }
 
-Describe "Compare Worksheet" {
-    BeforeAll{
+Describe "Worksheet" {
+    BeforeAll {
         $NewFile = "$PSScriptRoot\NewFile.xlsx"
         $OldFile = "$PSScriptRoot\OldFile.xlsx"
         $ExcelApp = New-Object -ComObject Excel.Application
-        $ExcelApp.Visible = $true
+        # $ExcelApp.Visible = $true
         $NewWorkBook = $ExcelApp.Workbooks.Open($NewFile)
         $OldWorkBook = $ExcelApp.Workbooks.Open($OldFile)
     }
-    AfterAll{
+    AfterAll {
         [void]$NewWorkBook.Close($false)
         [void]$OldWorkBook.Close($false)
         [void]$ExcelApp.Quit()
@@ -42,18 +42,17 @@ Describe "Compare Worksheet" {
 
     $BDDExcelPath = "$PSScriptRoot\DiffExcelBDD.xlsx"
     $TestCaseList = Get-ExampleList -ExcelPath $BDDExcelPath `
-        -WorksheetName DiffWorksheet
+        -WorksheetName DiffWorksheet -HeaderMatcher "Scenario3"
         
-    It "ItName" -TestCases $TestCaseList {
+    It "Compare Worksheet" -TestCases $TestCaseList {
         Write-Host $WorksheetName
-        Write-Host $ResultType
         Write-Host $DiffCount
         $Result = Compare-Worksheet $OldWorkBook.Worksheets[$WorksheetName] $NewWorkBook.Worksheets[$WorksheetName]
         $Result | ConvertTo-Json | Out-Host
-        $Result.GetType().Name | Should -Be $ResultType
+        $Result.GetType().Name | Should -Be "Object[]"
         $Result.Count | Should -Be $DiffCount
-        $Result[$ResultNum1] | Out-String | Should -Match $ResultText1
-        $Result[$ResultNum2] | Out-String | Should -Match $ResultText2
-        $Result[$ResultNum3] | Out-String | Should -Match $ResultText3
+        $Result[0] | Out-String | Should -Match $ResultText0
+        $Result[1] | Out-String | Should -Match $ResultText1
+        $Result[2] | Out-String | Should -Match $ResultText2
     }
 }
