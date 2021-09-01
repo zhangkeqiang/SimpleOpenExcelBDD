@@ -49,6 +49,10 @@ public class Behavior {
 		return getExampleList(excelPath, worksheetName).stream();
 	}
 
+	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName) throws IOException {
+		return TestWizard.getExampleCollection(getExampleList(excelPath, worksheetName));
+	}
+
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, String headerMatcher)
 			throws IOException {
 		return getExampleList(excelPath, worksheetName, headerMatcher, TestWizard.NEVER_MATCHED_STRING);
@@ -276,14 +280,9 @@ public class Behavior {
 
 	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName, int headerRow,
 			char parameterNameColumn) throws IOException {
-		Collection<Object[]> collectionTestData = new ArrayList<>();
-		List<Map<String, String>> listTestData = getExampleList(excelPath, worksheetName, headerRow,
-				parameterNameColumn, TestWizard.ANY_MATCHER, TestWizard.NEVER_MATCHED_STRING, SIMPLE);
-		for (Map<String, String> map : listTestData) {
-			Object[] arrayObj = { map };
-			collectionTestData.add(arrayObj);
-		}
-		return collectionTestData;
+
+		return TestWizard.getExampleCollection(getExampleList(excelPath, worksheetName, headerRow, parameterNameColumn,
+				TestWizard.ANY_MATCHER, TestWizard.NEVER_MATCHED_STRING, SIMPLE));
 	}
 
 	public static List<Map<String, String>> getExampleListWithExpected(String excelPath, String worksheetName,
