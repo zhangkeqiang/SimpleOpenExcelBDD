@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excelbdd</groupId>
 	<artifactId>excelbdd-java</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<packaging>jar</packaging>
 	<name>ExcelBDD</name>
 	<description>Use Excel file as BDD feature file, get example list and testcase list from excel file</description>

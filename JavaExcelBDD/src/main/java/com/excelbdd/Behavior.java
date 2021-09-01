@@ -63,6 +63,17 @@ public class Behavior {
 		return getExampleList(excelPath, worksheetName, headerMatcher).stream();
 	}
 
+	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName,
+			String headerMatcher) throws IOException {
+		return TestWizard.getExampleCollection(getExampleList(excelPath, worksheetName, headerMatcher));
+	}
+
+	public static Collection<Object[]> getExampleCollection(String excelPath, String worksheetName,
+			String headerMatcher, String headerUnmatcher) throws IOException {
+		return TestWizard
+				.getExampleCollection(getExampleList(excelPath, worksheetName, headerMatcher, headerUnmatcher));
+	}
+
 	@SuppressWarnings("resource")
 	public static List<Map<String, String>> getExampleList(String excelPath, String worksheetName, String headerMatcher,
 			String headerUnmatcher) throws IOException {
