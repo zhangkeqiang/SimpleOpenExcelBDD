@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -15,7 +14,7 @@ class DataTableTest {
 
 	static Stream<Map<String, String>> provideExampleList() throws IOException {
 		String filePath = TestWizard.getExcelBDDStartPath("JavaExcelBDD") + "BDDExcel/DataTableBDD.xlsx";
-		return Behavior.getExampleStream(filePath, "DataTableBDD");
+		return Behavior.getExampleStream(filePath, "DataTableBDD", "Scenario");
 	}
 
 	@ParameterizedTest(name = "Test{index}:{0}")
@@ -30,19 +29,12 @@ class DataTableTest {
 				startColumn);
 		assertTrue(dataTable.size() > 0);
 		TestWizard.showMap(dataTable.get(0));
-		// $ExcelPath = "$StartPath/BDDExcel/$ExcelFileName"
-		// $DataTableA = Get-DataTable -ExcelPath $ExcelPath -WorksheetName $SheetName `
-		// -HeaderRow $HeaderRow -StartColumn $StartColumn
-		//
-		// Show-ExampleList $DataTableA
-		// $DataTableA.Count | Should -Be $TestSetCount
-		// $DataTableA.GetType().Name | Should -Be 'Object[]'
-		// $DataTableA[0].GetType().Name | Should -Be 'HashTable'
-		// $DataTableA[0]["Header01"] | Should -Be $FirstGridValue
-		// $DataTableA[5]["Header08"] | Should -Be $LastGridValue
-		// $DataTableA[5].Count | Should -Be $ColumnCount
+		assertEquals(TestWizard.getInt(parameterMap.get("TestSetCount")), dataTable.size());
+		assertEquals("class java.util.HashMap", dataTable.get(0).getClass().toString());
+		assertEquals(parameterMap.get("FirstGridValue"), dataTable.get(0).get("Header01"));
+		assertEquals(parameterMap.get("LastGridValue"), dataTable.get(5).get("Header08"));
+		assertEquals(TestWizard.getInt(parameterMap.get("ColumnCount")), dataTable.get(5).size());
 		// # one check is added for V0.5
-		// $DataTableA[2]["Header03"] | Should -Be $Header03InThirdSet
-
+		assertEquals(parameterMap.get("Header03InThirdSet"), dataTable.get(2).get("Header03"));
 	}
 }
