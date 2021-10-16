@@ -13,5 +13,8 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet test DotNetExcelBDD\ExcelBDDTest\ExcelBDDTest.csproj
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/ExcelBDDTest.csproj'
+    testRunTitle: 'DotNetExcelBDDTest'
