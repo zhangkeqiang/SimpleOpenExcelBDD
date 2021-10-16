@@ -13,5 +13,5 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet test ExcelBDDTest/ExcelBDDTest.csproj
+- script: dotnet test DotNetExcelBDD\ExcelBDDTest\ExcelBDDTest.csproj
   displayName: 'dotnet build $(buildConfiguration)'
