@@ -16,5 +16,5 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**/ExcelBDDTest.csproj'
+    projects: 'DotNetExcelBDD/ExcelBDDTest/ExcelBDDTest.csproj'
     testRunTitle: 'DotNetExcelBDDTest'
