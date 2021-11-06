@@ -16,7 +16,7 @@ steps:
   inputs:
     command: build
     projects: 'DotNetExcelBDD/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    # arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Test
