@@ -23,4 +23,5 @@ steps:
   inputs:
     command: test
     projects: 'DotNetExcelBDD/*Test/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+    arguments: '--collect "Code coverage"'
+    # arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
