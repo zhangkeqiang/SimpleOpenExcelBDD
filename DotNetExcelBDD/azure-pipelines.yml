@@ -16,11 +16,11 @@ steps:
   inputs:
     command: build
     projects: 'DotNetExcelBDD/**/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
-    command: 'test'
+    command: test
     projects: 'DotNetExcelBDD/*Test/*.csproj'
-    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
