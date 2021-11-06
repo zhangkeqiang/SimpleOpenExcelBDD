@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- DotNet*
 
 pool:
   vmImage: windows-latest
