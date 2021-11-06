@@ -1,5 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 // using UtilityLibraries;
 using ExcelBDD;
 namespace ExcelBDDTest
@@ -8,17 +9,11 @@ namespace ExcelBDDTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestGetExampleList()
         {
-            // Tests that we expect to return false.
-            string[] words = { string.Empty, null };
-            foreach (var word in words)
-            {
-                bool result = ExcelBDD.Behavior.StartsWithUpper(word);
-                Assert.IsFalse(result,
-                       String.Format("Expected for '{0}': false; Actual: {1}",
-                                     word == null ? "<null>" : word, result));
-            }
+            String filePath = "";
+            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, "SmartBDD");
+            Assert.IsNotNull(exampleList);
         }
 
         [TestMethod]
