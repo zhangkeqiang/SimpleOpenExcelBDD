@@ -12,7 +12,7 @@ pool:
 
 steps:
 - script: 
-    dotnet add package DocumentFormat.OpenXml --version 2.14.0
+    dotnet --info
   displayName: install OpenXml
 
 - task: DotNetCoreCLI@2
