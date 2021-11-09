@@ -13,7 +13,7 @@ pool:
 steps:
 - script: 
     dotnet --info
-  displayName: install OpenXml
+  displayName: 'Show dotnet info'
 
 - task: DotNetCoreCLI@2
   displayName: Build
