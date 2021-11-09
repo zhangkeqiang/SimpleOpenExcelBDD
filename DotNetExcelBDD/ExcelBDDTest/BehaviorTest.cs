@@ -14,7 +14,7 @@ namespace ExcelBDDTest
         {
             String currentPath = Directory.GetCurrentDirectory();
             System.Console.WriteLine(currentPath);
-            String filePath = currentPath.Substring(0, currentPath.IndexOf("ExcelBDD") + 9) + "BDDExcel\\DataTableBDD.xlsx";
+            String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\DataTableBDD.xlsx";
             System.Console.WriteLine(filePath);
             List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
             Assert.IsNotNull(exampleList);
