@@ -9,11 +9,11 @@ namespace ExcelBDD
 {
     public static class Behavior
     {
-        public static List<Dictionary<string, string>> GetDataTable(String filePath, String sheetName, int headerRow)
+        public static IEnumerable<object[]> GetDataTable(String filePath, String sheetName, int headerRow)
         {
-            List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
+            List<object[]> exampleList = new List<object[]>();
             List<string> Headers = new List<string>();
-            DataTable dt = new DataTable();
+            // DataTable dt = new DataTable();
             //open the excel using openxml sdk  
             using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
             {
@@ -27,16 +27,12 @@ namespace ExcelBDD
                         sheetIdValue = eachsheet.Id.Value;
                         break;
                     }
-
-                    // foreach (OpenXmlAttribute attr in asheet.GetAttributes())
-                    // {
-                    //     Console.WriteLine("{0}: {1}", attr.LocalName, attr.Value);
-                    // }
                 }
 
                 Worksheet worksheet = (doc.WorkbookPart.GetPartById(sheetIdValue) as WorksheetPart).Worksheet;
                 IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Descendants<Row>();
                 int counter = 0;
+                int columnCount = 0;
                 foreach (Row row in rows)
                 {
                     counter = counter + 1;
@@ -46,15 +42,17 @@ namespace ExcelBDD
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
                             var colunmName = GetCellValue(doc, cell);
+                            columnCount++;
                             Console.WriteLine(colunmName);
                             Headers.Add(colunmName);
-                            dt.Columns.Add(colunmName);
+                            // dt.Columns.Add(colunmName);
                         }
                     }
                     else if (counter > headerRow)
                     {
-                        dt.Rows.Add();
-                        Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                        // dt.Rows.Add();
+                        // Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                        object[] values =new object[columnCount];
                         int i = 0;
                         Console.Write(counter);
                         Console.Write(": ");
@@ -62,18 +60,18 @@ namespace ExcelBDD
                         {
                             String cellValue = GetCellValue(doc, cell);
                             Console.Write(cellValue + " | ");
-                            dt.Rows[dt.Rows.Count - 1][i] = cellValue;
-                            dic.Add(Headers[i], cellValue);
+                            // dt.Rows[dt.Rows.Count - 1][i] = cellValue;
+                            values[i] = (object)cellValue;
                             i++;
                         }
                         Console.WriteLine();
-                        exampleList.Add(dic);
+                        exampleList.Add(values);
                     }
                 }
 
             }
 
-            return exampleList;
+            return (exampleList as IEnumerable<object[]>);
         }
 
         private static string GetCellValue(SpreadsheetDocument doc, Cell cell)
