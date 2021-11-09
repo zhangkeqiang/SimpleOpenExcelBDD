@@ -3,65 +3,95 @@ using System.Collections.Generic;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Data;
 
 namespace ExcelBDD
 {
     public static class Behavior
     {
-        public static bool StartsWithUpper(this string str)
+        public static List<Dictionary<string, string>> GetDataTable(String filePath, String sheetName, int headerRow)
         {
-            if (string.IsNullOrWhiteSpace(str))
-                return false;
+            List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
+            List<string> Headers = new List<string>();
+            DataTable dt = new DataTable();
+            //open the excel using openxml sdk  
+            using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
+            {
+                Sheets sheets = doc.WorkbookPart.Workbook.Sheets;
+                String sheetIdValue = null;
+                foreach (Sheet eachsheet in sheets)
+                {
+                    Console.WriteLine(eachsheet.Name);
+                    if (eachsheet.Name == sheetName)
+                    {
+                        sheetIdValue = eachsheet.Id.Value;
+                        break;
+                    }
 
-            char ch = str[0];
-            return char.IsUpper(ch);
+                    // foreach (OpenXmlAttribute attr in asheet.GetAttributes())
+                    // {
+                    //     Console.WriteLine("{0}: {1}", attr.LocalName, attr.Value);
+                    // }
+                }
+
+                Worksheet worksheet = (doc.WorkbookPart.GetPartById(sheetIdValue) as WorksheetPart).Worksheet;
+                IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Descendants<Row>();
+                int counter = 0;
+                foreach (Row row in rows)
+                {
+                    counter = counter + 1;
+                    //Read the headerRow row as header
+                    if (counter == headerRow)
+                    {
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            var colunmName = GetCellValue(doc, cell);
+                            Console.WriteLine(colunmName);
+                            Headers.Add(colunmName);
+                            dt.Columns.Add(colunmName);
+                        }
+                    }
+                    else if (counter > headerRow)
+                    {
+                        dt.Rows.Add();
+                        Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                        int i = 0;
+                        Console.Write(counter);
+                        Console.Write(": ");
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            String cellValue = GetCellValue(doc, cell);
+                            Console.Write(cellValue + " | ");
+                            dt.Rows[dt.Rows.Count - 1][i] = cellValue;
+                            dic.Add(Headers[i], cellValue);
+                            i++;
+                        }
+                        Console.WriteLine();
+                        exampleList.Add(dic);
+                    }
+                }
+
+            }
+
+            return exampleList;
         }
 
-        public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName)
+        private static string GetCellValue(SpreadsheetDocument doc, Cell cell)
         {
+            string value = "";
             try
             {
-                //open the excel using openxml sdk  
-                using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
+                value = cell.CellValue.InnerText;
+                if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
                 {
-
-                    //create the object for workbook part  
-                    WorkbookPart wbPart = doc.WorkbookPart;
-
-                    //statement to get the count of the worksheet  
-                    int worksheetcount = doc.WorkbookPart.Workbook.Sheets.ChildElements.Count;
-
-                    //statement to get the sheet object  
-                    Sheet mysheet = (Sheet)doc.WorkbookPart.Workbook.Sheets.ChildElements.GetItem(0);
-
-                    //statement to get the worksheet object by using the sheet id  
-                    Worksheet Worksheet = ((WorksheetPart)wbPart.GetPartById(mysheet.Id)).Worksheet;
-
-                    //Note: worksheet has 8 children and the first child[1] = sheetviewdimension,....child[4]=sheetdata  
-                    int wkschildno = 4;
-
-
-                    //statement to get the sheetdata which contains the rows and cell in table  
-                    SheetData Rows = (SheetData)Worksheet.ChildElements.GetItem(wkschildno);
-
-
-                    //getting the row as per the specified index of getitem method  
-                    Row currentrow = (Row)Rows.ChildElements.GetItem(1);
-
-                    //getting the cell as per the specified index of getitem method  
-                    Cell currentcell = (Cell)currentrow.ChildElements.GetItem(1);
-
-                    //statement to take the integer value  
-                    string currentcellvalue = currentcell.InnerText;
-
+                    return doc.WorkbookPart.SharedStringTablePart.SharedStringTable.ChildElements.GetItem(int.Parse(value)).InnerText;
                 }
             }
-            catch (Exception Ex)
+            catch (NullReferenceException)
             {
-
+                // Console.WriteLine(cell.ToString() + " is null");
             }
-            List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
-            return exampleList;
+            return value;
         }
     }
 }

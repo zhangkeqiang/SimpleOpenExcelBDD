@@ -1,6 +1,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.IO;
 // using UtilityLibraries;
 using ExcelBDD;
 namespace ExcelBDDTest
@@ -9,40 +10,15 @@ namespace ExcelBDDTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestGetExampleList()
+        public void TestGetDataTable()
         {
-            String filePath = "";
-            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, "SmartBDD");
+            String currentPath = Directory.GetCurrentDirectory();
+            System.Console.WriteLine(currentPath);
+            String filePath = currentPath.Substring(0, currentPath.IndexOf("ExcelBDD") + 9) + "BDDExcel\\DataTableBDD.xlsx";
+            System.Console.WriteLine(filePath);
+            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
             Assert.IsNotNull(exampleList);
-        }
-
-        [TestMethod]
-        public void TestStartsWithUpper()
-        {
-            // Tests that we expect to return true.
-            string[] words = { "Alphabet", "Zebra", "ABC", "Αθήνα", "Москва" };
-            foreach (var word in words)
-            {
-                bool result = word.StartsWithUpper();
-                Assert.IsTrue(result,
-                       String.Format("Expected for '{0}': true; Actual: {1}",
-                                     word, result));
-            }
-        }
-
-         [TestMethod]
-        public void TestDoesNotStartWithUpper()
-        {
-            // Tests that we expect to return false.
-            string[] words = { "alphabet", "zebra", "abc", "αυτοκινητοβιομηχανία", "государство",
-                               "1234", ".", ";", " " };
-            foreach (var word in words)
-            {
-                bool result = word.StartsWithUpper();
-                Assert.IsFalse(result,
-                       String.Format("Expected for '{0}': false; Actual: {1}",
-                                     word, result));
-            }
+            Assert.AreEqual(7, exampleList.Count);
         }
     }
 }
