@@ -11,6 +11,9 @@ pool:
   vmImage: windows-latest
 
 steps:
+- script: 
+    dotnet add package DocumentFormat.OpenXml --version 2.14.0
+      
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
