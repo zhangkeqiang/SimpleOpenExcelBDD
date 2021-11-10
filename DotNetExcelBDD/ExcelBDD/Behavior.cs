@@ -12,7 +12,7 @@ namespace ExcelBDD
         public static IEnumerable<object[]> GetDataTableByArray(String filePath, String sheetName, int headerRow)
         {
             List<object[]> exampleList = new List<object[]>();
-            List<string> Headers = new List<string>();
+            List<string> headerList = new List<string>();
             //open the excel using openxml sdk  
             using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
             {
@@ -43,7 +43,7 @@ namespace ExcelBDD
                             var colunmName = GetCellValue(doc, cell);
                             columnCount++;
                             Console.WriteLine(colunmName);
-                            Headers.Add(colunmName);
+                            headerList.Add(colunmName);
                             // dt.Columns.Add(colunmName);
                         }
                     }
@@ -75,7 +75,7 @@ namespace ExcelBDD
         public static IEnumerable<object[]> GetDataTable(String filePath, String sheetName, int headerRow)
         {
             List<object[]> exampleList = new List<object[]>();
-            List<string> Headers = new List<string>();
+            List<string> headerList = new List<string>();
             // DataTable dt = new DataTable();
             //open the excel using openxml sdk  
             using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
@@ -107,7 +107,7 @@ namespace ExcelBDD
                             var colunmName = GetCellValue(doc, cell);
                             columnCount++;
                             Console.WriteLine(colunmName);
-                            Headers.Add(colunmName);
+                            headerList.Add(colunmName);
                         }
                     }
                     else if (counter > headerRow)
@@ -120,7 +120,7 @@ namespace ExcelBDD
                         {
                             String cellValue = GetCellValue(doc, cell);
                             Console.Write(cellValue + " | ");
-                            dic.Add(Headers[i], cellValue);
+                            dic.Add(headerList[i], cellValue);
                             i++;
                         }
                         Console.WriteLine();
@@ -155,10 +155,83 @@ namespace ExcelBDD
             {
                 return dic[parameterName];
             }
-            catch (KeyNotFoundException e)
+            catch
             {
                 return "";
             }
+        }
+
+        public static IEnumerable<object[]> GetExampleList(String filePath, String sheetName)
+        {
+            List<object[]> exampleList = new List<object[]>();
+            List<string> headerList = new List<string>();
+            using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
+            {
+                Sheets sheets = doc.WorkbookPart.Workbook.Sheets;
+                String sheetIdValue = null;
+                foreach (Sheet eachsheet in sheets)
+                {
+                    Console.WriteLine(eachsheet.Name);
+                    if (eachsheet.Name == sheetName)
+                    {
+                        sheetIdValue = eachsheet.Id.Value;
+                        break;
+                    }
+                }
+
+                Worksheet worksheet = (doc.WorkbookPart.GetPartById(sheetIdValue) as WorksheetPart).Worksheet;
+                IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Descendants<Row>();
+                int counter = 0;
+                int columnCount = 0;
+                Cell parameterNameCell = null;
+                foreach (Row row in rows)
+                {
+                    counter = counter + 1;
+                    //find the Cell of Parameter Name
+                    if (parameterNameCell == null)
+                    {
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            string cellValue = GetCellValue(doc, cell);
+                            Console.WriteLine(cellValue);
+                            if (cellValue.StartsWith("Parameter Name") && parameterNameCell == null)
+                            {
+                                parameterNameCell = cell;
+                                Console.WriteLine(parameterNameCell.GetAttributes().ToString());
+                            }
+                            else if (parameterNameCell != null)
+                            {
+                                //Read the headerRow row as header
+                                headerList.Add(cellValue);
+                                Console.WriteLine("header:{0}",cellValue);
+                                Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                                dic.Add("header", cellValue);
+                                exampleList.Add(new object[] { dic });
+                                columnCount++;
+                            }
+                        }
+                    }
+                    else if (parameterNameCell != null)
+                    {
+                        break;
+                    //     Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                    //     int i = 0;
+                    //     Console.Write(counter);
+                    //     Console.Write(": ");
+                    //     foreach (Cell cell in row.Descendants<Cell>())
+                    //     {
+                    //         String cellValue = GetCellValue(doc, cell);
+                    //         Console.Write(cellValue + " | ");
+                    //         dic.Add(headerList[i], cellValue);
+                    //         i++;
+                    //     }
+                    //     Console.WriteLine();
+                    //     exampleList.Add(new object[] { dic });
+                    // 
+                    }
+                }
+            }
+            return (exampleList as IEnumerable<object[]>);
         }
     }
 }
