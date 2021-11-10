@@ -15,20 +15,21 @@ namespace ExcelBDDTest
             System.Console.WriteLine(currentPath);
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             System.Console.WriteLine(filePath);
-            IEnumerable<object[]> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, "Sheet3");
+            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, "Sheet3");
             Assert.IsNotNull(exampleList);
             int count = 0;
-            foreach (var item in exampleList)
+            foreach (Dictionary<string, string> dic in exampleList)
             {
-                Dictionary<string, string> dic = (Dictionary<string, string>)item[0];
-                Console.WriteLine(item[0]);
-                Console.WriteLine(dic["header"]);
+                foreach (KeyValuePair<string, string> sample in dic)
+                {
+                    Console.WriteLine("Show Dictionary: {0} - {1}",sample.Key, sample.Value);
+                }
                 count++;
             }
             Assert.AreEqual(4, count);
+            Assert.AreEqual("Scenario3", exampleList[2]["header"]);
+            Assert.AreEqual("V1.3", exampleList[2]["ParamName1"]);
         }
-
-      
     }
 }
 

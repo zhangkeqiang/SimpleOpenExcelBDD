@@ -16,12 +16,12 @@ namespace ExcelBDDTest
             System.Console.WriteLine(currentPath);
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\DataTableBDD.xlsx";
             System.Console.WriteLine(filePath);
-            IEnumerable<object[]> exampleList = ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
+            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
             Assert.IsNotNull(exampleList);
             int count = 0;
             foreach (var item in exampleList)
             {
-                Dictionary<string, string> dic = (Dictionary<string, string>)item[0];
+                Dictionary<string, string> dic = item;
                 Console.Write(dic.ToString());
                 Console.WriteLine(dic["Header01"]);
                 count++;
@@ -81,7 +81,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\DataTableBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
+            return ExcelBDD.Behavior.ConvertToIEnumerable(ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2));
         }
     }
 }

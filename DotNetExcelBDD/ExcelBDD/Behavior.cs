@@ -72,9 +72,9 @@ namespace ExcelBDD
             return (exampleList as IEnumerable<object[]>);
         }
 
-        public static IEnumerable<object[]> GetDataTable(String filePath, String sheetName, int headerRow)
+        public static List<Dictionary<string, string>> GetDataTable(String filePath, String sheetName, int headerRow)
         {
-            List<object[]> exampleList = new List<object[]>();
+            List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
             List<string> headerList = new List<string>();
             // DataTable dt = new DataTable();
             //open the excel using openxml sdk  
@@ -124,12 +124,13 @@ namespace ExcelBDD
                             i++;
                         }
                         Console.WriteLine();
-                        exampleList.Add(new object[] { dic });
+                        // exampleList.Add(new object[] { dic });
+                        exampleList.Add(dic);
                     }
                 }
             }
 
-            return (exampleList as IEnumerable<object[]>);
+            return exampleList;
         }
         private static string GetCellValue(SpreadsheetDocument doc, Cell cell)
         {
@@ -161,9 +162,24 @@ namespace ExcelBDD
             }
         }
 
-        public static IEnumerable<object[]> GetExampleList(String filePath, String sheetName)
+        public static String GetParameter(List<object[]> exampleList, int n, string parameterName)
         {
-            List<object[]> exampleList = new List<object[]>();
+            return GetValue((Dictionary<string, string>)exampleList[n][0], parameterName);
+        }
+
+        public static IEnumerable<object[]> ConvertToIEnumerable(List<Dictionary<string, string>> list)
+        {
+            List<object[]> objectList = new List<object[]>();
+            foreach (var item in list)
+            {
+                objectList.Add(new object[] { item });
+            }
+            return objectList;
+        }
+
+        public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName)
+        {
+            List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
             List<string> headerList = new List<string>();
             using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
             {
@@ -183,6 +199,7 @@ namespace ExcelBDD
                 IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Descendants<Row>();
                 int counter = 0;
                 int columnCount = 0;
+                int parameterNameColumn = 0;
                 Cell parameterNameCell = null;
                 foreach (Row row in rows)
                 {
@@ -190,48 +207,59 @@ namespace ExcelBDD
                     //find the Cell of Parameter Name
                     if (parameterNameCell == null)
                     {
+                        parameterNameColumn = 0;
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
                             string cellValue = GetCellValue(doc, cell);
                             Console.WriteLine(cellValue);
+                            if (parameterNameCell == null) { parameterNameColumn++; }
                             if (cellValue.StartsWith("Parameter Name") && parameterNameCell == null)
                             {
                                 parameterNameCell = cell;
-                                Console.WriteLine(parameterNameCell.GetAttributes().ToString());
+                                Console.WriteLine("parameterNameColumn {0}", parameterNameColumn);
+                                Console.WriteLine(parameterNameCell.GetAttribute("r", null).Value);
+                                foreach (OpenXmlAttribute item in parameterNameCell.GetAttributes())
+                                {
+                                    Console.WriteLine("Show OpenXmlAttribute: {0} - {1} - {2} - {3}", item.LocalName, item.Value, item.NamespaceUri, item.XName);
+                                }
                             }
                             else if (parameterNameCell != null)
                             {
                                 //Read the headerRow row as header
                                 headerList.Add(cellValue);
-                                Console.WriteLine("header:{0}",cellValue);
+                                Console.WriteLine("header:{0}", cellValue);
                                 Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
                                 dic.Add("header", cellValue);
-                                exampleList.Add(new object[] { dic });
+                                exampleList.Add(dic);
                                 columnCount++;
                             }
                         }
                     }
                     else if (parameterNameCell != null)
                     {
-                        break;
-                    //     Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
-                    //     int i = 0;
-                    //     Console.Write(counter);
-                    //     Console.Write(": ");
-                    //     foreach (Cell cell in row.Descendants<Cell>())
-                    //     {
-                    //         String cellValue = GetCellValue(doc, cell);
-                    //         Console.Write(cellValue + " | ");
-                    //         dic.Add(headerList[i], cellValue);
-                    //         i++;
-                    //     }
-                    //     Console.WriteLine();
-                    //     exampleList.Add(new object[] { dic });
-                    // 
+                        int columnNumber = 0;
+                        string parameterName = null;
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            columnNumber++;
+                            if (columnNumber == parameterNameColumn)
+                            {
+                                parameterName = GetCellValue(doc, cell);
+                                Console.WriteLine("parameterName:{0}", parameterName);
+                            }
+                            else if (columnNumber > parameterNameColumn)
+                            {
+                                string parameterValue = GetCellValue(doc, cell);
+                                Console.WriteLine("header:{0}", exampleList[columnNumber - parameterNameColumn - 1]["header"]);
+                                Console.WriteLine("parameterValue:{0}", parameterValue);
+                                
+                                exampleList[columnNumber - parameterNameColumn - 1].Add(parameterName, parameterValue);
+                            }
+                        }
                     }
                 }
             }
-            return (exampleList as IEnumerable<object[]>);
+            return exampleList;
         }
     }
 }
