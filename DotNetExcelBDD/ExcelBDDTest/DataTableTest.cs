@@ -7,7 +7,7 @@ using ExcelBDD;
 namespace ExcelBDDTest
 {
     [TestClass]
-    public class UnitTest1
+    public class DataTableTest
     {
         [TestMethod]
         public void TestGetDataTable()
