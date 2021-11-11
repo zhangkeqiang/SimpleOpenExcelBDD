@@ -10,22 +10,24 @@ trigger:
 pool:
   vmImage: windows-latest
 
+variables:
+  buildConfiguration: 'Release'
+
 steps:
 - script: 
     dotnet --info
   displayName: 'Show dotnet info'
 
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: 'dotnet build $(buildConfiguration)'
   inputs:
     command: build
     projects: 'DotNetExcelBDD/**/*.csproj'
-    # arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
     projects: 'DotNetExcelBDD/*Test/*.csproj'
-    arguments: '--collect "Code coverage"'
-    # arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
