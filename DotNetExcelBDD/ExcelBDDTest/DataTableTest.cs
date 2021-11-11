@@ -64,16 +64,20 @@ namespace ExcelBDDTest
 
         [DataTestMethod]
         [DynamicData(nameof(GetDataByDictionary), DynamicDataSourceType.Method)]
-        public void TestDataTable(Dictionary<string, string> parameterDictionary)
+        public void TestDataTable(Dictionary<string, string> paramDic)
         {
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header01"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header02"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header03"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header04"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header05"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header06"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header07"));
-            Console.WriteLine("{0}", Behavior.GetValue(parameterDictionary, "Header08"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header01"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header02"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header03"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header04"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header05"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header06"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header07"));
+            Console.WriteLine("{0}", Behavior.GetValue(paramDic, "Header08"));
+            foreach (KeyValuePair<string, string> item in paramDic)
+            {
+                Console.WriteLine("Dictionary: {0} - {1}", item.Key, item.Value);
+            }
         }
 
         public static IEnumerable<object[]> GetDataByDictionary()

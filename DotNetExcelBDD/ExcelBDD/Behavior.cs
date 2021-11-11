@@ -247,7 +247,7 @@ namespace ExcelBDD
                                 parameterName = GetCellValue(doc, cell);
                                 Console.WriteLine("parameterName:{0}", parameterName);
                             }
-                            else if (columnNumber > parameterNameColumn)
+                            else if (columnNumber > parameterNameColumn && parameterName != "")
                             {
                                 string parameterValue = GetCellValue(doc, cell);
                                 Console.WriteLine("header:{0}", exampleList[columnNumber - parameterNameColumn - 1]["header"]);
