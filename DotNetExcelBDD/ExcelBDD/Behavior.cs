@@ -9,6 +9,8 @@ namespace ExcelBDD
 {
     public static class Behavior
     {
+        static int Parameter_Name_Column;
+        static List<int> Header_List;
         public static IEnumerable<object[]> GetDataTableByArray(String filePath, String sheetName, int headerRow)
         {
             List<object[]> exampleList = new List<object[]>();
@@ -183,27 +185,31 @@ namespace ExcelBDD
 
         public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName)
         {
+            return GetExampleList(filePath, sheetName, null);
+        }
+        public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName, String headerMatcher)
+        {
             List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
-            List<string> headerList = new List<string>();
+            Header_List = new List<int>();
             using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
             {
                 Sheets sheets = doc.WorkbookPart.Workbook.Sheets;
                 String sheetIdValue = null;
                 foreach (Sheet eachsheet in sheets)
                 {
-                    Console.WriteLine(eachsheet.Name);
+                    // Console.WriteLine(eachsheet.Name);
                     if (eachsheet.Name == sheetName)
                     {
                         sheetIdValue = eachsheet.Id.Value;
                         break;
                     }
                 }
-
                 Worksheet worksheet = (doc.WorkbookPart.GetPartById(sheetIdValue) as WorksheetPart).Worksheet;
                 IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Descendants<Row>();
+
                 int counter = 0;
-                int columnCount = 0;
                 int parameterNameColumn = 0;
+                int columnNumber;
                 Cell parameterNameCell = null;
                 foreach (Row row in rows)
                 {
@@ -211,53 +217,60 @@ namespace ExcelBDD
                     //find the Cell of Parameter Name
                     if (parameterNameCell == null)
                     {
+                        columnNumber = 0;
                         parameterNameColumn = 0;
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
-                            string cellValue = GetCellValue(doc, cell);
-                            Console.WriteLine(cellValue);
+                            columnNumber++;
+                            String cellValue = GetCellValue(doc, cell);
                             if (parameterNameCell == null) { parameterNameColumn++; }
                             if (cellValue.StartsWith("Parameter Name") && parameterNameCell == null)
                             {
                                 parameterNameCell = cell;
-                                Console.WriteLine("parameterNameColumn {0}", parameterNameColumn);
-                                Console.WriteLine(parameterNameCell.GetAttribute("r", null).Value);
-                                foreach (OpenXmlAttribute item in parameterNameCell.GetAttributes())
-                                {
-                                    Console.WriteLine("Show OpenXmlAttribute: {0} - {1} - {2} - {3}", item.LocalName, item.Value, item.NamespaceUri, item.XName);
-                                }
+                                Parameter_Name_Column = parameterNameColumn;
+                                // Console.WriteLine("parameterNameColumn {0}", parameterNameColumn);
+                                // Console.WriteLine(parameterNameCell.GetAttribute("r", null).Value);
+                                // foreach (OpenXmlAttribute item in parameterNameCell.GetAttributes())
+                                // {
+                                //     Console.WriteLine("Show OpenXmlAttribute: {0} - {1} - {2} - {3}", item.LocalName, item.Value, item.NamespaceUri, item.XName);
+                                // }
                             }
                             else if (parameterNameCell != null)
                             {
-                                //Read the headerRow row as header
-                                headerList.Add(cellValue);
-                                Console.WriteLine("header:{0}", cellValue);
-                                Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
-                                dic.Add("header", cellValue);
-                                exampleList.Add(dic);
-                                columnCount++;
+                                //judge headerMatcher
+                                if (IsHeaderMatched(headerMatcher, cellValue))
+                                {
+                                    //add columnNumber to headerList
+                                    Header_List.Add(columnNumber);
+                                    Console.WriteLine("columnNumber:{0}", columnNumber);
+                                    Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                                    dic.Add("header", cellValue);
+                                    exampleList.Add(dic);
+                                }
                             }
                         }
                     }
                     else if (parameterNameCell != null)
                     {
-                        int columnNumber = 0;
                         string parameterName = null;
+                        int indexOfExample = 0;
+                        columnNumber = 0;
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
                             columnNumber++;
-                            if (columnNumber == parameterNameColumn)
+                            if (columnNumber == Parameter_Name_Column)
                             {
                                 parameterName = GetCellValue(doc, cell);
-                                Console.WriteLine("parameterName:{0}", parameterName);
+                                // Console.WriteLine("parameterName:{0}", parameterName);
                             }
-                            else if (columnNumber > parameterNameColumn && parameterName != "")
+                            else if (IsColumnMatched(columnNumber, parameterName))
                             {
                                 string parameterValue = GetCellValue(doc, cell);
-                                Console.WriteLine("header:{0}", exampleList[columnNumber - parameterNameColumn - 1]["header"]);
-                                Console.WriteLine("parameterValue:{0}", parameterValue);
+                                // Console.WriteLine("header:{0}", exampleList[indexOfExample]["header"]);
+                                // Console.WriteLine("parameterValue:{0}", parameterValue);
 
-                                exampleList[columnNumber - parameterNameColumn - 1].Add(parameterName, parameterValue);
+                                exampleList[indexOfExample].Add(parameterName, parameterValue);
+                                indexOfExample++;
                             }
                         }
                     }
@@ -266,9 +279,38 @@ namespace ExcelBDD
             return exampleList;
         }
 
+        private static bool IsColumnMatched(int columnNumber, String parameterName)
+        {
+            if (!Header_List.Contains(columnNumber))
+            {
+                return false;
+            }
+            if (parameterName == "" || parameterName == "NA")
+            {
+                return false;
+            }
+            return true;
+        }
+        private static bool IsHeaderMatched(String headerMatcher, String cellValue)
+        {
+            if (headerMatcher == null)
+            {
+                return true;
+            }
+            if (cellValue.IndexOf(headerMatcher) >= 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static IEnumerable<object[]> GetExampleEnumerable(String filePath, String sheetName)
         {
             return ConvertToEnumerable(GetExampleList(filePath, sheetName));
+        }
+        public static IEnumerable<object[]> GetExampleEnumerable(String filePath, String sheetName, String headerMatcher)
+        {
+            return ConvertToEnumerable(GetExampleList(filePath, sheetName, headerMatcher));
         }
     }
 }

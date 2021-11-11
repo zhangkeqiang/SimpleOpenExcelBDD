@@ -37,7 +37,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD");
+            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario1:easy");
         }
 
         [TestMethod]
@@ -69,8 +69,8 @@ namespace ExcelBDDTest
 
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\" + paramDic["ExcelFileName"];
-            // List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"]);
-            // Assert.IsNotNull(exampleList);
+            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"], paramDic["HeaderMatcher"]);
+            Assert.IsNotNull(exampleList);
         }
     }
 }
