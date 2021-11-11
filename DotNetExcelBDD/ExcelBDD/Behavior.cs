@@ -72,7 +72,11 @@ namespace ExcelBDD
             return (exampleList as IEnumerable<object[]>);
         }
 
-        public static List<Dictionary<string, string>> GetDataTable(String filePath, String sheetName, int headerRow)
+        public static IEnumerable<object[]> GetDataTableEnumerable(String filePath, String sheetName, int headerRow)
+        {
+            return ConvertToEnumerable(GetRowList(filePath, sheetName, headerRow));
+        }
+        public static List<Dictionary<string, string>> GetRowList(String filePath, String sheetName, int headerRow)
         {
             List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
             List<string> headerList = new List<string>();
@@ -167,7 +171,7 @@ namespace ExcelBDD
             return GetValue((Dictionary<string, string>)exampleList[n][0], parameterName);
         }
 
-        public static IEnumerable<object[]> ConvertToIEnumerable(List<Dictionary<string, string>> list)
+        public static IEnumerable<object[]> ConvertToEnumerable(List<Dictionary<string, string>> list)
         {
             List<object[]> objectList = new List<object[]>();
             foreach (var item in list)
@@ -252,7 +256,7 @@ namespace ExcelBDD
                                 string parameterValue = GetCellValue(doc, cell);
                                 Console.WriteLine("header:{0}", exampleList[columnNumber - parameterNameColumn - 1]["header"]);
                                 Console.WriteLine("parameterValue:{0}", parameterValue);
-                                
+
                                 exampleList[columnNumber - parameterNameColumn - 1].Add(parameterName, parameterValue);
                             }
                         }
@@ -260,6 +264,11 @@ namespace ExcelBDD
                 }
             }
             return exampleList;
+        }
+
+        public static IEnumerable<object[]> GetExampleEnumerable(String filePath, String sheetName)
+        {
+            return ConvertToEnumerable(GetExampleList(filePath, sheetName));
         }
     }
 }
