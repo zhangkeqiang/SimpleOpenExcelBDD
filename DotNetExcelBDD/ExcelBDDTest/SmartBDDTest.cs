@@ -66,6 +66,11 @@ namespace ExcelBDDTest
             Assert.AreEqual("V2.2", paramDic["ParamName2InSet2Value"]);
             Assert.AreEqual("3", paramDic["MaxBlankThreshold"]);
             Assert.AreEqual("", paramDic["ParamName3Value"]);
+
+            String currentPath = Directory.GetCurrentDirectory();
+            String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\" + paramDic["ExcelFileName"];
+            // List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"]);
+            // Assert.IsNotNull(exampleList);
         }
     }
 }
