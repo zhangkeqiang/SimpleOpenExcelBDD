@@ -33,13 +33,15 @@ steps:
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
 - task: DotNetCoreCLI@2
+  displayName: 'DotNet publish'
   inputs:
-    command: 'publish'
+    command: publish
     projects: 'DotNetExcelBDD/ExcelBDD/ExcelBDD.csproj'
     publishWebProjects: false
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact'
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'ExcelBDD-DotNet'    
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'ExcelBDD-DotNet'  
