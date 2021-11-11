@@ -36,7 +36,8 @@ steps:
   displayName: 'DotNet publish'
   inputs:
     command: publish
-    projects: 'DotNetExcelBDD/ExcelBDD/ExcelBDD.csproj'
+    projects: 'DotNetExcelBDD/**/*.csproj'
+    # projects: 'DotNetExcelBDD/ExcelBDD/ExcelBDD.csproj'
     publishWebProjects: false
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
