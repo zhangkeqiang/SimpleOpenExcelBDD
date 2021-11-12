@@ -187,7 +187,12 @@ namespace ExcelBDD
         {
             return GetExampleList(filePath, sheetName, null);
         }
+
         public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName, String headerMatcher)
+        {
+            return GetExampleList(filePath, sheetName, headerMatcher, null);
+        }
+        public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName, String headerMatcher, String headerUnmatcher)
         {
             List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
             Header_List = new List<int>();

@@ -37,7 +37,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario3");
+            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario1B");
         }
 
         [TestMethod]
@@ -69,7 +69,7 @@ namespace ExcelBDDTest
 
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\" + paramDic["ExcelFileName"];
-            List<Dictionary<string, string>> list = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"], paramDic["HeaderMatcher"]);
+            List<Dictionary<string, string>> list = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"], paramDic["HeaderMatcher"], paramDic["HeaderUnmatcher"]);
             Assert.IsNotNull(list);
             Assert.AreEqual(paramDic["TestDataSetCount"], list.Count.ToString());
             Assert.AreEqual(paramDic["FirstGridValue"], list[0]["ParamName1"]);
