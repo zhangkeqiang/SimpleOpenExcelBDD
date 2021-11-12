@@ -37,14 +37,16 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario1");
+            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario", "Scenario5");
         }
 
         [TestMethod]
         public void TestGetSmartBDDList()
         {
+            int i = 1;
             foreach (var obj in GetSmartBDDList())
             {
+                Console.WriteLine("============ {0} ============", i++);
                 foreach (KeyValuePair<string, string> item in ((Dictionary<string, string>)obj[0]))
                 {
                     Console.WriteLine("Dictionary: {0} - {1}", item.Key, item.Value);

@@ -323,5 +323,10 @@ namespace ExcelBDD
         {
             return ConvertToEnumerable(GetExampleList(filePath, sheetName, headerMatcher));
         }
+
+        public static IEnumerable<object[]> GetExampleEnumerable(String filePath, String sheetName, String headerMatcher, String headerUnmatcher)
+        {
+            return ConvertToEnumerable(GetExampleList(filePath, sheetName, headerMatcher, headerUnmatcher));
+        }
     }
 }
