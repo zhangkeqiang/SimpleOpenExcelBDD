@@ -243,7 +243,7 @@ namespace ExcelBDD
                             else if (parameterNameCell != null)
                             {
                                 //judge headerMatcher
-                                if (IsHeaderMatched(headerMatcher, cellValue))
+                                if (IsHeaderMatched(cellValue, headerMatcher, headerUnmatcher))
                                 {
                                     //add columnNumber to headerList
                                     Header_List.Add(columnNumber);
@@ -296,13 +296,19 @@ namespace ExcelBDD
             }
             return true;
         }
-        private static bool IsHeaderMatched(String headerMatcher, String cellValue)
+        private static bool IsHeaderMatched(String cellValue, String headerMatcher, String headerUnmatcher)
         {
-            if (headerMatcher == null)
+            headerMatcher = headerMatcher == null ? "" : headerMatcher;
+            headerUnmatcher = headerUnmatcher == null ? "" : headerUnmatcher;
+            if (String.IsNullOrEmpty(headerMatcher) && String.IsNullOrEmpty(headerUnmatcher))
             {
                 return true;
             }
-            if (cellValue.IndexOf(headerMatcher) >= 0)
+            if (cellValue.IndexOf(headerMatcher) >= 0 && String.IsNullOrEmpty(headerUnmatcher))
+            {
+                return true;
+            }
+            if (cellValue.IndexOf(headerMatcher) >= 0 && !String.IsNullOrEmpty(headerUnmatcher) && cellValue.IndexOf(headerUnmatcher) < 0)
             {
                 return true;
             }

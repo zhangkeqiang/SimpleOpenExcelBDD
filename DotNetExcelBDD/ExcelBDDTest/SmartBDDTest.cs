@@ -37,7 +37,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario1B");
+            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario1");
         }
 
         [TestMethod]
@@ -89,6 +89,13 @@ namespace ExcelBDDTest
             Assert.AreEqual("0", list[1]["ParamName4"]);
             Assert.AreEqual("1", list[2]["ParamName4"]);
             Assert.AreEqual(paramDic["LastGridValue"], list[3]["ParamName4"]);
+        }
+
+
+         [TestMethod]
+        public void CheckBasic(){
+            Assert.AreNotEqual("", null);
+            Assert.IsTrue("Abcdefed".IndexOf("") >= 0);
         }
     }
 }
