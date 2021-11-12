@@ -37,7 +37,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario1:easy");
+            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario3");
         }
 
         [TestMethod]
@@ -69,8 +69,26 @@ namespace ExcelBDDTest
 
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\" + paramDic["ExcelFileName"];
-            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"], paramDic["HeaderMatcher"]);
-            Assert.IsNotNull(exampleList);
+            List<Dictionary<string, string>> list = ExcelBDD.Behavior.GetExampleList(filePath, paramDic["SheetName"], paramDic["HeaderMatcher"]);
+            Assert.IsNotNull(list);
+            Assert.AreEqual(paramDic["TestDataSetCount"], list.Count.ToString());
+            Assert.AreEqual(paramDic["FirstGridValue"], list[0]["ParamName1"]);
+            Assert.AreEqual(paramDic["ParamName1InSet2Value"], list[1]["ParamName1"]);
+            Assert.AreEqual("V1.3", list[2]["ParamName1"]);
+            Assert.AreEqual("V1.4", list[3]["ParamName1"]);
+
+            Assert.AreEqual("V2.1", list[0]["ParamName2"]);
+            Assert.AreEqual(paramDic["ParamName2InSet2Value"], list[1]["ParamName2"]);
+
+            Assert.AreEqual("", list[0]["ParamName3"]);
+            Assert.AreEqual("", list[1]["ParamName3"]);
+            Assert.AreEqual("", list[2]["ParamName3"]);
+            Assert.AreEqual("", list[3]["ParamName3"]);
+
+            Assert.AreEqual("2021/4/30", list[0]["ParamName4"]);
+            Assert.AreEqual("0", list[1]["ParamName4"]);
+            Assert.AreEqual("1", list[2]["ParamName4"]);
+            Assert.AreEqual(paramDic["LastGridValue"], list[3]["ParamName4"]);
         }
     }
 }
