@@ -9,8 +9,6 @@ namespace ExcelBDD
 {
     public static class Behavior
     {
-        static int Parameter_Name_Column;
-        static List<int> Header_List;
         public static IEnumerable<object[]> GetDataTableByArray(String filePath, String sheetName, int headerRow)
         {
             List<object[]> exampleList = new List<object[]>();
@@ -195,7 +193,7 @@ namespace ExcelBDD
         public static List<Dictionary<string, string>> GetExampleList(String filePath, String sheetName, String headerMatcher, String headerUnmatcher)
         {
             List<Dictionary<string, string>> exampleList = new List<Dictionary<string, string>>();
-            Header_List = new List<int>();
+            List<int> headerNumList = new List<int>();
             using (SpreadsheetDocument doc = SpreadsheetDocument.Open(filePath, false))
             {
                 Sheets sheets = doc.WorkbookPart.Workbook.Sheets;
@@ -224,6 +222,7 @@ namespace ExcelBDD
                     {
                         columnNumber = 0;
                         parameterNameColumn = 0;
+                        bool isSBT = false;
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
                             columnNumber++;
@@ -232,7 +231,6 @@ namespace ExcelBDD
                             if (cellValue.StartsWith("Parameter Name") && parameterNameCell == null)
                             {
                                 parameterNameCell = cell;
-                                Parameter_Name_Column = parameterNameColumn;
                                 // Console.WriteLine("parameterNameColumn {0}", parameterNameColumn);
                                 // Console.WriteLine(parameterNameCell.GetAttribute("r", null).Value);
                                 // foreach (OpenXmlAttribute item in parameterNameCell.GetAttributes())
@@ -240,17 +238,45 @@ namespace ExcelBDD
                                 //     Console.WriteLine("Show OpenXmlAttribute: {0} - {1} - {2} - {3}", item.LocalName, item.Value, item.NamespaceUri, item.XName);
                                 // }
                             }
-                            else if (parameterNameCell != null)
+                            else if (parameterNameCell != null && !isSBT)
                             {
-                                //judge headerMatcher
-                                if (IsHeaderMatched(cellValue, headerMatcher, headerUnmatcher))
+                                //judge whether SBT                                
+                                if (cellValue == "Input")
                                 {
-                                    //add columnNumber to headerList
-                                    Header_List.Add(columnNumber);
-                                    Console.WriteLine("columnNumber:{0}", columnNumber);
-                                    Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
-                                    dic.Add("header", cellValue);
-                                    exampleList.Add(dic);
+                                    isSBT = true;
+                                    Row headerRow = row.PreviousSibling<Row>();
+                                    int headerCellNum = 0;
+                                    foreach (Cell headerCell in headerRow.Descendants<Cell>())
+                                    {
+                                        headerCellNum++;
+                                        String headerCellValue = GetCellValue(doc, headerCell);
+                                        Console.WriteLine("Check header:{0} headerCellNum:{1}", headerCellValue, headerCellNum);
+                                        if (headerCellNum > parameterNameColumn)
+                                        {
+                                            if (IsHeaderMatched(headerCellValue, headerMatcher, headerUnmatcher))
+                                            {
+                                                //add headerCellNum to headerList
+                                                headerNumList.Add(headerCellNum);
+                                                Console.WriteLine("Get header:{0} headerCellNum:{1}", headerCellValue, headerCellNum);
+                                                Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                                                dic.Add("header", headerCellValue);
+                                                exampleList.Add(dic);
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (!isSBT)
+                                {
+                                    // Single Column for each test case
+                                    //judge headerMatcher
+                                    if (IsHeaderMatched(cellValue, headerMatcher, headerUnmatcher))
+                                    {
+                                        //add columnNumber to headerList
+                                        headerNumList.Add(columnNumber);
+                                        Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                                        dic.Add("header", cellValue);
+                                        exampleList.Add(dic);
+                                    }
                                 }
                             }
                         }
@@ -263,12 +289,12 @@ namespace ExcelBDD
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
                             columnNumber++;
-                            if (columnNumber == Parameter_Name_Column)
+                            if (columnNumber == parameterNameColumn)
                             {
                                 parameterName = GetCellValue(doc, cell);
                                 // Console.WriteLine("parameterName:{0}", parameterName);
                             }
-                            else if (IsColumnMatched(columnNumber, parameterName))
+                            else if (IsColumnMatched(columnNumber, parameterName, headerNumList))
                             {
                                 string parameterValue = GetCellValue(doc, cell);
                                 // Console.WriteLine("header:{0}", exampleList[indexOfExample]["header"]);
@@ -284,9 +310,9 @@ namespace ExcelBDD
             return exampleList;
         }
 
-        private static bool IsColumnMatched(int columnNumber, String parameterName)
+        private static bool IsColumnMatched(int columnNumber, String parameterName, List<int> headerList)
         {
-            if (!Header_List.Contains(columnNumber))
+            if (!headerList.Contains(columnNumber))
             {
                 return false;
             }
@@ -298,6 +324,10 @@ namespace ExcelBDD
         }
         private static bool IsHeaderMatched(String cellValue, String headerMatcher, String headerUnmatcher)
         {
+            if (String.IsNullOrEmpty(cellValue))
+            {
+                return false;
+            }
             headerMatcher = headerMatcher == null ? "" : headerMatcher;
             headerUnmatcher = headerUnmatcher == null ? "" : headerUnmatcher;
             if (String.IsNullOrEmpty(headerMatcher) && String.IsNullOrEmpty(headerUnmatcher))

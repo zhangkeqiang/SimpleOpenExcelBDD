@@ -37,7 +37,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\ExcelBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "Scenario", "Scenario5");
+            return ExcelBDD.Behavior.GetExampleEnumerable(filePath, "SmartBDD", "SBT3", "Scenario5");
         }
 
         [TestMethod]
