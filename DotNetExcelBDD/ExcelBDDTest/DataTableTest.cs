@@ -7,7 +7,7 @@ using ExcelBDD;
 namespace ExcelBDDTest
 {
     [TestClass]
-    public class UnitTest1
+    public class DataTableTest
     {
         [TestMethod]
         public void TestGetDataTable()
@@ -16,12 +16,12 @@ namespace ExcelBDDTest
             System.Console.WriteLine(currentPath);
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\DataTableBDD.xlsx";
             System.Console.WriteLine(filePath);
-            IEnumerable<object[]> exampleList = ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
+            List<Dictionary<string, string>> exampleList = ExcelBDD.Behavior.GetRowList(filePath, "DataTable1", 2);
             Assert.IsNotNull(exampleList);
             int count = 0;
             foreach (var item in exampleList)
             {
-                Dictionary<string, string> dic = (Dictionary<string, string>)item[0];
+                Dictionary<string, string> dic = item;
                 Console.Write(dic.ToString());
                 Console.WriteLine(dic["Header01"]);
                 count++;
@@ -64,16 +64,20 @@ namespace ExcelBDDTest
 
         [DataTestMethod]
         [DynamicData(nameof(GetDataByDictionary), DynamicDataSourceType.Method)]
-        public void TestDataTable(Dictionary<string, string> parameterDictionary)
+        public void TestDataTable(Dictionary<string, string> paramDic)
         {
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header01"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header02"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header03"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header04"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header05"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header06"));
-            Console.Write("{0}|", Behavior.GetValue(parameterDictionary, "Header07"));
-            Console.WriteLine("{0}", Behavior.GetValue(parameterDictionary, "Header08"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header01"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header02"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header03"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header04"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header05"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header06"));
+            Console.Write("{0}|", Behavior.GetValue(paramDic, "Header07"));
+            Console.WriteLine("{0}", Behavior.GetValue(paramDic, "Header08"));
+            foreach (KeyValuePair<string, string> item in paramDic)
+            {
+                Console.WriteLine("Dictionary: {0} - {1}", item.Key, item.Value);
+            }
         }
 
         public static IEnumerable<object[]> GetDataByDictionary()
@@ -81,7 +85,7 @@ namespace ExcelBDDTest
             String currentPath = Directory.GetCurrentDirectory();
             String filePath = currentPath.Substring(0, currentPath.IndexOf("DotNetExcelBDD")) + "BDDExcel\\DataTableBDD.xlsx";
             Console.WriteLine(filePath);
-            return ExcelBDD.Behavior.GetDataTable(filePath, "DataTable1", 2);
+            return ExcelBDD.Behavior.GetDataTableEnumerable(filePath, "DataTable1", 2);
         }
     }
 }
