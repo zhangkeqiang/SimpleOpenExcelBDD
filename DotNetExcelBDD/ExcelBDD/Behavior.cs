@@ -200,7 +200,11 @@ namespace ExcelBDD
                 String sheetIdValue = null;
                 foreach (Sheet eachsheet in sheets)
                 {
-                    // Console.WriteLine(eachsheet.Name);
+                    if (String.IsNullOrEmpty(sheetName))
+                    {
+                        sheetIdValue = eachsheet.Id.Value;
+                        break;
+                    }
                     if (eachsheet.Name == sheetName)
                     {
                         sheetIdValue = eachsheet.Id.Value;
