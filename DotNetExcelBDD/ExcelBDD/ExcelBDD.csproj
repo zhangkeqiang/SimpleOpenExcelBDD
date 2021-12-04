@@ -1,11 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<PackageId>ExcelBDD</PackageId>
+		<Version>1.0.3</Version>
+		<Authors>zhangkq2000@hotmail.com</Authors>
+		<Company>ExcelBDD</Company>
+		<PackageProjectUrl>https://dev.azure.com/simplopen/ExcelBDD</PackageProjectUrl>
+		<Description>Use Excel file as BDD feature file, get example list and testcase list from excel file</Description>
+		<Copyright>Copyright (c) 2021 by ExcelBDD Team, licensed under Apache 2.0 License.</Copyright>
+		<!--<PackageLicenseFile>http://www.apache.org/licenses/LICENSE-2.0.txt</PackageLicenseFile>-->
+		<RepositoryUrl>https://dev.azure.com/simplopen/_git/ExcelBDD</RepositoryUrl>
+		<RespositoryType>git</RespositoryType>
+		<PackageTags>BDD, Specification By Example, Excel, Behavior-driven development</PackageTags>
+		<PackageReleaseNotes>Srite user story and example data in excel, Read data from excel, then test according to these data</PackageReleaseNotes>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" Version="2.14.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.14.0" />
+	</ItemGroup>
 
 </Project>

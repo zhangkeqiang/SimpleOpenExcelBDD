@@ -1,10 +1,9 @@
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 // using UtilityLibraries;
-using ExcelBDD;
-namespace ExcelBDDTest
+namespace ExcelBDD.Tests
 {
     [TestClass]
     public class DataTableTest

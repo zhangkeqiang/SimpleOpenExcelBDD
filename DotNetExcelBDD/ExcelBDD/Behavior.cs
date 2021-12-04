@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using System.Data;
+using System;
+using System.Collections.Generic;
 
 namespace ExcelBDD
 {

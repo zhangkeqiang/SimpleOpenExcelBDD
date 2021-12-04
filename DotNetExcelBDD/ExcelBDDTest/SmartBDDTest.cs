@@ -1,9 +1,8 @@
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using ExcelBDD;
-namespace ExcelBDDTest
+namespace ExcelBDD.Tests
 {
     [TestClass]
     public class SmartBDDTest
@@ -94,8 +93,9 @@ namespace ExcelBDDTest
         }
 
 
-         [TestMethod]
-        public void CheckBasic(){
+        [TestMethod]
+        public void CheckBasic()
+        {
             Assert.AreNotEqual("", null);
             Assert.IsTrue("Abcdefed".IndexOf("") >= 0);
         }
